@@ -21,12 +21,27 @@ for i = 1:nFrames
     try
         video = read(v,i);
         imshow(video);
-        rect(i,:) = getrect;
-        %TODO add a way to skip multiple frames at once... If a lot of
-        % video data this could get tedious
-        % Alternatively we could have the user define the range for this
-        % loop
-        pause;
+        imgTitle = sprintf('frame %d of %d', i, nFrames);
+        title(imgTitle);
+        curRect = getrect;
+        
+        % if the rect is small it corresponds to a click, so don't save
+        if (curRect(3)+curRect(4) < 5)
+            % Can give option to skip multiple or go back depending on
+            % whether the click is outside the frame or not
+            % For instance, if the click x location is greater than the bounds of the
+            % image it corresponds to a skip of 5 images
+            % If click is to left of image (x < 0) then go back 1 image
+            % Click on image is for a one frame skip
+            % This would be basic though, might want more intuitive
+            % solution
+        else
+            % Need some error handling here... 
+            %   i.e. if the index of the rectangle is out of the img bounds
+            %   Could simply decrement i such that they have to select
+            %   again
+            rect(i,:) = curRect;
+        end
     catch
         % If you close the image without selection, the for loop terminates
         break;
