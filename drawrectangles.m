@@ -1,8 +1,8 @@
 function [ rect ] = drawrectangles( videoPath )
 %drawrectangles: This function returns bounded rectangles from images
-%   rect: A nx4 matrix where 
-%       n is the number of frames
-%       Each row is the rectangle selection
+%   rect: A nx5 matrix where 
+%       n is the number of detections
+%       Each row is the frame number with the 4 dimensional rectangle selection
 %   videoPath: The location of the video in the system
 
 % This function will iterate through the frames of the video sequence
@@ -32,7 +32,7 @@ width = v.Width;
 height = v.Height;
 
 % Create an empty array
-rect = zeros(nFrames,4);
+rect = zeros(nFrames,5);
 
 % Instantiate the counters used in easy frame skipping
 nClicks = 0;
@@ -89,7 +89,8 @@ for i = 1:nFrames
                 nClicks = 0;
                 
                 % This is a valid selection, so add it to the rectangle array
-                rect(i,:) = curRect;            
+                % pair it with the frame number as first index of row
+                rect(i,:) = [i curRect];            
             end
         catch
             % If you close the image without a selection, the for loop terminates
@@ -97,4 +98,8 @@ for i = 1:nFrames
         end     
     end
 end
+
+% Remove rows with all 0's
+rect( ~any(rect,2), : ) = [];
+
 end
