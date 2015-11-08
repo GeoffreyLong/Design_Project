@@ -1,12 +1,13 @@
 % Matlab video stucture
 %s = struct('cdata',zeros(videoHeight,videoWidth,3,'uint8'),'colormap',[]);
-filePath = 'xylophone.mp4'
+filePath = 'xylophone.mp4';
 
-rect = drawrectangles(filePath)
+rect = drawrectangles(filePath);
 
 readRect = readrectxml(filePath);
 writeRect = averagerects(rect, readRect);
 writerectxml(filePath, writeRect);
+%displayRect(filePath,rect);
 
 %TODO Use this returned rectangle in further analysis
 %   Now the first thing we should do is compile some sort of test suite
