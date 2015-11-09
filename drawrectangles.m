@@ -27,7 +27,7 @@ function [ rect ] = drawrectangles( videoPath )
 v = VideoReader(videoPath);
 
 % Get the number of frames, frame width, and frame height from the video data
-nFrames = v.Duration * v.FrameRate;
+nFrames = v.NumberOfFrames;
 width = v.Width;
 height = v.Height;
 
