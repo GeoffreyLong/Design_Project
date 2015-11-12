@@ -8,19 +8,26 @@ function [ rect ] = averagerects( rect1, rect2 )
 %TODO
 %   Iterate through loop on rect1's rows
 %   
-rectIdx = 0;
-curRect2Idx = 0;
+
+
+THRESHOLD = 20; % Should be based on vector size
+
+rectIdx = 1;
+curRect2Idx = 1;
 for i = 1:numel(rect1(:,5))
-    curRect1Row = rect1(i,:)
-    curRect2Row = rect2(curRect2Idx,:)
+    curRect1Row = rect1(i,:);
+    curRect2Row = rect2(curRect2Idx,:);
     
     % If the "frame number" of a rectangle is less than another's "frame number"
     % Simply add that row to to the rect and increment the necessary counters
-    if (curRect2Row(1) < curRect1Row(1))
+    while (curRect2Row(1) < curRect1Row(1))
         rect(rectIdx, :) = curRect2Row;
         rectIdx = rectIdx + 1;
         curRect2Idx = curRect2Idx + 1;
-    elseif (curRect2Row(1) > curRect1Row(1))
+        curRect2Row = rect2(curRect2Idx,:);
+    end
+    
+    if (curRect2Row(1) > curRect1Row(1))
         rect(i, :) = curRect1Row;
         rectIdx = rectIdx + 1;
         
@@ -31,35 +38,53 @@ for i = 1:numel(rect1(:,5))
     %       2) The two detections correspond to different features
     elseif (curRect2Row(1) == curRect1Row(1))
         tempRect2Idx = curRect2Idx;
-        while (curRect2Row(1) == curRect1Row(1))
+        while (true)
+            if (tempRect2Idx > numel(rect2(:,5)))
+                rect(rectIdx, :) = curRect1Row;
+                rectIdx = rectIdx + 1;
+                break;
+            end
+            curRect2Row = rect2(tempRect2Idx,:);
+            % If there hasn't been a match by the end of the loop2's, then
+            % add the curRect1 to the rect and continue
+            if (curRect2Row(1) ~= curRect1Row(1))
+                rect(rectIdx, :) = curRect1Row;
+                rectIdx = rectIdx + 1;
+                break;
+            end
             %NOTE there might be a better way to do this
-            distance = norm(curRect2Row, curRect1Row);
+            distance = norm(curRect2Row - curRect1Row);
 
  
             % Case (1)
             if (distance < THRESHOLD)
                 % Add the average of the two
-                rect(rectIdx, :) = (curRect2Row + curRect1Row) / 2;
+                rect(rectIdx, :) = ceil((curRect2Row + curRect1Row) / 2);
+                
+                % Since Rect2 index isn't changed in this loop, we need
+                % this statement to avoid double adds
+                rect2(curRect2Idx,:) = [];
                 rectIdx = rectIdx + 1;
-                curRect2Idx = curRect2Idx + 1;
                 break;
-            % Case (2) simply skip the current element of rect2
-            else
-                %TODO
             end
  
             
             tempRect2Idx = tempRect2Idx + 1;
-            curRect2Row = rect2(tempRect2Idx,:);
         end        
         
     end
     
 end
 
+while (curRect2Idx <= numel(rect2(:,5)))
+    rect(rectIdx, :) = curRect2Row;
+    rectIdx = rectIdx + 1;
+    curRect2Row = rect2(curRect2Idx,:);
+    
+    curRect2Idx = curRect2Idx + 1;
+end
 
-rect = 0;
-
+rect = sortrows(rect);
 
 end
 
