@@ -1,3 +1,8 @@
+%TODO double check to ensure that this covers all expected cases
+% What is tested is the possible matches between two rects
+% but not the values of the rects themselves
+% The values of the rects are expected to be valid from drawrectangles
+
 %%%%%%% CASE ONE %%%%%%%
 % This case only has single averaging
 rect1 = zeros(5,5);
@@ -29,7 +34,7 @@ rect1(5,:) = [5 29 60 15 29];
 rect2(5,:) = [5 30 63 10 26];
 expRect(5,:) = [5 30 62 13 28];
 
-rect = averagerects(rect1,rect2)
+rect = averagerects(rect1,rect2);
 
 % Expected return values
 assert(isequaln(rect,expRect), 'Case One Failed');
@@ -107,8 +112,8 @@ rect2(5,:) = [3 100 120 13 13];
 expRect(9,:) = [3 180 25 15 15];
 expRect(10,:) = [3 100 120 13 13];
 
-expRect = sortrows(expRect)
-rect = averagerects(rect1,rect2)
+expRect = sortrows(expRect);
+rect = averagerects(rect1,rect2);
 
 % Expected return values
 assert(isequaln(rect,expRect), 'Case Three Failed');
@@ -116,47 +121,36 @@ assert(isequaln(rect,expRect), 'Case Three Failed');
 
 
 
-
-
-%TODO 
-% Tests for acyclic matching
-% Tests for average + multi
-
-%TODO FINISH
-
 %%%%%%% CASE FOUR %%%%%%%
 % This case has acyclic averaging NOT FINISHED
 rect1 = zeros(5,5);
 rect2 = zeros(5,5);
-expRect = zeros(10,5);
+expRect = zeros(7,5);
 
 rect1(1,:) = [1 20 25 15 15];
 rect2(1,:) = [2 50 50 13 13];
 expRect(1,:) = [1 20 25 15 15];
-expRect(2,:) = [2 50 50 13 13];
 
-rect1(2,:) = [2 100 25 15 15];
-rect2(2,:) = [3 50 25 15 15];
-expRect(3,:) = [1 100 25 15 15];
-expRect(4,:) = [1 50 25 15 15];
+rect1(2,:) = [2 50 54 15 15];
+rect2(2,:) = [2 100 25 15 15];
+expRect(2,:) = [2 50 52 14 14];
 
 rect1(3,:) = [2 100 25 10 15];
-rect2(3,:) = [2 50 50 13 13];
-expRect(5,:) = [2 100 25 10 15];
-expRect(6,:) = [2 50 50 13 13];
+rect2(3,:) = [3 100 120 13 13];
+expRect(3,:) = [2 100 25 13 15];
 
 rect1(4,:) = [3 1 1 15 15];
-rect2(4,:) = [3 80 50 13 13];
-expRect(7,:) = [3 1 1 15 15];
-expRect(8,:) = [3 90 50 13 13];
+rect2(4,:) = [3 80 50 50 48];
+expRect(4,:) = [3 1 1 15 15];
+expRect(5,:) = [3 78 50 50 44];
 
 rect1(5,:) = [3 180 25 15 15];
-rect2(5,:) = [3 100 120 13 13];
-expRect(9,:) = [3 180 25 15 15];
-expRect(10,:) = [3 100 120 13 13];
+rect2(5,:) = [3 76 50 50 40];
+expRect(6,:) = [3 180 25 15 15];
+expRect(7,:) = [3 100 120 13 13];
 
-expRect = sortrows(expRect)
-rect = averagerects(rect1,rect2)
+expRect = sortrows(expRect);
+rect = averagerects(rect1,rect2);
 
 % Expected return values
 assert(isequaln(rect,expRect), 'Case Four Failed');

@@ -3,32 +3,35 @@ function [ rect ] = averagerects( rect1, rect2 )
 %   rect1, rect 2: nx5 matrices where 
 %       n is the number of detections
 %       Each row is the frame number with the 4 dimensional rectangle selection
+
+%TODO might want to consider adding a weight to the old rects
+% Currently they are being averaged 1 to 1 with the new rects
  
 
-THRESHOLD = 20; % Should be based on vector size
+THRESHOLD = 20; % Might want to base on vector size
 
-newRect = sortrows(vertcat(rect1, rect2));
-newRectSize = numel(newRect(:,5));
-rect(1,:) = newRect(1,:);
+inputRect = sortrows(vertcat(rect1, rect2));
+inputRectSize = numel(inputRect(:,5));
+rect(1,:) = inputRect(1,:);
 
-for idx = 1:newRectSize
-    oldRow = newRect(idx,:);
-    idxRect = numel(rect(:,5));
+for inputIdx = 1:inputRectSize
+    inputRow = inputRect(inputIdx,:);
+    rectIdx = numel(rect(:,5));
     while (true)
-        if (idxRect < 1)
-            rect(numel(rect(:,5)) + 1,:) = oldRow;
+        if (rectIdx < 1)
+            rect(numel(rect(:,5)) + 1,:) = inputRow;
             break;
         end
         
         
-        curRow = rect(idxRect,:);
-        if (curRow(1) == oldRow(1))
-            distance = norm(curRow - oldRow);
+        rectRow = rect(rectIdx,:);
+        if (rectRow(1) == inputRow(1))
+            distance = norm(rectRow - inputRow);
             if (distance < THRESHOLD)
-                rect(idxRect,:) = ceil((curRow + oldRow) / 2);
+                rect(rectIdx,:) = ceil((rectRow + inputRow) / 2);
                 break;
             end
         end
-        idxRect = idxRect - 1;
+        rectIdx = rectIdx - 1;
    end
 end
