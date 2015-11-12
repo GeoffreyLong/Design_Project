@@ -125,7 +125,7 @@ assert(isequaln(rect,expRect), 'Case Three Failed');
 %TODO FINISH
 
 %%%%%%% CASE FOUR %%%%%%%
-% This case has acyclic averaging
+% This case has acyclic averaging NOT FINISHED
 rect1 = zeros(5,5);
 rect2 = zeros(5,5);
 expRect = zeros(10,5);
@@ -140,7 +140,6 @@ rect2(2,:) = [3 50 25 15 15];
 expRect(3,:) = [1 100 25 15 15];
 expRect(4,:) = [1 50 25 15 15];
 
-%HERE
 rect1(3,:) = [2 100 25 10 15];
 rect2(3,:) = [2 50 50 13 13];
 expRect(5,:) = [2 100 25 10 15];
