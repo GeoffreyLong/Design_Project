@@ -1,3 +1,3 @@
-# Design_Project
+# Design Project
 
-Matlab
+Matlab, computer vision
