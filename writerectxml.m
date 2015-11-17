@@ -1,4 +1,4 @@
-function [ isSuccess ] = writerectxml( filePath, rect )
+function [ isSuccess ] = writerectxml( videoPath, rect )
 %readrectxml: Will write the new array for a given video
 %   rect: A nx5 matrix where 
 %       n is the number of detections
@@ -6,7 +6,7 @@ function [ isSuccess ] = writerectxml( filePath, rect )
 %   videoPath: The location of the video in the system
 %   isSuccess: Return boolean saying success or failure
 
-isSuccess = TRUE;
+isSuccess = true;
 
 % Split the filepath so that it does not contain ".mp4"
 videoPathTokens = strsplit(videoPath,'.');
@@ -18,7 +18,7 @@ try
     csvwrite(fileName, rect);
 catch
     % If error on write then isSuccess is false
-    isSuccess = FALSE;
+    isSuccess = false;
 end
 
 end

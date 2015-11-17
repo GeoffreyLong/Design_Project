@@ -21,7 +21,7 @@ try
 catch
     printString = sprintf('No file found by name "%s"', fileName);
     display(printString)
-    rect = zeros(1,4);
+    rect = zeros(1,5);
 end
     
 end

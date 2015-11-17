@@ -11,15 +11,18 @@ function [ rect ] = averagerects( rect1, rect2 )
 THRESHOLD = 20; % Might want to base on vector size
 
 inputRect = sortrows(vertcat(rect1, rect2));
+inputRect(all(inputRect==0,2),:)=[];
 inputRectSize = numel(inputRect(:,5));
 rect(1,:) = inputRect(1,:);
+
+
 
 for inputIdx = 1:inputRectSize
     inputRow = inputRect(inputIdx,:);
     rectIdx = numel(rect(:,5));
     while (true)
         if (rectIdx < 1)
-            rect(numel(rect(:,5)) + 1,:) = inputRow;
+            rect(numel(rect(:,5)) + 1,:) = ceil(inputRow);
             break;
         end
         

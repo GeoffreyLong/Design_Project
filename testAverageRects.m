@@ -157,3 +157,5 @@ assert(isequaln(rect,expRect), 'Case Four Failed');
 
 
 
+%TODO add test case for non-integer inputs
+
