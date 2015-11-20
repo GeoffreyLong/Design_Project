@@ -19,6 +19,7 @@ for i = 1:25:nFrames
     BW5 = edge(image,'Sobel');
     BW6 = edge(image,'zerocross');
     
+    
      % Smooth by morphologically closing holes in the image in a 15 pixel neighborhood
     BW1 = imclose(BW1,true(3));    
     BW2 = imclose(BW2,true(20));
