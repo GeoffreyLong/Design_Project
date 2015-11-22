@@ -11,8 +11,9 @@ function [ rect ] = readrectxml( videoPath )
 %       If it is not kept consisitent then we can run into data issues
 
 % Split the filepath so that it does not contain ".mp4"
-videoPathTokens = strsplit(videoPath,'.');
-filePath = videoPathTokens(1);
+% videoPathTokens = strsplit(videoPath,'.');
+videoPathTokens = strread(videoPath,'%s','delimiter','/');
+filePath = videoPathTokens(length(videoPathTokens));
 fileName = char(filePath);
 fileName = strcat(fileName, '.dat');
 

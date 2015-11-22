@@ -10,18 +10,18 @@ isSuccess = true;
 
 % Split the filepath so that it does not contain ".mp4"
 % videoPathTokens = strsplit(videoPath,'.');
-videoPathTokens = strread(videoPath,'%s','delimiter','/');
-filePath = videoPathTokens(length(videoPathTokens));
+videoPathTockens = strread(videoPath,'%s','delimiter','/');
+filePath = videoPathTockens(length(videoPathTockens));
 fileName = char(filePath);
 fileName = strcat(fileName, '.dat');
 
 try
     csvwrite(fileName, rect);
-    disp(fileName);
+    'success'
 catch
     % If error on write then isSuccess is false
     isSuccess = false;
-    disp('failure')
+    print "failure"
 end
 
 end
