@@ -10,7 +10,8 @@ function [ sky, terrain ] = segmentsky7( image )
 %   Morphologically manipulate this until the sky and terrain are only 2
 %   objects. Then filter out the initial image and return the result.
 
-%TODO split the final image into components
+%NOTE cuts the horizon a bit low... could consider a straight line cut
+% This does segregate textured vs non textured components though
 
 nhood = true(4);
 
@@ -37,4 +38,11 @@ reduced = bwareaopen(filled,40000);
 % component and the border
 final = bwmorph(reduced, 'dilate');
 
-imshow(final);
+%imshow(final);
+%imshowpair(final,image);
+
+terrain = image;
+terrain(~final) = 0;
+
+sky = image;
+sky(final) = 0;
