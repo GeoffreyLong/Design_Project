@@ -1,63 +1,121 @@
-% The percent error in the placement and sizing of the rect
-THRESHOLD = 0.10;
 
 filePath = '/home/geoffrey/Dropbox/Temps/Design_Project/Feb_13_cam1_5.avi';
 readRect = readrectxml(filePath);
 
-% Instantiate the video reader
-v = VideoReader(filePath);
 
-% Get the number of frames, frame width, and frame height from the video data
-nFrames = v.NumberOfFrames;
-width = v.Width;
-height = v.Height;
+%%%%%%% CASE ONE %%%%%%%
+% Test on real data, but simply feed in the same rect to both
+nDetections = size(readRect,1);
+[nTrueDetections, nFalsePositives, nFalseNegatives] = evaluatedetection(readRect, readRect)
+assert(isequaln(nDetections,nTrueDetections), 'Case One Failed: True Detections');
+assert(isequaln(0, nFalsePositives), 'Case One Failed: False Positives');
+assert(isequaln(0, nFalseNegatives), 'Case One Failed: False Negatives');
 
-nTrueDetections = 0;
-nFalsePositives = 0;
-nFalseNegatives = 0;
 
-for i = 1:nFrames
-    image = read(v,i);
-    truthRect = readRect(readRect(:,1)==i,:)
-    % newRect = detect1(image);
-    newRect = truthRect;
-    
-    for j = 1:size(newRect,1)
-        curNew = newRect(j,:);
-        
-        found = false; 
-        for k = 1:size(truthRect)
-            curTruth = truthRect(k,:);
-            errorX = THRESHOLD * curTruth(4);
-            errorY = THRESHOLD * curTruth(5);
-            
-            % Essentially, see if the size of x and y sizes are within threshold
-            % of the known and that the location of x and y are within
-            % thresholds based on their respective sizes
-            if (abs(curNew(4) - curTruth(4)) <= errorX && abs(curNew(5) - curTruth(5)) <= errorY ...
-                    && abs(curNew(2) - curTruth(2)) <= errorX && abs(curNew(3) - curTruth(3)) <= errorY)
-                nTrueDetections = nTrueDetections + 1;
-                found = true;
-                truthRect(k,:) = [0 0 0 0 0];
-            end
-        end
-        
-        if(~found)
-            nFalsePositives = nFalsePositives + 1;
-        end
-    end
-    
-    for j = 1:size(truthRect,1)
-        cur = truthRect(:,j);
-        if (cur(1) ~= 0)
-            nFalseNegatives = nFalseNegatives + 1;
-        end
-    end
 
-        
-    nFalsePositives
-    nFalseNegatives
-    nTrueDetections
+%%%%%%% CASE TWO %%%%%%%
+trueRect = zeros(5,5);
+testRect = zeros(5,5);
 
-end
+% Average on the scales
+trueRect(1,:) = [1 50 50 15 15];
+testRect(1,:) = [1 50 50 13 13];
+
+% Average one scale
+trueRect(2,:) = [2 50 50 70 15];
+testRect(2,:) = [2 50 50 60 15];
+
+% Average location
+trueRect(3,:) = [3 45 55 15 15];
+testRect(3,:) = [3 51 49 13 13];
+
+% Average both
+trueRect(4,:) = [4 52 50 10 30];
+testRect(4,:) = [4 50 52 14 28];
+
+% Average with decimals
+trueRect(5,:) = [5 29 60 15 29];
+testRect(5,:) = [5 30 63 10 26];
+
+[nTrueDetections, nFalsePositives, nFalseNegatives] = evaluatedetection(trueRect, testRect)
+assert(isequaln(5, nTrueDetections), 'Case Two Failed: True Detections');
+assert(isequaln(0, nFalsePositives), 'Case Two Failed: False Positives');
+assert(isequaln(0, nFalseNegatives), 'Case Two Failed: False Negatives');
+
+
+%%%%%%% CASE THREE %%%%%%%
+trueRect = zeros(5,5);
+testRect = zeros(5,5);
+
+trueRect(1,:) = [1 50 50 15 15];
+testRect(1,:) = [1 50 50 13 13];
+
+trueRect(2,:) = [19 50 50 70 15];
+testRect(2,:) = [19 50 50 60 15];
+
+trueRect(3,:) = [20 45 55 15 15];
+testRect(3,:) = [20 51 49 13 13];
+
+trueRect(4,:) = [21 52 50 10 30];
+testRect(4,:) = [21 50 52 14 28];
+
+trueRect(5,:) = [27 29 60 15 29];
+testRect(5,:) = [27 30 63 10 26];
+
+
+[nTrueDetections, nFalsePositives, nFalseNegatives] = evaluatedetection(trueRect, testRect)
+assert(isequaln(5, nTrueDetections), 'Case Three Failed: True Detections');
+assert(isequaln(0, nFalsePositives), 'Case Three Failed: False Positives');
+assert(isequaln(0, nFalseNegatives), 'Case Three Failed: False Negatives');
+
+
+%%%%%%% CASE FOUR %%%%%%%
+trueRect = zeros(5,5);
+testRect = zeros(5,5);
+
+trueRect(1,:) = [1 20 25 15 15];
+testRect(1,:) = [1 50 50 13 13];
+
+trueRect(2,:) = [1 100 25 15 15];
+testRect(2,:) = [1 50 25 15 15];
+
+trueRect(3,:) = [2 100 25 10 15];
+testRect(3,:) = [2 50 50 13 13];
+
+trueRect(4,:) = [3 1 1 15 15];
+testRect(4,:) = [3 80 50 13 13];
+
+trueRect(5,:) = [3 180 25 15 15];
+testRect(5,:) = [3 100 120 13 13];
+
+[nTrueDetections, nFalsePositives, nFalseNegatives] = evaluatedetection(trueRect, testRect)
+assert(isequaln(0, nTrueDetections), 'Case Four Failed: True Detections');
+assert(isequaln(5, nFalsePositives), 'Case Four Failed: False Positives');
+assert(isequaln(5, nFalseNegatives), 'Case Four Failed: False Negatives');
+
+
+
+%%%%%%% CASE FIVE %%%%%%%
+trueRect = zeros(5,5);
+testRect = zeros(5,5);
+
+trueRect(1,:) = [1 20 25 15 15];
+testRect(1,:) = [2 50 50 13 13];
+
+trueRect(2,:) = [2 50 54 15 15];
+testRect(2,:) = [2 100 25 15 15];
+
+trueRect(3,:) = [2 100 25 10 15];
+testRect(3,:) = [3 100 120 13 13];
+
+trueRect(4,:) = [3 1 1 15 15];
+testRect(4,:) = [3 80 50 50 48];
+
+trueRect(5,:) = [3 180 25 15 15];
+testRect(5,:) = [3 76 50 50 40];
+
+[nTrueDetections, nFalsePositives, nFalseNegatives] = evaluatedetection(trueRect, testRect)
+assert(isequaln(2, nTrueDetections), 'Case Five Failed: True Detections');
+assert(isequaln(3, nFalsePositives), 'Case Five Failed: False Positives');
+assert(isequaln(3, nFalseNegatives), 'Case Five Failed: False Negatives');
 
