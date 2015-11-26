@@ -6,7 +6,7 @@ readRect = readrectxml(filePath);
 %%%%%%% CASE ONE %%%%%%%
 % Test on real data, but simply feed in the same rect to both
 nDetections = size(readRect,1);
-[nTrueDetections, nFalsePositives, nFalseNegatives] = evaluatedetection(readRect, readRect)
+[nTrueDetections, nFalsePositives, nFalseNegatives] = evaluatedetection(readRect, readRect);
 assert(isequaln(nDetections,nTrueDetections), 'Case One Failed: True Detections');
 assert(isequaln(0, nFalsePositives), 'Case One Failed: False Positives');
 assert(isequaln(0, nFalseNegatives), 'Case One Failed: False Negatives');
@@ -37,7 +37,7 @@ testRect(4,:) = [4 50 52 14 28];
 trueRect(5,:) = [5 29 60 15 29];
 testRect(5,:) = [5 30 63 10 26];
 
-[nTrueDetections, nFalsePositives, nFalseNegatives] = evaluatedetection(trueRect, testRect)
+[nTrueDetections, nFalsePositives, nFalseNegatives] = evaluatedetection(trueRect, testRect);
 assert(isequaln(5, nTrueDetections), 'Case Two Failed: True Detections');
 assert(isequaln(0, nFalsePositives), 'Case Two Failed: False Positives');
 assert(isequaln(0, nFalseNegatives), 'Case Two Failed: False Negatives');
@@ -63,7 +63,7 @@ trueRect(5,:) = [27 29 60 15 29];
 testRect(5,:) = [27 30 63 10 26];
 
 
-[nTrueDetections, nFalsePositives, nFalseNegatives] = evaluatedetection(trueRect, testRect)
+[nTrueDetections, nFalsePositives, nFalseNegatives] = evaluatedetection(trueRect, testRect);
 assert(isequaln(5, nTrueDetections), 'Case Three Failed: True Detections');
 assert(isequaln(0, nFalsePositives), 'Case Three Failed: False Positives');
 assert(isequaln(0, nFalseNegatives), 'Case Three Failed: False Negatives');
@@ -88,7 +88,7 @@ testRect(4,:) = [3 80 50 13 13];
 trueRect(5,:) = [3 180 25 15 15];
 testRect(5,:) = [3 100 120 13 13];
 
-[nTrueDetections, nFalsePositives, nFalseNegatives] = evaluatedetection(trueRect, testRect)
+[nTrueDetections, nFalsePositives, nFalseNegatives] = evaluatedetection(trueRect, testRect);
 assert(isequaln(0, nTrueDetections), 'Case Four Failed: True Detections');
 assert(isequaln(5, nFalsePositives), 'Case Four Failed: False Positives');
 assert(isequaln(5, nFalseNegatives), 'Case Four Failed: False Negatives');
@@ -114,7 +114,7 @@ testRect(4,:) = [3 80 50 50 48];
 trueRect(5,:) = [3 180 25 15 15];
 testRect(5,:) = [3 76 50 50 40];
 
-[nTrueDetections, nFalsePositives, nFalseNegatives] = evaluatedetection(trueRect, testRect)
+[nTrueDetections, nFalsePositives, nFalseNegatives] = evaluatedetection(trueRect, testRect);
 assert(isequaln(2, nTrueDetections), 'Case Five Failed: True Detections');
 assert(isequaln(3, nFalsePositives), 'Case Five Failed: False Positives');
 assert(isequaln(3, nFalseNegatives), 'Case Five Failed: False Negatives');

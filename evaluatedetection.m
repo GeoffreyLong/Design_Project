@@ -3,7 +3,9 @@ function [  nTrueDetections, nFalsePositives, nFalseNegatives ] = evaluatedetect
 %   Detailed explanation goes here
 
 % The percent error in the placement and sizing of the rect
-THRESHOLD = 0.10;
+%TODO see if this is good for our purposes
+PLACEMENT_TOL = 0.30;
+SIZE_TOL = 0.20;
 
 % Seed the counters to 0
 nTrueDetections = 0;
@@ -25,14 +27,17 @@ for i = 1:idxlastFrame
             tempTruth = curTruth(k,:);
             
             %TODO speed optimize the below... kindof slow as is
-            errorX = THRESHOLD * tempTruth(4);
-            errorY = THRESHOLD * tempTruth(5);
+            
+            
+            placementError = (abs(tempNew(2)-tempTruth(2)) + abs(tempNew(3)-tempTruth(3))) / 2;
+            sizeError = (abs(tempNew(4)-tempTruth(4)) + abs(tempNew(5)-tempTruth(5))) / 2;
+            
+            trueSize = tempTruth(4) + tempTruth(5) / 2;
             
             % Essentially, see if the size of x and y sizes are within threshold
             % of the known and that the location of x and y are within
             % thresholds based on their respective sizes
-            if (abs(tempNew(4) - tempTruth(4)) <= errorX && abs(tempNew(5) - tempTruth(5)) <= errorY ...
-                    && abs(tempNew(2) - tempTruth(2)) <= errorX && abs(tempNew(3) - tempTruth(3)) <= errorY)
+            if (placementError < trueSize*PLACEMENT_TOL && sizeError < trueSize*SIZE_TOL)
                 nTrueDetections = nTrueDetections + 1;
                 found = true;
                 curTruth(k,:) = [0 0 0 0 0];
