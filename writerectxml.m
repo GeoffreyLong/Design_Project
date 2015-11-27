@@ -1,9 +1,10 @@
-function [ isSuccess ] = writerectxml( videoPath, rect )
+function [ isSuccess ] = writerectxml( videoPath, rect, addString )
 %readrectxml: Will write the new array for a given video
 %   rect: A nx5 matrix where 
 %       n is the number of detections
 %       Each row is the frame number with the 4 dimensional rectangle selection
 %   videoPath: The location of the video in the system
+%   addString: Optional string at the end of path to avoid overwrite (mostly for postprocessing)
 %   isSuccess: Return boolean saying success or failure
 
 isSuccess = true;
@@ -12,8 +13,12 @@ isSuccess = true;
 % videoPathTokens = strsplit(videoPath,'.');
 videoPathTokens = strread(videoPath,'%s','delimiter','/');
 filePath = videoPathTokens(length(videoPathTokens));
-fileName = char(filePath);
-fileName = strcat(fileName, '.dat');
+if nargin < 3
+    addString = '';
+end
+fileName = strcat(addString,char(filePath));
+fileName = strcat(fileName, '.dat')
+
 
 try
     csvwrite(fileName, rect);

@@ -4,6 +4,8 @@ function [  nTrueDetections, nFalsePositives, nFalseNegatives ] = evaluatedetect
 
 % The percent error in the placement and sizing of the rect
 %TODO see if this is good for our purposes
+%   Probably best to do visually, i.e. see how much the rects overlap
+%   Depends on how tightly the planes are bounded
 PLACEMENT_TOL = 0.30;
 SIZE_TOL = 0.20;
 
