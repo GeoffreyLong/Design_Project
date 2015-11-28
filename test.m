@@ -1,28 +1,29 @@
 % Matlab video stucture
 %s = struct('cdata',zeros(videoHeight,videoWidth,3,'uint8'),'colormap',[]);
-filePath = '/media/nrc/flight_data/Collision Avoidance Data/Jan 20 2011/cam 3/cam3_03.avi';
+filePath = '/home/geoffrey/Dropbox/Temps/Design_Project/Feb_13_cam1_5.avi';
 
-rect = drawrectangles(filePath);
+%rect = drawrectangles(filePath);
+%rect = drawwithhelper(filePath);
+
+
 
 readRect = readrectxml(filePath);
-writeRect = averagerects(rect, readRect);
-writerectxml(filePath, writeRect);
+
+
+getsubrects(readRect, filePath);
+
+
+
+%writeRect = averagerects(rect, readRect);
+%writerectxml(filePath, writeRect);
 %displayRect(filePath,rect);
 
-%segmentsky6(filePath);
+%segmentsky7(filePath);
+
+
+
 
 % GETTING TEST DATA
-%       When bounding the planes it is important that we are somewhat consistent
-%           I say try to give a berth of a few pixels (about 3-5) around each plane
-%               and try to center the plane in the box
-%           We might want to alter the drawrectangles to be more exact
-%               i.e. have matlab highlight the box after selecting so that it can 
-%               be altered... It might be annoying if you accidentally messed up otherwise
-%       Possibly change getrect in drawrectangles to imrect
-%   After we have some test data, another thing we could do is extract the subimages
-%       Essentially just pull out the subarray of pixels from each image 
-%           corresponding to the found grid 
-%           The grids can be pulled out of the database we compiled in the above task
 %       Once we have these subgrids, we can use some sort of 
 %           feature detector, descriptor extractor, descriptor matcher combination
 %           to pull the features from these subimages, extract their descriptors
@@ -31,5 +32,20 @@ writerectxml(filePath, writeRect);
 %           It might be possible to do this in an ML fashion
 %           some iteration of dictionary learning through sparse representation
 
+% TODO
+%   Add a postprocessing for the rects
+%       This will likely provide a way to draw a rect on the subimages
+%       Then these subimage rects will be saved in a processed_XXX.dat file
+%       In this we need to find a way to get the absolute rect position in
+%       the original image from the new subrect, else the coordinates will
+%       be largely useless.
+%       When we do this we should save the processed subimages in a
+%       subfolder so we can start on haar feature stuff.
+%   Need a set of rects that are "not planes"
+%   Need to extract the ground truth for images frame by frame 
+%       This will be added to our test bed for later use with TTC and
+%       trajectory estimation
 
-% For segmentsky analysis need to overlay the filtered image onto original
+
+
+
