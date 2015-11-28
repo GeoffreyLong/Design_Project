@@ -25,7 +25,7 @@ for i = 1:idxlastFrame
         tempNew = curDetect(j,:);
         
         found = false; 
-        for k = 1:size(curTruth)
+        for k = 1:size(curTruth,1)
             tempTruth = curTruth(k,:);
             
             %TODO speed optimize the below... kindof slow as is

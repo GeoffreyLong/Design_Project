@@ -32,6 +32,7 @@ filled = imfill(filled,'holes');
 filled = bwmorph(filled, 'branchpoints');
 
 % Get only large connected components
+%TODO Should probably change this to be dependent on terrain area
 reduced = bwareaopen(filled,40000);
 
 % Dilate because sometimes there exists a line between the selected
