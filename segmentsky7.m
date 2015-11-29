@@ -42,8 +42,5 @@ final = bwmorph(reduced, 'dilate');
 %imshow(final);
 %imshowpair(final,image);
 
-terrain = image;
-terrain(~final) = 0;
-
-sky = image;
-sky(final) = 0;
+sky = ~final;
+terrain = final;
