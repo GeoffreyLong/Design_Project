@@ -17,6 +17,7 @@ b = mean2(im);
 im(im>4*b & sky) = 255;
 im(im ~= 255) = 0;
 
+% Arbitrary threshold (any threshold would work)
 bw = im2bw(im, 0.5);
 L = bwlabel(bw);
 s = regionprops(L,'BoundingBox');
