@@ -1,13 +1,14 @@
  filePath = '/home/geoffrey/Dropbox/Temps/Design_Project/Feb_13_cam1_5.avi';
 % filePath = '/home/geoffrey/Dropbox/Temps/Design_Project/July_6_cam1_01.avi';
 
-vwr = VideoWriter('Detect__Feb_13_cam1_5.avi');
-open(vwr);
-
+WRITE = false;
+if (WRITE)
+    vwr = VideoWriter('DetectXX_Feb_13_cam1_5.avi');
+    open(vwr);
+end
 
 % Instantiate the video reader
 v = VideoReader(filePath);
-
 readRect = readrectxml(filePath);
 
 % Get the number of frames, frame width, and frame height from the video data
@@ -30,12 +31,16 @@ for i = 600:nFrames
     end
     
     curRect = readRect(readRect(:,1)==i,:);
-    %TODO make extensible to multi rect situations
     for j=1:size(curRect,1)
         im = insertShape(im, 'Rectangle', curRect(j,2:5), 'LineWidth', 5);
     end
-    i
-    writeVideo(vwr,im);
+    
+    if WRITE
+        i
+        writeVideo(vwr,im);
+    end
 end
 
-close(vwr);
+if WRITE
+    close(vwr);
+end
