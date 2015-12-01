@@ -33,15 +33,26 @@ getsubrects(readRect, filePath);
 %           some iteration of dictionary learning through sparse representation
 
 % TODO
-%   Add a postprocessing for the rects
-%       This will likely provide a way to draw a rect on the subimages
-%       Then these subimage rects will be saved in a processed_XXX.dat file
-%       In this we need to find a way to get the absolute rect position in
-%       the original image from the new subrect, else the coordinates will
-%       be largely useless.
-%       When we do this we should save the processed subimages in a
-%       subfolder so we can start on haar feature stuff.
-%   Need a set of rects that are "not planes"
+%   Test bed for the horizon
+%       This could be done by selecting the horizon using one of opencv's
+%       selection tools, then we will need to mark all the pixels to one
+%       side of the selection as sky, the other side as terrain. These
+%       matrices will be our test matrices...
+%       Since that seems like a lot of data to save, perhaps we should just
+%       save them as straight line approximations
+%       At any rate, after we get them we will "exclusive or" the test
+%       horizon with the generated horizon and see how many one's pop up...
+%       the fewer one's the better the horizon...
+%   Cascade Classifier approach
+%       We need to check the imagepostprocessor function to ensure it works
+%       Then we need to postprocess the images
+%           To effectively do this we need to ensure that the plane is
+%           centered in the image and that it is cropped well... 
+%           We might want to alter the imagepostprocessor to do this
+%           semiprogrammatically, i.e. generate the new subimage then we
+%           check to make sure it is correct
+%       After this we need to save the postproccessed images in a folder
+%       We also need a set of images that are "not planes" in a folder
 %   Need to extract the ground truth for images frame by frame 
 %       This will be added to our test bed for later use with TTC and
 %       trajectory estimation
