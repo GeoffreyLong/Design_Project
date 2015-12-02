@@ -16,7 +16,7 @@ filePath = videoPathTokens(length(videoPathTokens));
 if nargin < 3
     addString = '';
 end
-fileName = strcat(addString,char(filePath));
+fileName = strcat('testData/',addString,char(filePath));
 fileName = strcat(fileName, '.dat')
 
 
