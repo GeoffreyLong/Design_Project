@@ -1,5 +1,6 @@
- filePath = '/home/geoffrey/Dropbox/Temps/Design_Project/Feb_13_cam1_5.avi';
+% filePath = '/home/geoffrey/Dropbox/Temps/Design_Project/Feb_13_cam1_5.avi';
 % filePath = '/home/geoffrey/Dropbox/Temps/Design_Project/July_6_cam1_01.avi';
+filePath = '/home/geoffrey/Dropbox/Temps/Design_Project/testData/July_8_cam1_01.avi';
 
 WRITE = false;
 if (WRITE)
@@ -16,7 +17,7 @@ nFrames = v.NumberOfFrames;
 
 
 
-for i = 600:nFrames 
+for i = 1:nFrames 
     image = read(v,i);
     
     % This is changeable, switch out detection algorithms as needed

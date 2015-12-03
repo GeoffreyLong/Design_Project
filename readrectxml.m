@@ -15,7 +15,7 @@ function [ rect ] = readrectxml( videoPath )
 videoPathTokens = strread(videoPath,'%s','delimiter','/');
 filePath = videoPathTokens(length(videoPathTokens));
 fileName = char(filePath);
-fileName = strcat('testData/', fileName, '.dat');
+fileName = strcat('testData/Generated_Detections/', fileName, '.dat');
 
 try
     rect = csvread(fileName);

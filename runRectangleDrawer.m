@@ -1,4 +1,4 @@
-filePath = '/home/geoffrey/Dropbox/Temps/Design_Project/July_6_cam1_01.avi';
+filePath = '/home/geoffrey/Dropbox/Temps/Design_Project/testData/July_8_cam1_01.avi';
 
 rect = drawwithhelper(filePath);
 
