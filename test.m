@@ -23,16 +23,13 @@ getsubrects(readRect, filePath);
 
 
 
-% GETTING TEST DATA
-%       Once we have these subgrids, we can use some sort of 
-%           feature detector, descriptor extractor, descriptor matcher combination
-%           to pull the features from these subimages, extract their descriptors
-%           then match them in the larger images
-%       It would also be cool to compose a sort of 'dictionary' of plane images
-%           It might be possible to do this in an ML fashion
-%           some iteration of dictionary learning through sparse representation
-
 % TODO
+%   Add in a way to grab the selections in July and March
+%       There are the already populated rects 
+%       We will want to get these so we don't have to grab them ourselves
+%   Get the plane data
+%       We need to be able to parse for pitch, roll, yaw, GPS, etc...
+%       This should be stored in some files somewhere
 %   Test bed for the horizon
 %       This could be done by selecting the horizon using one of opencv's
 %       selection tools, then we will need to mark all the pixels to one
@@ -53,10 +50,7 @@ getsubrects(readRect, filePath);
 %           check to make sure it is correct
 %       After this we need to save the postproccessed images in a folder
 %       We also need a set of images that are "not planes" in a folder
-%   Need to extract the ground truth for images frame by frame 
+%   Need to extract the GPS ground truth for images frame by frame 
 %       This will be added to our test bed for later use with TTC and
 %       trajectory estimation
-
-
-
 
