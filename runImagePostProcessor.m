@@ -1,10 +1,13 @@
-%videoPath = '/home/geoffrey/Dropbox/Temps/Design_Project/Feb_13_cam1_5.avi';
-videoPath = '/home/geoffrey/Dropbox/Temps/Design_Project/July_6_cam1_01.avi';
+filePath = 'testData/Feb_13_cam1_5.avi';
+%filePath = 'testData/July_6_cam1_01.avi';
+%filePath = 'testData/July_8_cam1_01.avi';
+%filePath = 'testData/July_8_cam1_08.avi';
+%filePath = 'testData/Oct_20_cam3_07.avi';
 
 % Instantiate the video reader
-v = VideoReader(videoPath);
+v = VideoReader(filePath);
 
-readRect = readrectxml(videoPath);
+readRect = readrectxml(filePath);
 
 for i=1:size(readRect,1)
     curRect = readRect(i,:);
@@ -25,5 +28,5 @@ for i=1:size(readRect,1)
     end
 end
 
-writerectxml(videoPath,readRect,'postProcess_')
+writerectxml(filePath,readRect,'postProcess_')
 

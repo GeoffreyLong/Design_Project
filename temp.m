@@ -8,9 +8,11 @@
 % Next up do an dx on the image matrix and a dy on the image matrix... 
 % Also heatmap for the gradient matrix
 
-filePath = '/home/geoffrey/Dropbox/Temps/Design_Project/testData/Feb_13_cam1_5.avi';
-%filePath = '/home/geoffrey/Dropbox/Temps/Design_Project/testData/July_6_cam1_01.avi';
-%filePath = '/home/geoffrey/Dropbox/Temps/Design_Project/testData/Oct_20_cam3_07.avi';
+filePath = 'testData/Feb_13_cam1_5.avi';
+%filePath = 'testData/July_6_cam1_01.avi';
+%filePath = 'testData/July_8_cam1_01.avi';
+%filePath = 'testData/July_8_cam1_08.avi';
+%filePath = 'testData/Oct_20_cam3_07.avi';
 
 BUFFER = 10;
 
@@ -25,7 +27,9 @@ nFrames = v.NumberOfFrames;
 for i = 1:nFrames
     image = read(v,i);
 
+    image(645:1190,2200:v.Width) = [0];
     
+    imshow(image)
 end
 
 %for i=[1 100 500 1000 1200 1500 2000]
