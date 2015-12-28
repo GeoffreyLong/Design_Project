@@ -1,6 +1,4 @@
 function [ rect ] = drawwithhelper( videoPath )
-%UNTITLED4 Summary of this function goes here
-%   Detailed explanation goes here
 %drawrectangles: This function returns bounded rectangles from images
 %   rect: A nx5 matrix where 
 %       n is the number of detections
