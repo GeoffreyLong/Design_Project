@@ -1,0 +1,23 @@
+Need to find the intrinsics file (Prosilica GC2450)
+Pixels (H x V) : 2448 x 2050 (by the data sheet)
+Pixel Size (H x V)(um) : 3.45 x 3.45 (by the data sheet)
+Focal Length: 12 mm (by the NRC)
+
+fx s x0
+0 fy y0
+0 0 1
+
+fx, fy = focal length (in pixels)
+    fx = Fx * w / W
+        where Fx is the focal length in mm
+            W is the mm width of the sensor
+            w is the image width in pixels
+        w / W is essentially the pixel size
+s = skew factor
+    Assumed 0
+x0, y0 = principal point offset
+    Assumed 0,0
+
+
+Vertical FOV 2*arctan(2448*3.45 /(2*12000)) = 38.77 degrees
+Horizontal FOV 2*arctan(2050*3.45 /(2*12000)) = 32.84 degrees

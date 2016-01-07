@@ -8,9 +8,10 @@
 % Next up do an dx on the image matrix and a dy on the image matrix... 
 % Also heatmap for the gradient matrix
 
-filePath = 'testData/Feb_13_cam1_5.avi';
+%filePath = 'testData/Feb_13_cam1_5.avi';
 %filePath = 'testData/July_6_cam1_01.avi';
 %filePath = 'testData/July_8_cam1_01.avi';
+filePath = 'testData/July_8_cam1_02.avi';
 %filePath = 'testData/July_8_cam1_08.avi';
 %filePath = 'testData/Oct_20_cam3_07.avi';
 
@@ -20,15 +21,21 @@ BUFFER = 10;
 v = VideoReader(filePath);
 readRect = readrectxml(filePath);
 
+
 % Get the number of frames, frame width, and frame height from the video data
 nFrames = v.NumberOfFrames;
-% 
 
-for i = 1:nFrames
+[host, target] = getdetailedsrt(filePath, nFrames);
+
+
+
+for i = 1:20:nFrames
     image = read(v,i);
-
-    image(645:1190,2200:v.Width) = [0];
+    hostTemp = host(i,:)
+    horizLine = estimatehorizon(hostTemp);
     
+    image(v.Height/2:v.Height, v.Width/2:v.Width) = [0];
+    % image(645:1190,2200:v.Width) = [0];
     imshow(image)
 end
 
