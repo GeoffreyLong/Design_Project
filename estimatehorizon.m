@@ -19,7 +19,7 @@ horizDist = sqrt(aircraftAlt^2 - earthRadius^2);
 
 centralAngle = acos(earthRadius / aircraftAlt);
 pDist = tan(centralAngle) * aircraftAlt; % ? what is this ?
-angleToHoriz = acos(horizDist / pDist) * (180/pi) - pitch
+angleToHoriz = acos(horizDist / pDist) - (pitch * (3.14159/180))
 
 % This angleToHoriz doesn't seem 100% correct
 
@@ -27,7 +27,10 @@ angleToHoriz = acos(horizDist / pDist) * (180/pi) - pitch
 %   where f is the focal length in mm, and sensorHeight is also in mm
 %   f*tan(angleToHoriz) should give the distance off center of the horizon
 %   on the image plane
+% hardcoded the values for height (2050) and size of a pixel (3.45*10^-3)
+locationOnPlane = -(12 * tan(angleToHoriz)) / (3.45e-3 * 2050) * 2050 + 2050/2
 
+horizLine = ceil(locationOnPlane);
 
 end
 

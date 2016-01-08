@@ -29,12 +29,12 @@ nFrames = v.NumberOfFrames;
 
 
 
-for i = 1:20:nFrames
+for i = 1:nFrames
     image = read(v,i);
     hostTemp = host(i,:)
     horizLine = estimatehorizon(hostTemp);
     
-    image(v.Height/2:v.Height, v.Width/2:v.Width) = [0];
+    image(horizLine:v.Height, v.Width/2:v.Width) = [0];
     % image(645:1190,2200:v.Width) = [0];
     imshow(image)
 end
