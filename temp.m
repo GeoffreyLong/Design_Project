@@ -11,7 +11,9 @@
 %filePath = 'testData/Feb_13_cam1_5.avi';
 %filePath = 'testData/July_6_cam1_01.avi';
 %filePath = 'testData/July_8_cam1_01.avi';
-filePath = 'testData/July_8_cam1_02.avi';
+%filePath = 'testData/July_8_cam1_02.avi';
+filePath = 'testData/July_8_cam1_03.avi';
+%filePath = 'testData/July_8_cam1_04.avi';
 %filePath = 'testData/July_8_cam1_08.avi';
 %filePath = 'testData/Oct_20_cam3_07.avi';
 
@@ -32,11 +34,13 @@ nFrames = v.NumberOfFrames;
 for i = 1:nFrames
     image = read(v,i);
     hostTemp = host(i,:)
-    horizLine = estimatehorizon(hostTemp);
+    [x,y] = estimatehorizon(hostTemp);
     
-    image(horizLine:v.Height, v.Width/2:v.Width) = [0];
+    image(horizLine:v.Height, 3*v.Width/4:v.Width) = [0];
+    image(v.height/2:v.Height, v.Width/2:3*v.Width/4) = [0];
     % image(645:1190,2200:v.Width) = [0];
     imshow(image)
+    line(x,y)
 end
 
 %for i=[1 100 500 1000 1200 1500 2000]

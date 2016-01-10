@@ -1,4 +1,4 @@
-function [ horizLine ] = estimatehorizon( host )
+function [ x, y ] = estimatehorizon( host )
 %estimatehorizon: Will estimate the position of the horizon line
 %   horizLine: a line equation denoting the possible location of the horizon
 %   host: A vector denoting the host aircraft information formatted as follows
@@ -8,6 +8,9 @@ function [ horizLine ] = estimatehorizon( host )
 
 % Might be improved with information of the elevation of the ground 
 %   (if the altitude isn't from sea level, which it probably is)
+height = 2050;
+width = 2448;
+pi = 3.14159;
 
 altitude = host(2);
 pitch = host(3);
@@ -19,7 +22,7 @@ horizDist = sqrt(aircraftAlt^2 - earthRadius^2);
 
 centralAngle = acos(earthRadius / aircraftAlt);
 pDist = tan(centralAngle) * aircraftAlt; % ? what is this ?
-angleToHoriz = acos(horizDist / pDist) - (pitch * (3.14159/180))
+angleToHoriz = 1.5*pi*acos(horizDist / pDist) - (pitch * (pi/180)); % Added 1.5pi seems to help
 
 % This angleToHoriz doesn't seem 100% correct
 
@@ -28,9 +31,14 @@ angleToHoriz = acos(horizDist / pDist) - (pitch * (3.14159/180))
 %   f*tan(angleToHoriz) should give the distance off center of the horizon
 %   on the image plane
 % hardcoded the values for height (2050) and size of a pixel (3.45*10^-3)
-locationOnPlane = -(12 * tan(angleToHoriz)) / (3.45e-3 * 2050) * 2050 + 2050/2
+verticalLocation = -(12 * tan(angleToHoriz)) / (3.45e-3 * height) * height + height/2;
 
-horizLine = ceil(locationOnPlane);
+% Roll is positive wrt slope
+x = [0, width];
+verticalOffset = width/2 * tand(roll);
+y = [verticalLocation + verticalOffset, verticalLocation - verticalOffset]
+
+horizLine = ceil(verticalLocation);
 
 end
 
