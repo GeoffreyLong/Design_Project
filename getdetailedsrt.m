@@ -17,7 +17,7 @@ target = zeros(nFrames, 4);
 line = fgetl(fileID);
 frameNo = 0;
 while(ischar(line))
-    tokens = strsplit(line, {' ','-',':'}, 'CollapseDelimiters', true);
+    tokens = strsplit(line, {' ',':'}, 'CollapseDelimiters', true);
     if (size(tokens) == 1)
         frameNo = str2num(strjoin(tokens));
         if (frameNo)
