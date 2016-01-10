@@ -33,6 +33,8 @@ nFrames = v.NumberOfFrames;
 
 for i = 1:nFrames
     image = read(v,i);
+    
+    
     hostTemp = host(i,:)
     [x,y] = estimatehorizon(hostTemp);
     

@@ -22,7 +22,9 @@ horizDist = sqrt(aircraftAlt^2 - earthRadius^2);
 
 centralAngle = acos(earthRadius / aircraftAlt);
 pDist = tan(centralAngle) * aircraftAlt; % ? what is this ?
-angleToHoriz = 1.5*pi*acos(horizDist / pDist) - (pitch * (pi/180)); % Added 1.5pi seems to help
+%TODO fix the 1.5*pi addition, shouldn't have to make that adjustment
+% Perhaps the camera wasn't set correctly
+angleToHoriz = 1.5*pi*acos(horizDist / pDist) - (pitch * (pi/180)); 
 
 % This angleToHoriz doesn't seem 100% correct
 
@@ -36,9 +38,6 @@ verticalLocation = -(12 * tan(angleToHoriz)) / (3.45e-3 * height) * height + hei
 % Roll is positive wrt slope
 x = [0, width];
 verticalOffset = width/2 * tand(roll);
-y = [verticalLocation + verticalOffset, verticalLocation - verticalOffset]
-
-horizLine = ceil(verticalLocation);
+y = [verticalLocation + verticalOffset, verticalLocation - verticalOffset];
 
 end
-
