@@ -35,14 +35,18 @@ for i = 1:nFrames
     image = read(v,i);
     
     
-    hostTemp = host(i,:)
-    [x,y] = estimatehorizon(hostTemp);
+    hostTemp = host(i,:);
+    [horizX,horizY] = estimatehorizon(hostTemp);
     
-    image(horizLine:v.Height, 3*v.Width/4:v.Width) = [0];
-    image(v.height/2:v.Height, v.Width/2:3*v.Width/4) = [0];
-    % image(645:1190,2200:v.Width) = [0];
+    targetTemp = target(i,:);
+    rect = estimateplanelocation(targetTemp)
+    image = insertShape(image, 'Rectangle', rect, 'LineWidth', 5, 'color', 'yellow');
+    %TODO need to adjust this rectangle so that it follows with the
+    % adjusted horizon (the 1.5pi adjustment)
+    
+    hold on;
     imshow(image)
-    line(x,y)
+    line(horizX,horizY)
 end
 
 %for i=[1 100 500 1000 1200 1500 2000]
