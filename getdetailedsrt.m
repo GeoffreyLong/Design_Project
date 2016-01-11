@@ -17,7 +17,7 @@ target = zeros(nFrames, 4);
 line = fgetl(fileID);
 frameNo = 0;
 while(ischar(line))
-    tokens = strsplit(line, {' ',':'}, 'CollapseDelimiters', true);
+    tokens = strsplit(line, {' ',':','->'}, 'CollapseDelimiters', true);
     if (size(tokens) == 1)
         frameNo = str2num(strjoin(tokens));
         if (frameNo)
@@ -25,17 +25,17 @@ while(ischar(line))
             target(frameNo,1) = frameNo;
         end
     elseif (strcmp(tokens{1}, 'Host'))
-        if (strcmp(tokens{3}, 'Altitude'))
-            host(frameNo,2) = (str2num(tokens{5}) + str2num(tokens{9})) / 2.0;            
-        elseif (strcmp(tokens{3}, 'Pitch'))
-            host(frameNo,3) = str2num(tokens{4});
-            host(frameNo,4) = str2num(tokens{7});
-            host(frameNo,5) = str2num(tokens{10});
+        if (strcmp(tokens{2}, 'Altitude'))
+            host(frameNo,2) = (str2num(tokens{4}) + str2num(tokens{8})) / 2.0;            
+        elseif (strcmp(tokens{2}, 'Pitch'))
+            host(frameNo,3) = str2num(tokens{3});
+            host(frameNo,4) = str2num(tokens{6});
+            host(frameNo,5) = str2num(tokens{9});
         end
     elseif (strcmp(tokens{1}, 'Target'))
-        target(frameNo,2) = str2num(tokens{4});
-        target(frameNo,3) = str2num(tokens{7});
-        target(frameNo,4) = str2num(tokens{10});
+        target(frameNo,2) = str2num(tokens{3});
+        target(frameNo,3) = str2num(tokens{6});
+        target(frameNo,4) = str2num(tokens{9});
     end
     line = fgetl(fileID);
 end
