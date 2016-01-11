@@ -49,6 +49,8 @@ nClicks = 0;
 nFrameSkip = 0;
 nSkips = 0;
 
+croppedRect = [0,0,v.Width,v.Height];
+
 % Iterate through the image frames
 for i = 1:nFrames
     % Skip a set number of frames
@@ -73,7 +75,7 @@ for i = 1:nFrames
                 tmpIdx = 1;
 
                 while (readIdx <= maxRectIdx && readRect(readIdx,1) == i)
-                    tmpRects(tmpIdx, :) = [readRect(readIdx,2) readRect(readIdx,3) readRect(readIdx,4) readRect(readIdx,5)];
+                    tmpRects(tmpIdx, :) = [readRect(readIdx,2)-croppedRect(1) readRect(readIdx,3)-croppedRect(2) readRect(readIdx,4) readRect(readIdx,5)];
                     readIdx = readIdx + 1;
                     tmpIdx = tmpIdx + 1;
                 end
@@ -82,7 +84,8 @@ for i = 1:nFrames
                 video = insertShape(video, 'Rectangle', tmpRects, 'LineWidth', 5);
             end
             
-            imshow(video);
+            newImg = imcrop(video,croppedRect);
+            imshow(newImg);
             imgTitle = sprintf('frame %d of %d', i, nFrames);
             title(imgTitle);
 
@@ -118,6 +121,9 @@ for i = 1:nFrames
                 
                 % This is a valid selection, so add it to the rectangle array
                 % pair it with the frame number as first index of row
+                
+                curRect(1) = croppedRect(1) + curRect(1);
+                curRect(2) = croppedRect(2) + curRect(2);
                 rect(i,:) = [i curRect];            
             end
         catch
