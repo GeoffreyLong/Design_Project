@@ -21,7 +21,7 @@ lastHorizon = [horizX(1) horizY(1) horizX(2) horizY(2)];
 for i = 1:nFrames
     image = read(v,i);
     imshow(image);    
-    [sky, terrain, lastHorizon] = segmentsky10(image, lastHorizon);
+    [sky, terrain, lastHorizon] = segmentsky10(image, lastHorizon, host(4));
     
     line([lastHorizon(1) lastHorizon(3)], [lastHorizon(2) lastHorizon(4)]);
 end

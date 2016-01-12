@@ -1,4 +1,4 @@
-function [ sky, terrain, horizon ] = segmentsky10( image, lastHorizon )
+function [ sky, terrain, horizon ] = segmentsky10( image, lastHorizon, roll )
 %UNTITLED Based on the Hough transform
 %   Detailed explanation goes here
 % lastHorizon: a line in the form [x1 y1 x2 y2]
@@ -26,27 +26,34 @@ image = imresize(image, SCALE);
 bw = edge(image, 'canny', [], 1);
 bw = bwmorph(bw,'dilate',1);
 
-% TODO constrain between -90:0.5:-45 and 45:0.5:89
-% Do it in hough(bw, 'Theta', ____)
+% Could constrain between a certain angle offset of the roll via hough(bw, 'Theta', ____)
+% This might be tedious though since I would need two different hough
+% transforms for the different ranges (for horizontal lines)
+% Also there is a hough implementation with FillGap I believe
 [H,theta,rho] = hough(bw);
-peaks  = houghpeaks(H,5);
+peaks  = houghpeaks(H,10);
 lines = houghlines(bw,theta,rho,peaks);
 
 % dummy value
 minNormal = 10000000;
 
-
+%imshow(image)
+%hold on;
 for k = 1:numel(lines)
     x1 = lines(k).point1(1);
     y1 = lines(k).point1(2);
     x2 = lines(k).point2(1);
     y2 = lines(k).point2(2);
-    % lines(k)
+    theta = lines(k).theta;
+    if (theta < 0)
+        theta = -(theta + 90);
+    else
+        theta = -(theta - 90);
+    end
+    theta
     
-    %TODO will not work if horizon line doesn't touch both sides of image
-    % Alternatively we could also compare the area covered to see if they
-    % are similar... that might be better...
-    % Would need a better way of binarizing image below line though
+    %line([x1,x2], [y1,y2]);
+    
     slope = (y2-y1) / (x2-x1);
     if x1 ~=0
         y1 = y1 - (x1 - 0) * slope;
@@ -61,7 +68,8 @@ for k = 1:numel(lines)
     
     temporaryHorizon = [0 y1/SCALE 2448 y2/SCALE];
 
-    horizNormal = norm(lastHorizon - temporaryHorizon);
+    %100 arbitrary scale to make angle slightly more important than location
+    horizNormal = norm(lastHorizon - temporaryHorizon) + 25*abs(roll-theta);
     
     if horizNormal < minNormal
         horizon = temporaryHorizon
