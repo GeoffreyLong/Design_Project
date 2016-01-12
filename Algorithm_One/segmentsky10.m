@@ -17,7 +17,8 @@ SCALE = 0.1;
 
 if nargin < 2
     %TODO finish horizonseed
-    lastHorizon = horizonseed(image);
+    % lastHorizon = horizonseed(image);
+    lastHorizon = [0 0 0 0]
 end
 
 image = imresize(image, SCALE);
@@ -34,19 +35,18 @@ lines = houghlines(bw,theta,rho,peaks);
 % dummy value
 minNormal = 10000000;
 
-imshow(bw)
-hold on
+
 for k = 1:numel(lines)
     x1 = lines(k).point1(1);
     y1 = lines(k).point1(2);
     x2 = lines(k).point2(1);
     y2 = lines(k).point2(2);
+    % lines(k)
     
     %TODO will not work if horizon line doesn't touch both sides of image
     % Alternatively we could also compare the area covered to see if they
     % are similar... that might be better...
     % Would need a better way of binarizing image below line though
-
     slope = (y2-y1) / (x2-x1);
     if x1 ~=0
         y1 = y1 - (x1 - 0) * slope;
@@ -59,15 +59,18 @@ for k = 1:numel(lines)
         y2 = (x2 - x2old) * slope + y2;
     end
     
-    temporaryHorizon = [x1/SCALE y1/SCALE x2/SCALE y2/SCALE];
+    temporaryHorizon = [0 y1/SCALE 2448 y2/SCALE];
 
     horizNormal = norm(lastHorizon - temporaryHorizon);
     
     if horizNormal < minNormal
-        horizon = temporaryHorizon;
+        horizon = temporaryHorizon
+        minNormal = horizNormal;
     end
 end
 
+sky = 0;
+terrain = 0;
 %TODO return a mask
 % To make the sky will want to make the x,y under the line = 0 and all
 % above = 1. For the terrain just do the opposite of sky

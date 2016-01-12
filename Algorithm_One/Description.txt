@@ -1,0 +1,4 @@
+This is the initial type of algorithm. It involves the following flow:
+	- Find the horizon
+	- Split the image based on the horizon
+	- Apply detection on both segments separately
