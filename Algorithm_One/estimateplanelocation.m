@@ -8,6 +8,9 @@ function [ rect ] = estimateplanelocation( target, host )
 %       [x Position, y Position, width, height]
 
 
+%TODO update the estimate plane location to work with the estimated horizon
+%TODO check equations
+
 height = 2050;
 width = 2448;
 planeSize = 6; % Rough guess of target size in meters

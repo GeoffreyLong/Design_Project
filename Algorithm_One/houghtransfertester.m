@@ -23,5 +23,9 @@ for i = 1:nFrames
     imshow(image);    
     [sky, terrain, lastHorizon] = segmentsky10(image, lastHorizon, host(4));
     
+    [horizX, horizY] = estimatehorizon(host(i,:));
+    estimatedHorizon = [horizX(1) horizY(1) horizX(2) horizY(2)];
+    lastHorizon = (estimatedHorizon + lastHorizon) / 2;
+    
     line([lastHorizon(1) lastHorizon(3)], [lastHorizon(2) lastHorizon(4)]);
 end
