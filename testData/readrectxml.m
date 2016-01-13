@@ -1,4 +1,4 @@
-function [ rect ] = readrectxml( videoPath )
+function [ rect ] = readrectxml( videoPath, addString )
 %readrectxml: Will read a previously saved rectangles array for a given video
 %   rect: A nx5 matrix where 
 %       n is the number of detections
@@ -10,12 +10,16 @@ function [ rect ] = readrectxml( videoPath )
 %   Please note that the name of the video path should be kept consistent
 %       If it is not kept consisitent then we can run into data issues
 
+if nargin < 2
+    addString = '';
+end
+
 % Split the filepath so that it does not contain ".mp4"
 % videoPathTokens = strsplit(videoPath,'.');
 videoPathTokens = strread(videoPath,'%s','delimiter','/');
 filePath = videoPathTokens(length(videoPathTokens));
 fileName = char(filePath);
-fileName = strcat('testData/Generated_Detections/', fileName, '.dat');
+fileName = strcat('testData/Generated_Detections/', addString, fileName, '.dat');
 
 try
     rect = csvread(fileName);
