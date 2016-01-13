@@ -24,14 +24,12 @@ for i=1:size(readRect,1)
     close = imclose(newImg,se); 
     im = close - open;
 
-    
-    %newRect = ceil(getrect);
-    
     bw = im2bw(im, graythresh(im));
     L = bwlabel(bw);
+    
+    % There are a lot of cool regionprops that could be useful
+    % Particularly userprops
     s = regionprops(L,'BoundingBox', 'Centroid');
-    %imshow(bw)
-    rect = zeros(numel(s),5);
 
     bound = [0 0 0 0];
     largestObjSize = 0;
@@ -67,5 +65,7 @@ for i=1:size(readRect,1)
     end
 end
 
-writerectxml(filePath,newRect,'postProcess_')
-
+addString = 'postProcess_';
+readRect = readrectxml(filePath,addString);
+writeRect = averagerects(newRect,readRect);
+writerectxml(filePath,writeRect,addString)
