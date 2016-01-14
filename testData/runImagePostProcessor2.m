@@ -7,6 +7,13 @@ filePath = 'testData/Feb_13_cam1_5.avi';
 %filePath = 'testData/July_8_cam1_08.avi';
 %filePath = 'testData/Oct_20_cam3_07.avi';
 
+%TODO an even better way to do the sizing of the rectangles
+%   Would be to do a sort of moving average
+%   The rectangle size shouldn't change too much frame to frame
+%   so a moving average should smooth out the size differences
+%   This should ensure that the plane doesn't vary too much in size 
+%   with respects to its boundaries
+
 % Instantiate the video reader
 v = VideoReader(filePath);
 
@@ -23,6 +30,7 @@ for i=1:size(readRect,1)
     open = imopen(newImg,se);
     close = imclose(newImg,se); 
     im = close - open;
+    im = imdilate(im,se);
 
     bw = im2bw(im, graythresh(im));
     L = bwlabel(bw);
