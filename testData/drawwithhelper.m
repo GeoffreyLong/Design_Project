@@ -49,7 +49,8 @@ nClicks = 0;
 nFrameSkip = 0;
 nSkips = 0;
 
-croppedRect = [0,0,v.Width,v.Height];
+%croppedRect = [0,0,v.Width,v.Height];
+croppedRect = [0,1300,1100,500];
 
 % Iterate through the image frames
 for i = 1:nFrames
