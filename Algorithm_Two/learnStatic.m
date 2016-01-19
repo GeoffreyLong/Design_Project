@@ -1,3 +1,5 @@
+% The goal of this is to "learn" the static data from the "truth" images
+
 VISUALIZE = 0;
 
 imagefiles = dir('/home/geoffrey/Dropbox/Temps/Design_Project/testData/Generated_Detections/truth_images/*.png');
