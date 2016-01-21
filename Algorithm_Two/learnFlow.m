@@ -12,3 +12,11 @@
 % It is possible that this will allow us to remove ego motion from the
 %   motion of the features though, which will allow us to estimate the
 %   trajectory of the plane
+% It would be best if we could learn what a 
+%   combination of window location and camera motion does to the local
+%   image flow... i.e. learn what adjustments need to be made in each scenario
+%   to account for the ego motion
+
+
+%TODO possibly rename this file, I don't know if this is the right name
+% It is more like learning the camera intrinsics and ego motion better
