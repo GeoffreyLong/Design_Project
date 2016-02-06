@@ -12,41 +12,49 @@
 %filePath = 'testData/July_6_cam1_01.avi';
 %filePath = 'testData/July_8_cam1_01.avi';
 %filePath = 'testData/July_8_cam1_02.avi';
-filePath = 'testData/July_8_cam1_03.avi';
+% filePath = 'testData/July_8_cam1_03.avi';
 %filePath = 'testData/July_8_cam1_04.avi';
 %filePath = 'testData/July_8_cam1_08.avi';
 %filePath = 'testData/Oct_20_cam3_07.avi';
-
+filePath = 'testData/cam3_05.avi';
 BUFFER = 10;
 
 % Instantiate the video reader
 v = VideoReader(filePath);
-readRect = readrectxml(filePath);
+% readRect = readrectxml(filePath);
 
 
 % Get the number of frames, frame width, and frame height from the video data
 nFrames = v.NumberOfFrames;
 
-[host, target] = getdetailedsrt(filePath, nFrames);
+% [host, target] = getdetailedsrt(filePath, nFrames);
 
 
 
 for i = 1:nFrames
     image = read(v,i);
+    figure
+%     data = imread('peppers.png');
+    imshow(image)
+    s = size(image);
+    hold on
+    [x,y] = meshgrid(1:50:s(2),1:50:s(1));
+    px = cos(x);
+    py = sin(y);
+    quiver(x,y,px,py)
     
+%     hostTemp = host(i,:);
+%     [horizX,horizY] = estimatehorizon(hostTemp);
     
-    hostTemp = host(i,:);
-    [horizX,horizY] = estimatehorizon(hostTemp);
-    
-    targetTemp = target(i,:);
-    rect = estimateplanelocation(targetTemp)
-    image = insertShape(image, 'Rectangle', rect, 'LineWidth', 5, 'color', 'yellow');
+%     targetTemp = target(i,:);
+%     rect = estimateplanelocation(targetTemp)
+%     image = insertShape(image, 'Rectangle', rect, 'LineWidth', 5, 'color', 'yellow');
     %TODO need to adjust this rectangle so that it follows with the
     % adjusted horizon (the 1.5pi adjustment)
     
-    hold on;
-    imshow(image)
-    line(horizX,horizY)
+%     hold on;
+%     imshow(image)
+%     line(horizX,horizY)
 end
 
 %for i=[1 100 500 1000 1200 1500 2000]
