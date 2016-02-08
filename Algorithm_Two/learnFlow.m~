@@ -27,13 +27,13 @@ opticalFlow = vision.OpticalFlow;
 
 % load one image to perform operation on
 %image is 650x600 pixles (y vs x)
-curImage = read(v,0); 
+curImage = read(v,1); 
 
 
 % rectangle = int32([10 10 30 30]); %[x y width height]
-rectWidth = 100; %rectangle width well be ... pixels
-rectHeight = 100; %rect height well be ... pixels
-numRects = 4;
+rectWidth = 24; %rectangle width well be ... pixels
+rectHeight = 24; %rect height well be ... pixels
+numRects = 20;
 
 % Initiate search at top left corner of image
 x_pixel = 0;
@@ -41,12 +41,20 @@ y_pixel = 0;
 rectArray = [];
 
 for j = 1:numRects
-    x_pixel = x_pixel + 10;
-    y_pixel = y_pixel + 10;
-    rectArray = [rectArray; [x_pixel y_pixel rectWidth rectHeight] ];
+    
+    for k = 1:numRects
+        % for now just draw rectangle to simulate search area
+        rectArray = [rectArray; [x_pixel y_pixel rectWidth rectHeight] ];
+        rectangle = insertShape(curImage, 'Rectangle', rectArray, 'LineWidth', 5);
+        imshow(rectangle);
+        x_pixel = x_pixel + 100;
+    end
+    y_pixel = y_pixel + 100;
+    x_pixel = 0;
+   
+    
 end
-rectangle = insertShape(curImage, 'Rectangle', rectArray, 'LineWidth', 5);
-imshow(rectangle);
+
 
 
 %     curImage = im2double(curImage);

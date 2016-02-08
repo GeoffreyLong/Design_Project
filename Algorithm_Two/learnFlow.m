@@ -23,6 +23,10 @@ v = VideoReader('/Users/Xavier/Documents/workspace/Design_Project/Algorithm_Two/
 % Get the number of frames, frame width, and frame height from the video data
 nFrames = v.NumberOfFrames;
     
+
+% Get SRT data
+srt = getdetailedsrt('/Users/Xavier/Documents/workspace/Design_Project/Algorithm_Two/cam3_05.srt',1);
+disp(srt);
 opticalFlow = vision.OpticalFlow;
 
 % load one image to perform operation on
@@ -31,9 +35,9 @@ curImage = read(v,1);
 
 
 % rectangle = int32([10 10 30 30]); %[x y width height]
-rectWidth = 500; %rectangle width well be ... pixels
-rectHeight = 500; %rect height well be ... pixels
-numRects = 20;
+rectWidth = 24; %rectangle width well be ... pixels
+rectHeight = 24; %rect height well be ... pixels
+numRects = 25; %600/24=25
 
 % Initiate search at top left corner of image
 x_pixel = 0;
