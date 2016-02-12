@@ -1,6 +1,17 @@
-addpath(genpath('./resources'));
+%filePath = 'testData/Feb_13_cam1_5.avi';
+%filePath = 'testData/July_6_cam1_01.avi';
+%filePath = 'testData/July_8_cam1_01.avi';
+filePath = 'testData/July_8_cam1_02.avi';
+%filePath = 'testData/July_8_cam1_03.avi';
+%filePath = 'testData/July_8_cam1_04.avi';
+%filePath = 'testData/July_8_cam1_08.avi';
+%filePath = 'testData/Oct_20_cam3_07.avi';
+
+
 % Instantiate the video reader
-v = VideoReader('/home/geoffrey/Dropbox/Temps/Design_Project/Feb_13_cam1_5.avi');
+v = VideoReader(filePath);
+readRect = readrectxml(filePath);
+
 
 % Get the number of frames, frame width, and frame height from the video data
 nFrames = v.NumberOfFrames;
@@ -12,9 +23,9 @@ for i = 1:nFrames
     curImage = im2double(curImage);
     V = step(opticalFlow, curImage);
     
-    %new = V(:,:) >= 0.0100;
-    %imshow(new);
+    new = V(:,:) >= 0.0100;
+    imshow(new);
     
-    imshow(V);
+    %imshow(V);
 end
 
