@@ -18,46 +18,94 @@
 %   to account for the ego motion
 
 % Instantiate the video reader
-v = VideoReader('/Users/Xavier/Documents/workspace/Design_Project/Algorithm_Two/cam3_05.avi');
+v = VideoReader('/Users/Xavier/Documents/workspace/Design_Project/Algorithm_Two/cam1_01.avi');
 
 % Get the number of frames, frame width, and frame height from the video data
 nFrames = v.NumberOfFrames;
     
 
 % Get SRT data
-srt = getdetailedsrt('/Users/Xavier/Documents/workspace/Design_Project/Algorithm_Two/cam3_05.srt',1);
-disp(srt);
-opticalFlow = vision.OpticalFlow;
+% srt call should go in a sepertae file, should just pass in row of data
+% related to frame of interest
+srt = getdetailedsrt('/Users/Xavier/Documents/workspace/Design_Project/testData/July_6_cam1_01.srt',nFrames);
+% get data from row of interest
+% srtData = srt(1,:); % [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
+% roll is rotation around the middle of the plane (twist)
+% roll = srtData(4);
+% pitch is rotation around center of gravity (flip)
+% pitch = srtData(3);
+% disp(srtData)
+% disp(roll);
+% disp(pitch);
+
 
 % load one image to perform operation on
 %image is 650x600 pixles (y vs x)
-curImage = read(v,1); 
-
-
+% curImage = read(v,1); 
+% 
+% % compensation equations
+% 
+% rollImage = imrotate(curImage, -roll, 'crop');
+% C = imfuse(curImage,rollImage);
+% imshow(C);
 % rectangle = int32([10 10 30 30]); %[x y width height]
 rectWidth = 24; %rectangle width well be ... pixels
 rectHeight = 24; %rect height well be ... pixels
-numRects = 25; %600/24=25
+numRects = v.Width/rectWidth; %600/24=25
 
 % Initiate search at top left corner of image
 x_pixel = 0;
 y_pixel = 0;
 rectArray = [];
 
-for j = 1:numRects
+for i = 1800:nFrames
     
-    for k = 1:numRects
-        % for now just draw rectangle to simulate search area
-        rectArray = [rectArray; [x_pixel y_pixel rectWidth rectHeight] ];
-        rectangle = insertShape(curImage, 'Rectangle', rectArray, 'LineWidth', 5);
-        imshow(rectangle);
-        x_pixel = x_pixel + 100;
-    end
-    y_pixel = y_pixel + 100;
-    x_pixel = 0;
-   
+    % get data from row of interest
+    srtData = srt(i,:); % [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
+    % roll is rotation around the middle of the plane (twist)
+    roll = srtData(4);
+    % pitch is rotation around center of gravity (flip)
+    pitch = srtData(3);
+    yaw = 0;
+    dcm = angle2dcm( yaw, pitch, roll );% returns 3x3 matrix
+%     https://en.wikipedia.org/wiki/Rotation_formalisms_in_three_dimensions
+   % dcm row 1
+   %[cos(yaw)*cos(pitch), cos(roll)]
+    % do we convolute?
+    curImage = read(v,i); 
+    % compensation equations
+    if i~=1800
+        compImage = imwarp(curImage,dcm);
+        %rollImage = imrotate(curImage, -roll, 'crop');
+        diffImage = imabsdiff(compImage,pastImage);
+        
+        % To do: translation motion
+        
+        imshow(diffImage);
+        pastImage = curImage;
+%     C = imfuse(curImage,rollImage);
+       
+    else
+        rollImage = imrotate(curImage, -roll, 'crop');
+        pastImage = curImage;
+    end    
+    
     
 end
+% for j = 1:numRects
+%     
+%     for k = 1:numRects
+%         % for now just draw rectangle to simulate search area
+%         rectArray = [rectArray; [x_pixel y_pixel rectWidth rectHeight] ];
+%         rectangle = insertShape(curImage, 'Rectangle', rectArray, 'LineWidth', 5);
+%         imshow(rectangle);
+%         x_pixel = x_pixel + rectWidth;
+%     end
+%     y_pixel = y_pixel + rectHeight;
+%     x_pixel = 0;
+%    
+%     
+% end
 
 
 
