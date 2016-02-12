@@ -1,0 +1,140 @@
+%TODO
+%   Test some of the stock CNNs using approach 2 for the aircraft
+%       Test and evaluate
+%   Run my own CNN learning for the images I have so far (only "plane")
+%       Test and evaluate
+%   Gather new data (images) from the roll compensated images
+%   Run the CNN again 
+%       Test and evaluate
+%   Split the data into "helicopter" vs "plane"
+%       Test and evaluate
+%   Further segment into the different approaches (i.e. headon vs not)
+
+% Note that it would be best to train the system on bounding boxes (image
+% regions) that were gathered using what Xavier is working on. For now, we
+% can just do it by the 
+
+%%%%%%% Mathworks DeepLearning Webinar %%%%%%%
+%http://www.mathworks.com/videos/deep-learning-for-computer-vision-with-matlab-116080.html?form_seq=conf672&elqsid=1455244847228&potential_use=Education&country_code=CA
+% Deep learning is an ML technique that can learn useful representations
+%   of features directly from images, text, and sound
+% Traditional ML approaches force you to do manual feature extraction
+%   They ignore the structure and compositional nature of an image
+% Deep learning will use conv neural networks (CNN)
+%   The features are learned from generic low level features (edges /
+%   corners to problem specific features (in later layers)
+%   Eliminates need for manual feature extraction, enables end to end learning
+%   Can do both detection and classification
+
+% To train throw in the sample images and labels
+% 1st approach: Training your own CNN... recommended only when
+%   1) If you have 1000s to millions of labelled images
+%   2) You have good computers (requires GPU)
+%   3) You have lots of time (days to weeks for real problems)
+%   4) You require high model accuracy (can fit over small datasets)
+%       CNNs tend to overfit to small datasets (not lots of samples) due to their flexible nature
+%       If small datasets then second approach is recommended
+
+% 2nd approach: Use a pretrained CNN as an automatic feature extractor
+%   Referred to as transfer learning
+%   1) Need 100s to 1000s of labelled images
+%   2) Moderate computation needed (GPU optional)
+%   3) Training time is on the order of seconds to minutes
+%   4) Model accuracy is good, but dependent on how similar the pretrained
+%   CNN model is to ours.
+
+% What is feature extraction?
+%   Process of extracting discriminitive information from an image in a
+%   reduced form that is sometimes known as a feature vector. 
+%   Most popular is color, HOG, or edges
+%   They are used to provide a robust representation (invariant to lighting
+%   and orientation).
+
+% Challenges for using Deep Learning for CV
+%   You have to manage large sets of images
+%   Requires knowledge of how GPUs work
+%   CNNs don't effectively detect or segment the image
+%   You will likely have to try several ideas (iterations) before it works
+
+% An example using the 2nd approach
+%   Overview: Train an svm or logistic regression on the output of a CNN to
+%   detect a classifier to distinguish dogs vs cats
+
+% Label the image (not bounded box)
+% cnnModel.net = load('<theNet>.mat');
+% img = imread('image');
+% label = cnnPredict(cnnModel,img,'display',false);
+% title(label,'FontSize',20);
+
+% Want to create a folder called "pet_images" then subfolders of "cat" and "dog"
+% imset = imageSet('pet_images', 'recursive');
+%   This will label the images for us
+%   Doesn't load all at once (good for mem)
+
+
+% cnnModel.info.opts.batchSize = 200;
+%   Depends on the GPU mem
+
+% GPU vs non GPU options
+% [~, cnnFeatures, timeCPU] = cnnPredict(cnnModel,trainingImages,'UseGPU',false);
+% [~, cnnFeatures, timeCPU] = cnnPredict(cnnModel,trainingImages,'UseGPU',true);
+% Train shallow (traditional) classifier using features
+%DL classification learner app from ML toolbox
+%   This allows you to train and compare multiple approaches (looks dope)
+%   Docs give a "choose a classifier" doc which looks good (READ)
+% cnnFeaturesTable = array2table(cnnFeatures);
+% cnnFeaturesTable.labels = trainingLabels;
+
+
+% The drawback with CNN and detection is that it is slow
+%   Even moving window approach with CNN is slow 
+
+% Check out the object detection documentation
+
+% For this specific task (dogs and cats) the camera is relatively still
+%   while the animal is moving
+%   So they use optical flow in order to find the object in question
+%   The documentation has a good image on flows
+% opticFlow = opticalFlowFarneback;
+% flow = estimateFlow(opticalFlow,frameGray);
+% while ~isDone(vidReader)
+%   frameRGB = step(vidReader);
+%   frameGray = rgb2gray(frameRGB);
+%   flow = estimateFlow(opticFlow, frameGray);
+%   imshow(frameRGB);
+%   hold on
+%   plot(flow,'DecimationFactor',[10 10],'ScaleFactor',2)
+%   hold off
+%   drawnow
+% end
+
+% Good for showing the distribution of motion
+% imshow(flow.Magnitude,[]);colormap jet
+
+% To threshold out low mags
+% threshImage = (flow.Magnitude > 4); 
+
+% There is a MatLab App for image region analysis
+%   This looks like imageprops
+%   You can run manipulations like "fill" though 
+%   You can then export functions
+% Essentially the script will apply a region analysis to filter out noise
+% then it will use filterRegions to get the regions and pass the bounding
+% box (imageprops another way to do this)
+% This box is passed back to the main fn and the orignal image is cropped
+% around the bounding box with imresize
+%   for ii = 1:size(bboxes,1)
+%       img(:,:,:,ii) = imresize(imcrop(videoFrame,bboxes(ii,:)),imageSize(1:2));
+% The prediction is 
+%   [~,scores] = cnnPredict(cnnModel,img,'UseGPU',true,'display',false);
+% label (using the classifierModel from classical ML) is
+%   label = predict(classifierModel,scores);
+% They then annotate the image (in a really cool way) by
+%   videoFrame = insertObjectAnnotation(videoFrame,'Rectangle',...
+%       bboxes,cellstr(label),'FontSize',20);
+% Outside of the loops they do imshow(videoFrame)
+
+% TRY OUT RUN AND ADVANCE!!!
+%   Might need %% comments to segment
+
+% Code can be viewed towards the end of the seminar
