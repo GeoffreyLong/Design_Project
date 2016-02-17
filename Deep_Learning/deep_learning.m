@@ -15,3 +15,6 @@
 % can just do it by the CMO option. So the locations of interest will be
 % the CMOs and the CNN will be applied to the bounded region of the CMO.
 
+% Display the internals of a network
+%vl_simplenn_display(net, 'inputSize', [64 64 1 50])
+
