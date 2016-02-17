@@ -1,2 +1,9 @@
 /testVideo.mp4
 *.avi
+*.m~
+*.swp
+resources/
+Deep_Learning/nets/
+Deep_Learning/Generated_Detections/
+Deep_Learning/matconvnet-1.0-beta18/
+testData/Generated_Detections/truth_images/
