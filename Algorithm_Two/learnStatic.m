@@ -11,6 +11,8 @@
 %   solidity / avgSolidity: The covex hull area divided by the area of the component
 
 %TODO other metrics to add in?
+%TODO need to generate not-plane data, model after the newest
+%   generate_images script in deep learning
 
 % Shows the bw images
 VISUALIZE = 0;

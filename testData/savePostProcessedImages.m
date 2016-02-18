@@ -1,8 +1,11 @@
+%%%%% THESE HAVE BEEN COMPLETED %%%%%
+%filePath = 'testData/July_8_cam1_02.avi'; short = 'July_8_cam1_03_';
+%filePath = 'testData/July_8_cam1_03.avi'; short = 'July_8_cam1_03_';
+
+%%%%% THESE HAVE NOT BEEN COMPLETED %%%%%
 %filePath = 'testData/Feb_13_cam1_5.avi';
 %filePath = 'testData/July_6_cam1_01.avi';
 %filePath = 'testData/July_8_cam1_01.avi';
-%filePath = 'testData/July_8_cam1_02.avi';
-filePath = 'testData/July_8_cam1_03.avi';
 %filePath = 'testData/July_8_cam1_04.avi';
 %filePath = 'testData/July_8_cam1_08.avi';
 %filePath = 'testData/Oct_20_cam3_07.avi';
@@ -40,7 +43,8 @@ for i=1:size(readRect,1)
     
     newImg = imcrop(image,newRect);
     imshow(newImg);
-    %writeString = strcat('/home/geoffrey/Dropbox/Temps/Design_Project/testData/Generated_Detections/truth_images/July_8_cam1_03_', num2str(j), '.png');
+    
+    %writeString = strcat('/home/geoffrey/Dropbox/Temps/Design_Project/testData/Generated_Detections/truth_images/', short, num2str(j), '.png');
     %imwrite(newImg, writeString)
     j = j + 1;
 end
