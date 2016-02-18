@@ -27,10 +27,11 @@ for i=1:size(readRect,1)
         curRect(5) = newRect(4);
         
         %readRect(i,:) = curRect;
-        saveRect(rectIdx, :) = curRect
+        saveRect(rectIdx, :) = curRect;
+        rectIdx = rectIdx + 1;
     end
 end
 
 % Save the detections
-writerectxml(filePath,newRect,'postProcess2_')
+writerectxml(filePath,saveRect,'postProcess2_')
 

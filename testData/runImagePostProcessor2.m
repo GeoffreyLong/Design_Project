@@ -46,6 +46,7 @@ for i=1:size(readRect,1)
         newBound = s(j).BoundingBox;
         upperDim = ceil(max(newBound(3),newBound(4)));
         
+        % TODO these bounds are likely too loose
         if upperDim > largestObjSize
             bound(1) = centroid(1) - ceil(1.5*upperDim);
             bound(2) = centroid(2) - ceil(1.5*upperDim);
