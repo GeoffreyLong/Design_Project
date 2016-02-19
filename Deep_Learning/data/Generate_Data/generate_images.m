@@ -35,7 +35,10 @@ readRect = readrectxml(filePath, 'postProcess_');
 se = strel('disk',5);
 newRect = [0 0 0 0 0];
 
-for i=200:size(readRect,1)
+write = false; 
+buffer = true;
+
+for i=1:size(readRect,1)
     curRect = readRect(i,:);
     imageNumber = curRect(1);
     image = read(v,imageNumber);
@@ -60,29 +63,49 @@ for i=200:size(readRect,1)
     for j=1:numel(s)
         centroid = round(s(j).Centroid);
         newBound = s(j).BoundingBox;
-        upperDim = ceil(max(newBound(3),newBound(4)));
+        
+        % Add a buffer if desired
+        if (buffer)    
+            upperDim = ceil(max(newBound(3),newBound(4)));
+            newBound(1) = centroid(1) - ceil(1.5*upperDim);
+            newBound(2) = centroid(2) - ceil(1.5*upperDim);
+            newBound(3) = 3*upperDim;
+            newBound(4) = 3*upperDim;
+            if (newBound(1) < 0 || newBound(2) < 0 ...
+                    || newBound(1)+newBound(3) > v.Height ...
+                    || newBound(2)+newBound(4) > v.Width)
+                % [newBound(1) newBound(2) newBound(3) newBound(4)]
+                continue;
+            end
+        end
+        newImg = imcrop(image,newBound);
+        imshow(newImg)
+        
         %[centroid(1) curRect(2) centroid(2) curRect(3)]
         if (bboxOverlapRatio(newBound,curRect(2:5)) <= 0 ...
             || norm(curRect(4:5) - newBound(3:4)) > 2*(newBound(3)+newBound(4)))
-            newImg = imcrop(image,newBound);
-            %imshow(newImg);
+            
             % Sanity Check
-            image = insertShape(image, 'Rectangle', newBound, 'LineWidth', 5, 'color', 'red');
-             %imshow(newImg)
+            %image = insertShape(image, 'Rectangle', newBound, 'LineWidth', 5, 'color', 'red');
             
              % Too many if all written
              % Second bbox overlap to ensure no false writes
             if (rand() < 3/numel(s) && bboxOverlapRatio(newBound,curRect(2:5)) <= 0)
                 writeString = sprintf(saveFormat,'notPlane',imageNumber,j);
-%                imwrite(newImg, writeString);
+                if (write)
+                    imwrite(newImg, writeString);
+                end
             end
             
         else
             %TODO might want to put another check to ensure that the
             % detection is close enough in size... for now... w/e
-            image = insertShape(image, 'Rectangle', newBound, 'LineWidth', 5, 'color', 'yellow');
+            %image = insertShape(image, 'Rectangle', newBound, 'LineWidth', 5, 'color', 'yellow');
             writeString = sprintf(saveFormat,'plane',imageNumber,j);
-%            imwrite(newImg, writeString);
+            
+            if (write)
+                imwrite(newImg, writeString);
+            end
         end
         
 
@@ -99,7 +122,7 @@ for i=200:size(readRect,1)
 
     end
     % Sanity Check
-    image = insertShape(image, 'Rectangle', curRect(2:5), 'LineWidth', 5, 'color', 'blue');
-    imshow(image)
+    %image = insertShape(image, 'Rectangle', curRect(2:5), 'LineWidth', 5, 'color', 'blue');
+    %imshow(image)
 
 end
