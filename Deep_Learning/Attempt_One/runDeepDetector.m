@@ -1,11 +1,20 @@
-% setup MatConvNet
-% run  'matconvnet-1.0-beta18/matlab/vl_setupnn'
+%TODO
+%   Need to set up net.normalization
+%   Need to set up net.layers
+%   I don't think that the net is loading properly, or perhaps it wasn't
+%       made correctly... It is better just to pass in the net after making it
+%       since the algorithm does not retrain it, but has the missing info
+%       if I run the train_net_from_previous
+
 
 % load the pre-trained CNN
-net = load('nets/imagenet-vgg-f.mat') ;
+net = load('data/exp/net-epoch-5.mat') ;
 
+vl_simplenn_display(net, 'inputSize', [224 224 2 265])
 
-imagefiles = dir('data/Generate_Data/v1/HeadOnPlane/*.png');         
+imSize = [224 224];
+    
+imagefiles = dir('../data/Generate_Data/v1/HeadOnPlane/*.png');      
 nfiles = length(imagefiles);    % Number of files found
 result = zeros(1,2);
 for ii=1:nfiles
@@ -16,10 +25,11 @@ for ii=1:nfiles
         im = cat(3, im, im, im) ;
     end
     im_ = single(im) ; % note: 0-255 range
-    im_ = imresize(im_, net.meta.normalization.imageSize(1:2)) ;
-    % size(im_)
-    %size(net.meta.normalization.averageImage)
-    im_ = im_ - net.meta.normalization.averageImage ;
+    
+    im_ = imresize(im_,imSize);
+    %TODO find where net.meta.normalization is declared
+    %im_ = imresize(im_, net.meta.normalization.imageSize(1:2)) ; 
+    %im_ = im_ - net.meta.normalization.averageImage ;
 
     % run the CNN
     res = vl_simplenn(net, im_) ;

@@ -25,7 +25,7 @@ end
 i = 1;
 
 result = zeros(1,2);
-for i=2500:nFrames
+for i=1:nFrames
     % load and preprocess an image
     origIm = read(v,i);
     

@@ -13,11 +13,13 @@ filePath = 'testData/July_8_cam1_03.avi';
 %   so a moving average should smooth out the size differences
 %   This should ensure that the plane doesn't vary too much in size 
 %   with respects to its boundaries
+%TODO make the rectangle resizing less aggressive. I want it to be rather
+%   small, need tighter bounds than what I am giving.
 
 % Instantiate the video reader
 v = VideoReader(filePath);
 
-readRect = readrectxml(filePath);
+readRect = readrectxml(filePath, 'postProcess2_');
 se = strel('disk',5);
 newRect = [0 0 0 0 0];
 
@@ -27,6 +29,7 @@ for i=1:size(readRect,1)
     image = read(v,imageNumber);
     
     newImg = imcrop(image,curRect(2:5));
+    imshow(newImg);
     open = imopen(newImg,se);
     close = imclose(newImg,se); 
     im = close - open;
@@ -60,8 +63,9 @@ for i=1:size(readRect,1)
     bound(1) = curRect(2) + bound(1);
     bound(2) = curRect(3) + bound(2);
     newImg = imcrop(image,bound);
-    imshow(newImg)
+    %imshow(newImg)
 
+    %{
     CH = getkey;
     if CH == 121 % Corresponds to a 'y', will save the image
         if newRect
@@ -72,9 +76,10 @@ for i=1:size(readRect,1)
     elseif CH == 3 % A ctrl-c command will exit the program
        break;
     end
+    %}
 end
 
-addString = 'postProcess_';
+addString = 'postProcess3_';
 readRect = readrectxml(filePath,addString);
 writeRect = averagerects(newRect,readRect);
 writerectxml(filePath,writeRect,addString)
