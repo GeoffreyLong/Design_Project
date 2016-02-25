@@ -16,16 +16,27 @@ readRect = readrectxml(filePath);
 nFrames = v.NumberOfFrames;
 se = strel('disk',5);
 
-WRITE = true;
+MEASURE = true;
+SHOW = false;
+WRITE = false;
 if (WRITE)
     vwr = VideoWriter('Detect_July_8_cam1_02_1.avi');
     open(vwr);
 end
 
-i = 1;
+fileID = 0;
+formatspec = '%d, %d, %d/%d, %d/%d, %d/%d, %d/%d, %d \n'
+if (MEASURE)
+    fileID = fopen('exp1.txt','w');
+    fprintf(fileID, 'Code v2.0; CMO with disk,5; threshold=0.08 \n');
+    fprintf(fileID, '# Im, # detections, # 0.5to0.6 (c/tot), # 0.6to0.7 (c/tot), # 0.7to0.8 (c/tot), # 0.8+ (c/tot), time \n');
+end
 
 result = zeros(1,2);
-for i=1:nFrames
+for i=2500:nFrames
+    i
+    curRect = readRect(readRect(:,1)==i,:);
+    tstart = tic;
     % load and preprocess an image
     origIm = read(v,i);
     
@@ -45,6 +56,16 @@ for i=1:nFrames
     
     bound = [0 0 0 0];
     largestObjSize = 0;
+    
+    r1 = 0;
+    r2 = 0;
+    r3 = 0;
+    r4 = 0;
+    r1c = 0;
+    r2c = 0;
+    r3c = 0;
+    r4c = 0;
+    
     for j=1:numel(s)
         centroid = round(s(j).Centroid);
         newBound = s(j).BoundingBox;
@@ -82,28 +103,63 @@ for i=1:nFrames
 
         if (best == 1)
             if (bestScore >= 0.5 && bestScore < 0.6)
-                origIm = insertShape(origIm, 'Rectangle', bound, 'LineWidth', 5, 'color', 'red');
+                if SHOW
+                    origIm = insertShape(origIm, 'Rectangle', bound, 'LineWidth', 5, 'color', 'red');
+                end
+                
+                r1 = r1 + 1;
+                if (bboxOverlapRatio(newBound,curRect(2:5)))
+                    r1c = r1c + 1;
+                end
             end
             if (bestScore >= 0.6 && bestScore < 0.7)
-                origIm = insertShape(origIm, 'Rectangle', bound, 'LineWidth', 5, 'color', 'yellow');
+                if SHOW
+                    origIm = insertShape(origIm, 'Rectangle', bound, 'LineWidth', 5, 'color', 'yellow');
+                end
+                r2 = r2 + 1;
+                if (bboxOverlapRatio(newBound,curRect(2:5)))
+                    r2c = r2c + 1;
+                end
             end
             if (bestScore >= 0.7 && bestScore < 0.8)
-                origIm = insertShape(origIm, 'Rectangle', bound, 'LineWidth', 5, 'color', 'green');
+                if SHOW
+                    origIm = insertShape(origIm, 'Rectangle', bound, 'LineWidth', 5, 'color', 'green');
+                end
+                r3 = r3 + 1;
+                if (bboxOverlapRatio(newBound,curRect(2:5)))
+                    r3c = r3c + 1;
+                end
             end
             if (bestScore >= 0.8)
-                origIm = insertShape(origIm, 'Rectangle', bound, 'LineWidth', 5, 'color', 'blue');
+                if SHOW
+                    origIm = insertShape(origIm, 'Rectangle', bound, 'LineWidth', 5, 'color', 'blue');
+                end
+                r4 = r4 + 1;
+                if (bboxOverlapRatio(newBound,curRect(2:5)))
+                    r4c = r4c + 1;
+                end
             end
         end
     end
     
-    imshow(origIm)
+    if (SHOW)
+        for k=1:size(curRect,1)
+            origIm = insertShape(origIm, 'Rectangle', curRect(k,2:5), 'LineWidth', 5, 'color', 'white');
+        end
+        imshow(origIm)
+    end
     if WRITE
         writeVideo(vwr,origIm);
-        i = i + 1
     end
-
+    if MEASURE
+        fprintf(fileID, formatspec, i, numel(s), r1c,r1,r2c,r2,r3c,r3,r4c,r4, toc(tstart));
+    end
+    
 end
 
 if WRITE
     close(vwr);
+end
+if MEASURE
+    close(fileID);
 end
