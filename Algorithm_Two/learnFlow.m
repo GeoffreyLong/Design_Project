@@ -1,3 +1,4 @@
+
 % Take in the roll / pitch / yaw using testData/getdetailedsrt.m
 % Within local windows i.e. sized 24x24 or thereabouts
 %   Calculate the expected flow based on these params
@@ -17,6 +18,8 @@
 %   image flow... i.e. learn what adjustments need to be made in each scenario
 %   to account for the ego motion
 
+
+
 % Instantiate the video reader
 v = VideoReader('/Users/Xavier/Documents/workspace/Design_Project/Algorithm_Two/cam1_01.avi');
 
@@ -30,35 +33,25 @@ nFrames = v.NumberOfFrames;
 srt = getdetailedsrt('/Users/Xavier/Documents/workspace/Design_Project/testData/July_6_cam1_01.srt',nFrames);
 % get data from row of interest
 % srtData = srt(1,:); % [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
-% roll is rotation around the middle of the plane (twist)
-% roll = srtData(4);
-% pitch is rotation around center of gravity (flip)
-% pitch = srtData(3);
-% disp(srtData)
-% disp(roll);
-% disp(pitch);
-
-
-% load one image to perform operation on
-%image is 650x600 pixles (y vs x)
-% curImage = read(v,1); 
-% 
-% % compensation equations
-% 
-% rollImage = imrotate(curImage, -roll, 'crop');
-% C = imfuse(curImage,rollImage);
-% imshow(C);
+ 
 % rectangle = int32([10 10 30 30]); %[x y width height]
 rectWidth = 24; %rectangle width well be ... pixels
 rectHeight = 24; %rect height well be ... pixels
 numRects = v.Width/rectWidth; %600/24=25
+
+imgHeight = v.Height;
 
 % Initiate search at top left corner of image
 x_pixel = 0;
 y_pixel = 0;
 rectArray = [];
 
-for i = 1800:nFrames
+%translation matrix = [1 0 0; 0 1 0; x y 1]
+%http://www.mathworks.com/help/images/performing-general-2-d-spatial-transformations.html
+%tform_translate = affine2d([1 0 0; 0 1 0; x y 1]);
+%tform = affine3d([cos(pitch) 0 -sin(pitch) 0; 0 1 0 0; sin(pitch) 0 cos(pitch) 0; 0 0 0 1 ] );
+%transImage = imwarp(curImage, tform);
+for i = 1:nFrames
     
     % get data from row of interest
     srtData = srt(i,:); % [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
@@ -67,81 +60,41 @@ for i = 1800:nFrames
     % pitch is rotation around center of gravity (flip)
     pitch = srtData(3);
     yaw = 0;
-    dcm = angle2dcm( yaw, pitch, roll );% returns 3x3 matrix
-%     https://en.wikipedia.org/wiki/Rotation_formalisms_in_three_dimensions
-   % dcm row 1
-   %[cos(yaw)*cos(pitch), cos(roll)]
-    % do we convolute?
-    curImage = read(v,i); 
-    % compensation equations
-    if i~=1800
-        compImage = imwarp(curImage,dcm);
-        %rollImage = imrotate(curImage, -roll, 'crop');
-        diffImage = imabsdiff(compImage,pastImage);
-        
-        % To do: translation motion
-        
-        imshow(diffImage);
-        pastImage = curImage;
-%     C = imfuse(curImage,rollImage);
        
-    else
-        rollImage = imrotate(curImage, -roll, 'crop');
-        pastImage = curImage;
-    end    
+    curImage = read(v,i);
+    
+%     outputImage = imwarp(curImage,tform);
+%     imshow(outputImage);
+    
+     if i~=1800
+         
+         rollImage = imrotate(curImage, -roll, 'crop');
+         % diffImage = imabsdiff(compImage,pastImage);
+         
+         % To do: translation motion
+         % shift x pixels, y pixels
+         x = 0;
+         % check eqn, probs not correct
+         %as plane is always on the same level as target, and pitch only
+         %flucuates 1-4 degrees, not much point in compensating for it
+         y = sin(degtorad(pitch))*v.Height;
+        
+         transImage = imtranslate(rollImage, [x,y]);%, 'OutputView', 'full');
+         
+%          RGB = insertText(transImage, [1 50],pitch,'FontSize',40,'BoxColor','red','BoxOpacity',0.4,'TextColor','white');
+
+         imshow(transImage);
+%          pastImage = curImage;
+%          C = imfuse(curImage,transImage);
+%          imshow(C);
+         
+        
+     else
+%          compImage = imwarp(curImage,tform);
+%          rollImage = imrotate(curImage, -roll, 'crop');
+%          pastImage = curImage;
+     end    
     
     
 end
-% for j = 1:numRects
-%     
-%     for k = 1:numRects
-%         % for now just draw rectangle to simulate search area
-%         rectArray = [rectArray; [x_pixel y_pixel rectWidth rectHeight] ];
-%         rectangle = insertShape(curImage, 'Rectangle', rectArray, 'LineWidth', 5);
-%         imshow(rectangle);
-%         x_pixel = x_pixel + rectWidth;
-%     end
-%     y_pixel = y_pixel + rectHeight;
-%     x_pixel = 0;
-%    
-%     
-% end
-
-
-
-%     curImage = im2double(curImage);
-%     V = step(opticalFlow, curImage);
-
-%new = V(:,:) >= 0.0100;
-%imshow(new);
-
-% function displayRect( videoPath, rect )
-
-% Instantiate the video reader
-
-% v = VideoReader(videoPath);
-% nFrames = v.NumberOfFrames;
-% 
-% rectIdx = 1;
-% maxRectIdx = size(rect,1);
-% 
-% mov(1:nFrames) = struct('cdata',zeros(v.Height,v.Width,3,'uint8'),'colormap',[]);
-
-
-% for i = 1:nFrames
-% %   insert the rectangle as the specified location on each frame
-%     if (rectIdx <= maxRectIdx && rect(rectIdx,1) == i)
-%         tmpIdx = 1;
-% 
-%         while (rectIdx <= maxRectIdx && rect(rectIdx,1) == i)
-%             tmpRects(tmpIdx, :) = [rect(rectIdx,2) rect(rectIdx,3) rect(rectIdx,4) rect(rectIdx,5)];
-%             rectIdx = rectIdx + 1;
-%             tmpIdx = tmpIdx + 1;
-%         end
-%         mov(i).cdata= insertShape(read(v,i), 'Rectangle', tmpRects, 'LineWidth', 1);
-%     else
-% 
-%         mov(i).cdata= insertShape(read(v,i), 'Rectangle', [0 0 0 0], 'LineWidth', 1);
-%     end
-% end
 
