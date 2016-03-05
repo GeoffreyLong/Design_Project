@@ -51,7 +51,7 @@ rectArray = [];
 %tform_translate = affine2d([1 0 0; 0 1 0; x y 1]);
 %tform = affine3d([cos(pitch) 0 -sin(pitch) 0; 0 1 0 0; sin(pitch) 0 cos(pitch) 0; 0 0 0 1 ] );
 %transImage = imwarp(curImage, tform);
-for i = 1:nFrames
+for i = 2000:nFrames
     
     % get data from row of interest
     srtData = srt(i,:); % [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
@@ -59,40 +59,31 @@ for i = 1:nFrames
     roll = srtData(4);
     % pitch is rotation around center of gravity (flip)
     pitch = srtData(3);
+    pitch = 0;
     yaw = 0;
        
-    curImage = read(v,i);
+    rawImg = read(v,i);
     
 %     outputImage = imwarp(curImage,tform);
 %     imshow(outputImage);
     
-     if i~=1800
-         
-         rollImage = imrotate(curImage, -roll, 'crop');
-         % diffImage = imabsdiff(compImage,pastImage);
-         
-         % To do: translation motion
-         % shift x pixels, y pixels
-         x = 0;
-         % check eqn, probs not correct
-         %as plane is always on the same level as target, and pitch only
-         %flucuates 1-4 degrees, not much point in compensating for it
-         y = sin(degtorad(pitch))*v.Height;
-        
-         transImage = imtranslate(rollImage, [x,y]);%, 'OutputView', 'full');
-         
-%          RGB = insertText(transImage, [1 50],pitch,'FontSize',40,'BoxColor','red','BoxOpacity',0.4,'TextColor','white');
-
-         imshow(transImage);
-%          pastImage = curImage;
-%          C = imfuse(curImage,transImage);
-%          imshow(C);
+%      imshow(rawImg);
+     if i>=2000
          
         
-     else
-%          compImage = imwarp(curImage,tform);
-%          rollImage = imrotate(curImage, -roll, 'crop');
-%          pastImage = curImage;
+         %get compensated image
+          compImg = imageCompensation(rawImg, v.Height, roll, pitch);
+          diffImage = imabsdiff(compImg, prevImage);
+          prevImage = compImg;
+          imshow(diffImage);
+         
+     elseif i==1999
+           %get compensated image and set it to previous image
+         %this is temporary, just to get the first prev image
+           prevImage = imageCompensation(rawImg, v.Height, roll, pitch);
+      
+     else 
+         %do nothing
      end    
     
     
