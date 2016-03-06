@@ -1,0 +1,55 @@
+nHood: disk:1, threshold: 0.050000, totalDetections: 2399351, planes: 580/727, time: 6.370000e-04 
+nHood: disk:2, threshold: 0.050000, totalDetections: 8130777, planes: 682/727, time: 3.578000e-02 
+nHood: disk:3, threshold: 0.050000, totalDetections: 14547265, planes: 722/727, time: 2.553500e-02 
+nHood: disk:4, threshold: 0.050000, totalDetections: 16591798, planes: 726/727, time: 1.626700e-02 
+nHood: disk:5, threshold: 0.050000, totalDetections: 16942762, planes: 727/727, time: 1.701600e-02 
+nHood: disk:7, threshold: 0.050000, totalDetections: 9758410, planes: 727/727, time: 7.100000e-05 
+nHood: disk:10, threshold: 0.050000, totalDetections: 4091991, planes: 727/727, time: 2.624500e-02 
+
+nHood: disk:1, threshold: 0.080000, totalDetections: 96543, planes: 317/727, time: 8.700000e-05 
+nHood: disk:2, threshold: 0.080000, totalDetections: 186663, planes: 502/727, time: 1.941300e-02 
+nHood: disk:3, threshold: 0.080000, totalDetections: 280257, planes: 533/727, time: 1.140900e-02 
+nHood: disk:4, threshold: 0.080000, totalDetections: 407534, planes: 542/727, time: 2.349300e-02 
+nHood: disk:5, threshold: 0.080000, totalDetections: 769718, planes: 555/727, time: 9.100000e-05 
+nHood: disk:7, threshold: 0.080000, totalDetections: 1245762, planes: 584/727, time: 6.000000e-05 
+nHood: disk:10, threshold: 0.080000, totalDetections: 1324268, planes: 601/727, time: 2.730000e-04 
+
+nHood: disk:1, threshold: 0.090000, totalDetections: 76563, planes: 277/727, time: 7.300000e-05 
+nHood: disk:2, threshold: 0.090000, totalDetections: 148611, planes: 476/727, time: 5.843000e-02 
+nHood: disk:3, threshold: 0.090000, totalDetections: 182421, planes: 503/727, time: 5.800000e-05 
+nHood: disk:4, threshold: 0.090000, totalDetections: 239800, planes: 510/727, time: 1.050000e-04 
+nHood: disk:5, threshold: 0.090000, totalDetections: 446560, planes: 526/727, time: 8.700000e-05 
+nHood: disk:7, threshold: 0.090000, totalDetections: 802363, planes: 541/727, time: 2.174300e-02 
+nHood: disk:10, threshold: 0.090000, totalDetections: 932932, planes: 557/727, time: 8.000000e-05 
+
+nHood: disk:1, threshold: 0.100000, totalDetections: 57055, planes: 243/727, time: 3.700000e-05 
+nHood: disk:2, threshold: 0.100000, totalDetections: 117636, planes: 423/727, time: 9.332020e-01 
+nHood: disk:3, threshold: 0.100000, totalDetections: 128919, planes: 463/727, time: 6.700000e-05 
+nHood: disk:4, threshold: 0.100000, totalDetections: 146126, planes: 471/727, time: 8.367000e-03 
+nHood: disk:5, threshold: 0.100000, totalDetections: 233570, planes: 487/727, time: 1.230000e-04 
+nHood: disk:7, threshold: 0.100000, totalDetections: 443495, planes: 500/727, time: 1.230000e-04 
+nHood: disk:10, threshold: 0.100000, totalDetections: 597051, planes: 508/727, time: 3.600000e-05 
+
+nHood: disk:1, threshold: 0.110000, totalDetections: 44383, planes: 218/727, time: 9.100000e-05 
+nHood: disk:2, threshold: 0.110000, totalDetections: 96560, planes: 360/727, time: 5.997100e-02 
+nHood: disk:3, threshold: 0.110000, totalDetections: 103103, planes: 417/727, time: 3.210000e-04 
+nHood: disk:4, threshold: 0.110000, totalDetections: 110741, planes: 425/727, time: 8.400000e-05 
+nHood: disk:5, threshold: 0.110000, totalDetections: 145740, planes: 442/727, time: 1.090000e-04 
+nHood: disk:7, threshold: 0.110000, totalDetections: 253839, planes: 454/727, time: 1.340000e-04 
+nHood: disk:10, threshold: 0.110000, totalDetections: 382286, planes: 469/727, time: 3.517000e-02 
+
+nHood: disk:1, threshold: 0.120000, totalDetections: 38116, planes: 198/727, time: 1.010000e-04 
+nHood: disk:2, threshold: 0.120000, totalDetections: 84601, planes: 313/727, time: 3.040000e-04 
+nHood: disk:3, threshold: 0.120000, totalDetections: 90925, planes: 378/727, time: 7.300000e-05 
+nHood: disk:4, threshold: 0.120000, totalDetections: 96037, planes: 393/727, time: 1.854900e-02 
+nHood: disk:5, threshold: 0.120000, totalDetections: 115928, planes: 410/727, time: 1.050000e-04 
+nHood: disk:7, threshold: 0.120000, totalDetections: 184835, planes: 431/727, time: 6.900000e-05 
+nHood: disk:10, threshold: 0.120000, totalDetections: 280459, planes: 443/727, time: 4.100000e-05 
+
+nHood: disk:1, threshold: 0.150000, totalDetections: 21641, planes: 153/727, time: 6.500000e-05 
+nHood: disk:2, threshold: 0.150000, totalDetections: 51389, planes: 173/727, time: 9.900000e-05 
+nHood: disk:3, threshold: 0.150000, totalDetections: 60832, planes: 265/727, time: 7.600000e-05 
+nHood: disk:4, threshold: 0.150000, totalDetections: 61911, planes: 281/727, time: 5.700000e-05 
+nHood: disk:5, threshold: 0.150000, totalDetections: 64007, planes: 296/727, time: 9.100000e-05 
+nHood: disk:7, threshold: 0.150000, totalDetections: 80900, planes: 327/727, time: 3.900000e-05 
+nHood: disk:10, threshold: 0.150000, totalDetections: 99561, planes: 332/727, time: 5.400000e-05 

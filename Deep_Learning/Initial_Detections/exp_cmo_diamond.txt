@@ -1,0 +1,55 @@
+nHood: diamond:1, threshold: 0.050000, totalDetections: 2399351, planes: 580/727, time: 1.123088e+03 
+nHood: diamond:2, threshold: 0.050000, totalDetections: 8130777, planes: 682/727, time: 2.930492e+03 
+nHood: diamond:3, threshold: 0.050000, totalDetections: 14165075, planes: 722/727, time: 5.331964e+03 
+nHood: diamond:4, threshold: 0.050000, totalDetections: 17405301, planes: 726/727, time: 5.919786e+03 
+nHood: diamond:5, threshold: 0.050000, totalDetections: 17676677, planes: 727/727, time: 6.212527e+03 
+nHood: diamond:7, threshold: 0.050000, totalDetections: 13300191, planes: 727/727, time: 6.656040e+03 
+nHood: diamond:10, threshold: 0.050000, totalDetections: 6242487, planes: 727/727, time: 3.944219e+03
+
+nHood: diamond:1, threshold: 0.080000, totalDetections: 96543, planes: 317/727, time: 5.398129e+02 
+nHood: diamond:2, threshold: 0.080000, totalDetections: 186663, planes: 502/727, time: 5.669041e+02 
+nHood: diamond:3, threshold: 0.080000, totalDetections: 308088, planes: 523/727, time: 6.215979e+02 
+nHood: diamond:4, threshold: 0.080000, totalDetections: 570146, planes: 542/727, time: 6.953603e+02 
+nHood: diamond:5, threshold: 0.080000, totalDetections: 891746, planes: 552/727, time: 8.073786e+02 
+nHood: diamond:7, threshold: 0.080000, totalDetections: 1396528, planes: 571/727, time: 1.023644e+03 
+nHood: diamond:10, threshold: 0.080000, totalDetections: 1647342, planes: 591/727, time: 1.188327e+03 
+
+nHood: diamond:1, threshold: 0.090000, totalDetections: 76563, planes: 277/727, time: 3.861043e+02 
+nHood: diamond:2, threshold: 0.090000, totalDetections: 148611, planes: 476/727, time: 4.025298e+02 
+nHood: diamond:3, threshold: 0.090000, totalDetections: 202914, planes: 498/727, time: 5.491314e+02 
+nHood: diamond:4, threshold: 0.090000, totalDetections: 329245, planes: 515/727, time: 6.220420e+02 
+nHood: diamond:5, threshold: 0.090000, totalDetections: 516719, planes: 523/727, time: 7.128691e+02 
+nHood: diamond:7, threshold: 0.090000, totalDetections: 887687, planes: 537/727, time: 8.537353e+02 
+nHood: diamond:10, threshold: 0.090000, totalDetections: 1172803, planes: 545/727, time: 1.037579e+03 
+
+nHood: diamond:1, threshold: 0.100000, totalDetections: 57055, planes: 243/727, time: 4.216989e+02 
+nHood: diamond:2, threshold: 0.100000, totalDetections: 117636, planes: 423/727, time: 4.523857e+02 
+nHood: diamond:3, threshold: 0.100000, totalDetections: 142402, planes: 453/727, time: 5.421403e+02 
+nHood: diamond:4, threshold: 0.100000, totalDetections: 183434, planes: 472/727, time: 5.540534e+02 
+nHood: diamond:5, threshold: 0.100000, totalDetections: 261662, planes: 481/727, time: 6.046714e+02 
+nHood: diamond:7, threshold: 0.100000, totalDetections: 461945, planes: 497/727, time: 6.967501e+02 
+nHood: diamond:10, threshold: 0.100000, totalDetections: 715016, planes: 506/727, time: 7.654182e+02 
+
+nHood: diamond:1, threshold: 0.110000, totalDetections: 44383, planes: 218/727, time: 3.420410e+02 
+nHood: diamond:2, threshold: 0.110000, totalDetections: 96560, planes: 360/727, time: 4.003349e+02 
+nHood: diamond:3, threshold: 0.110000, totalDetections: 113331, planes: 405/727, time: 4.965662e+02 
+nHood: diamond:4, threshold: 0.110000, totalDetections: 127901, planes: 429/727, time: 5.489242e+02 
+nHood: diamond:5, threshold: 0.110000, totalDetections: 159956, planes: 436/727, time: 5.502444e+02 
+nHood: diamond:7, threshold: 0.110000, totalDetections: 255413, planes: 445/727, time: 5.991835e+02 
+nHood: diamond:10, threshold: 0.110000, totalDetections: 419917, planes: 455/727, time: 7.541774e+02 
+
+nHood: diamond:1, threshold: 0.120000, totalDetections: 38116, planes: 198/727, time: 4.344315e+02 
+nHood: diamond:2, threshold: 0.120000, totalDetections: 84601, planes: 313/727, time: 4.666941e+02 
+nHood: diamond:3, threshold: 0.120000, totalDetections: 99793, planes: 379/727, time: 5.298326e+02 
+nHood: diamond:4, threshold: 0.120000, totalDetections: 108962, planes: 398/727, time: 5.476041e+02 
+nHood: diamond:5, threshold: 0.120000, totalDetections: 125801, planes: 407/727, time: 5.750136e+02 
+nHood: diamond:7, threshold: 0.120000, totalDetections: 184812, planes: 417/727, time: 6.287321e+02 
+nHood: diamond:10, threshold: 0.120000, totalDetections: 295188, planes: 421/727, time: 6.931172e+02 
+
+nHood: diamond:1, threshold: 0.150000, totalDetections: 21641, planes: 153/727, time: 3.719068e+02 
+nHood: diamond:2, threshold: 0.150000, totalDetections: 51389, planes: 173/727, time: 4.124524e+02 
+nHood: diamond:3, threshold: 0.150000, totalDetections: 66261, planes: 264/727, time: 4.880043e+02 
+nHood: diamond:4, threshold: 0.150000, totalDetections: 70405, planes: 282/727, time: 5.052364e+02 
+nHood: diamond:5, threshold: 0.150000, totalDetections: 70968, planes: 288/727, time: 5.416863e+02 
+nHood: diamond:7, threshold: 0.150000, totalDetections: 80615, planes: 295/727, time: 5.776285e+02 
+nHood: diamond:10, threshold: 0.150000, totalDetections: 103867, planes: 305/727, time: 6.432588e+02 
