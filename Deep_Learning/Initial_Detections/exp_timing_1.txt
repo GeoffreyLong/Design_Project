@@ -1,0 +1,15 @@
+Tested over 100 frames 
+On video /home/geoffrey/Dropbox/Temps/Design_Project/testData/July_8_cam1_02.avi 
+nHood: diamond:1, 	threshold: 0.050000, 	#Detections: 4087.5, 	CMOtime: 59.4 (ms), 	BWtime: 13.1 (ms), labelTime: 270.5 (ms) 
+nHood: diamond:1, 	threshold: 0.150000, 	#Detections: 28.0, 	CMOtime: 63.0 (ms), 	BWtime: 14.4 (ms), labelTime: 44.3 (ms) 
+nHood: diamond:10, 	threshold: 0.050000, 	#Detections: 6491.4, 	CMOtime: 562.6 (ms), 	BWtime: 11.1 (ms), labelTime: 753.8 (ms) 
+nHood: diamond:10, 	threshold: 0.150000, 	#Detections: 207.6, 	CMOtime: 528.5 (ms), 	BWtime: 11.3 (ms), labelTime: 58.8 (ms) 
+nHood: diamond:20, 	threshold: 0.050000, 	#Detections: 1666.5, 	CMOtime: 1212.3 (ms), 	BWtime: 11.0 (ms), labelTime: 705.6 (ms) 
+nHood: diamond:20, 	threshold: 0.150000, 	#Detections: 409.9, 	CMOtime: 1209.3 (ms), 	BWtime: 11.3 (ms), labelTime: 85.0 (ms) 
+
+nHood: disk:1, 		threshold: 0.050000, 	#Detections: 4087.5, 	CMOtime: 56.9 (ms), 	BWtime: 13.1 (ms), labelTime: 265.0 (ms) 
+nHood: disk:10, 	threshold: 0.050000, 	#Detections: 5159.9, 	CMOtime: 499.1 (ms), 	BWtime: 11.1 (ms), labelTime: 729.0 (ms) 
+nHood: disk:20, 	threshold: 0.050000, 	#Detections: 1001.0, 	CMOtime: 1017.3 (ms), 	BWtime: 13.5 (ms), labelTime: 840.4 (ms) 
+nHood: disk:1, 		threshold: 0.150000, 	#Detections: 28.0, 	CMOtime: 57.1 (ms), 	BWtime: 11.6 (ms), labelTime: 41.1 (ms) 
+nHood: disk:10, 	threshold: 0.150000, 	#Detections: 192.0, 	CMOtime: 465.1 (ms), 	BWtime: 10.8 (ms), labelTime: 61.5 (ms) 
+nHood: disk:20, 	threshold: 0.150000, 	#Detections: 293.6, 	CMOtime: 924.5 (ms), 	BWtime: 12.1 (ms), labelTime: 89.1 (ms) 
