@@ -34,11 +34,22 @@ for i = firstDetection:nFrames
         rectIndx = 1;
         tempRect = [rect(rectIndx,2) rect(rectIndx,3) rect(rectIndx,4) rect(rectIndx,5)];
         rectIndx = rectIndx + 1;
+        
+        x = tempRect(1)+0.5*tempRect(3);
+        y = tempRect(2)+0.5*tempRect(4);
+        
+        % center point is the center of the bounding box on the detection         
+        centerPoint = [x y 3];
+        
+%   %       next need to pass in detection, srt data of the frame to
+%   tracking file
     else
-        tempRect = [0 0 0 0];     
+        tempRect = [0 0 0 0];   
+        centerPoint = [0 0 0];
     end
     testImage = insertShape(img, 'Rectangle', tempRect, 'LineWidth', 2);
+    test2 = insertShape(testImage, 'Circle', centerPoint, 'LineWidth', 3);
 %     RGB = insertText(img,[200 1950; 800 1950; 1500 1950], {'Host Speed', 'Target Speed', 'Estimated Speed'}, 'FontSize',50);
-    imshow(testImage);
+    imshow(test2);
    
 end
