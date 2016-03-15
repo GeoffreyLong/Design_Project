@@ -7,9 +7,19 @@ nFrames = v.NumberOfFrames;
 % Get SRT data
 
 [host, target] = getdetailedsrt('/Users/Xavier/Documents/workspace/Design_Project/testData/July_6_cam1_01.srt',nFrames);
+rectFileName = '/Users/Xavier/Documents/workspace/Design_Project/testData/Generated_Detections/July_6_cam1_01.avi.dat';
 
+% should use readrectxml.m file
+try
+    rect = csvread(rectFileName);
+catch
+    sprintf('No rect file found');
+end
 
-for i=1:nFrames
+% first detection at frame
+firstDetection = rect(1);
+
+for i = firstDetection:nFrames
     
 %   host: All of the own-ship information
 %       [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
@@ -18,7 +28,17 @@ for i=1:nFrames
     
     
     img = read(v,i);
-    RGB = insertText(img,[200 1950; 800 1950; 1500 1950], {'Host Speed', 'Target Speed', 'Estimated Speed'}, 'FontSize',50);
-    imshow(RGB);
+   
+    
+    if i >= firstDetection
+        rectIndx = 1;
+        tempRect = [rect(rectIndx,2) rect(rectIndx,3) rect(rectIndx,4) rect(rectIndx,5)];
+        rectIndx = rectIndx + 1;
+    else
+        tempRect = [0 0 0 0];     
+    end
+    testImage = insertShape(img, 'Rectangle', tempRect, 'LineWidth', 2);
+%     RGB = insertText(img,[200 1950; 800 1950; 1500 1950], {'Host Speed', 'Target Speed', 'Estimated Speed'}, 'FontSize',50);
+    imshow(testImage);
    
 end
