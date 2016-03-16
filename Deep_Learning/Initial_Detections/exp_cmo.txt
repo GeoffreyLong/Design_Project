@@ -1,0 +1,13 @@
+nHood: diamond25, threshold: 0.100000, totalDetections: 536374, planes: 520/727, time: 1.464981e+03 
+nHood: diamond40, threshold: 0.100000, totalDetections: 233894, planes: 524/727, time: 2.339141e+03 
+nHood: diamond25, threshold: 0.120000, totalDetections: 445259, planes: 441/727, time: 1.395175e+03 
+nHood: diamond40, threshold: 0.120000, totalDetections: 247985, planes: 443/727, time: 2.229597e+03 
+nHood: diamond25, threshold: 0.150000, totalDetections: 210947, planes: 329/727, time: 1.335641e+03 
+nHood: diamond40, threshold: 0.150000, totalDetections: 182463, planes: 335/727, time: 2.231492e+03 
+
+nHood: disk25, threshold: 0.100000, totalDetections: 330008, planes: 527/727, time: 1.232591e+03 
+nHood: disk40, threshold: 0.100000, totalDetections: 137244, planes: 534/727, time: 1.616356e+03 
+nHood: disk25, threshold: 0.120000, totalDetections: 279635, planes: 452/727, time: 1.200936e+03 
+nHood: disk40, threshold: 0.120000, totalDetections: 132272, planes: 455/727, time: 1.693441e+03 
+nHood: disk25, threshold: 0.150000, totalDetections: 163962, planes: 349/727, time: 1.123818e+03 
+nHood: disk40, threshold: 0.150000, totalDetections: 113698, planes: 351/727, time: 1.702193e+03 
