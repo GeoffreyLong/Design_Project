@@ -33,7 +33,7 @@ if (MEASURE)
 end
 
 result = zeros(1,2);
-for i=2500:nFrames
+for i=2750:nFrames
     i
     curRect = readRect(readRect(:,1)==i,:);
     tstart = tic;

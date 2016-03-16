@@ -12,9 +12,9 @@ readRect = readrectxml(filePath);
 % Type of neighborhood for CMO
 %TODO May want to experiment with other nhoods (esp diff sizes)
 %TOLEARN Which nHood gets best response
-nHoods = [strel('disk', 25), strel('diamond', 25), ...
-    strel('disk', 40), strel('diamond', 40)];
-nHoodNames = {'disk25','diamond25','disk40','diamond40'};
+nHoods = [strel('disk', 75), strel('diamond', 75), ...
+    strel('disk', 100), strel('diamond', 100)];
+nHoodNames = {'disk75','diamond75','disk100','diamond100'};
 thresholds = [0.10 0.12 0.15];
 nHoodDilate = ones(3);
 

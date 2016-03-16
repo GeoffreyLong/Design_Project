@@ -124,7 +124,7 @@ for i = 1:nFrames
 end
 
 %TODO might be able to run some sort of SVM on this data
-importantVectors;
+importantVectors
 
 mean(importantVectors)
 median(importantVectors)

@@ -136,13 +136,14 @@ yPoints = planeOffset(:,2);
 pdfY = fitdist(yPoints, 'Normal')
 pdfX = fitdist(xPoints, 'Normal')
 
+hold on;
 % PLOT the PDF of Y
 y_values = -1025:1:1025;
 y = pdf(pdfY,y_values);
 plot(y_values,y,'LineWidth',2)
 
 % PLOT the PDF of X
-%x_values = -1224:1:1224;
-%x = pdf(pd,x_values);
-%plot(x_values,x,'LineWidth',2)
+x_values = -1224:1:1224;
+x = pdf(pdfX,x_values);
+plot(x_values,x,'LineWidth',2)
 
