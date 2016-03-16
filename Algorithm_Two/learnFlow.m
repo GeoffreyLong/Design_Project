@@ -51,7 +51,7 @@ rectArray = [];
 %tform_translate = affine2d([1 0 0; 0 1 0; x y 1]);
 %tform = affine3d([cos(pitch) 0 -sin(pitch) 0; 0 1 0 0; sin(pitch) 0 cos(pitch) 0; 0 0 0 1 ] );
 %transImage = imwarp(curImage, tform);
-for i = 2000:nFrames
+for i = 1999:nFrames
     
     % get data from row of interest
     srtData = srt(i,:); % [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
@@ -75,7 +75,8 @@ for i = 2000:nFrames
           compImg = imageCompensation(rawImg, v.Height, roll, pitch);
           diffImage = imabsdiff(compImg, prevImage);
           prevImage = compImg;
-          imshow(diffImage);
+%          imshow(diffImage);
+         imshow(compImg);
          
      elseif i==1999
            %get compensated image and set it to previous image
