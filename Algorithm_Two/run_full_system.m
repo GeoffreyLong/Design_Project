@@ -30,8 +30,21 @@ nFrames = v.NumberOfFrames;
 % I think we would want an array of arrays or a cell of arrays
 % Inside each cell would be a bounding box with the probability that the
 % plane is a valid object
+% PERHAPS we would want to save the tracks of each cell, i.e. all of the
+% previous detections go into the cell of interest. So the cell will be a
+% list of all detections belonging to the track where the most recent
+% detection is the current one.
+%   Then I guess we would want tracks and current detections
+%   Tracking will add the current detections to their appropriate tracks
+%   So we would actually have two objects, one containing the tracks as
+%   they occur, the other containing the detections of this iteration. 
+% All of the detections (in the tracking cell or in the detections) will
+% have the form... Perhaps TTC will be only in tracks?
 %   x, y, xSize, ySize, probability, (TTC?)
 % detections = [];
+% tracks = {};
+
+
 
 for i = 1:nFrames
     % Read in necessary data
@@ -48,7 +61,7 @@ for i = 1:nFrames
 
     % If we do have previous detections, we will want to do a more in depth
     % analysis of these locations. This will probably be where we run our CNN
-    % Will likely want to do this even if we have a full detection to check
+    % Will likely want to do this even if we ran a full detection on this run
 %   detections.add(focusedDetection(detections))
 
     % Will want to overwrite the detections based on what the tracking returns. 
