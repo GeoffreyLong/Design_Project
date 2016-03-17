@@ -19,6 +19,7 @@ filePath = char(filePaths{4})
 % Instantiate the video reader
 v = VideoReader(filePath);
 nFrames = v.NumberOfFrames;
+height = v.Height;
 
 % Read in the SRT data
 % We don't really need to read it one at a time to simulate a real system.
@@ -47,16 +48,23 @@ nFrames = v.NumberOfFrames;
 for i = 1:nFrames
     % Read in necessary data
     img = read(v, i);
-    curHost = host(i,:)
+    curHost = host(i,:);
 
+    % Rotate the image
+%    img = imageCompensation(
+    
     % So we will want to do a full screen detection sparingly as these are expensive.
     % It should definitely be done every X frames, but also if there are no planes detected.
     % This will focus mostly on getting the initial detections (those far
     % away from the plane)
 %   if (mod(i, MODULO) || isEmpty(detections))
-%       detections.add(full detection) 
+%       detections.add(full_detection(img, curHost));
+%   else
+        % Might ALSO want to do an initial_detections on the other runs
+        % Not so sure how these two should interact
+        % Might only want to run this if full detection takes too long
+%       detections.add(initial_detections(img, curHost));
 %   end
-
     % If we do have previous detections, we will want to do a more in depth
     % analysis of these locations. This will take the most recent detection
     % of each track and check the area for the most recent detection.

@@ -6,11 +6,14 @@
 
 %%%%%%%%%% RESULTS %%%%%%%%%%
 % PDF_X
-%       mu = -243.46   [-249.342, -237.578]
-%    sigma = 105.535   [101.537, 109.863]
-% PDF_Y
-%       mu = -450.014   [-452.065, -447.964]
-%    sigma =  36.7863   [35.3928, 38.2949]
+%       mu =  368.54   [362.658, 374.422]
+%    sigma = 105.535   [101.537, 109.863]% PDF_Y
+% PDF_Y  
+%      mu = 68.0164   [67.1108, 68.922]
+%    sigma = 16.2477   [15.6322, 16.914]
+
+
+
 
 
 % APPROACH
@@ -92,9 +95,10 @@ for filePath = filePaths
 %       host: All of the own-ship information
 %       [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
 
-        % Don't include last 50 image points?
+        % Don't include last 50 image points? 
+        % This is when the plane is too close
         for i = 1:size(readRect,1)-50
-            % Get correct instances of host and curRect
+            % Get current instances of host and rect
             curRect = readRect(i,:);
             frameNum = curRect(1);
             curHost = host(host(:,1)==frameNum,:);
@@ -108,10 +112,10 @@ for filePath = filePaths
             
             % Find frame center [x y]
             %TODO check if additional adjustment is needed
-            frameCenter = [mean(horizX)/2 mean(horizY)/2];
+            frameCenter = [mean(horizX) mean(horizY)]
             
             % Find plane center [x y]
-            planeCenter = [curRect(2)+curRect(4)/2 curRect(3)+curRect(5)/2]; 
+            planeCenter = [curRect(2)+curRect(4)/2 curRect(3)+curRect(5)/2]
             
             % Get the offset of the plane and add to the dataset
             planeOffset = [planeOffset; ...
