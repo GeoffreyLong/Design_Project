@@ -47,6 +47,8 @@ for i = firstDetection:nFrames
         tempRect = [0 0 0 0];   
         centerPoint = [0 0 0];
     end
+    tracking(tempRect, host(i,:), target(i,:));
+    
     testImage = insertShape(img, 'Rectangle', tempRect, 'LineWidth', 2);
     test2 = insertShape(testImage, 'Circle', centerPoint, 'LineWidth', 3);
 %     RGB = insertText(img,[200 1950; 800 1950; 1500 1950], {'Host Speed', 'Target Speed', 'Estimated Speed'}, 'FontSize',50);
