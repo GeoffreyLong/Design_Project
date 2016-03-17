@@ -26,24 +26,22 @@ nFrames = v.NumberOfFrames;
 % NOTE: We don't really need host for this script
 [host, target] = getdetailedsrt(filePath, nFrames);
 
-% DETECTION OBJECT
-% I think we would want an array of arrays or a cell of arrays
-% Inside each cell would be a bounding box with the probability that the
-% plane is a valid object
-% PERHAPS we would want to save the tracks of each cell, i.e. all of the
-% previous detections go into the cell of interest. So the cell will be a
-% list of all detections belonging to the track where the most recent
-% detection is the current one.
-%   Then I guess we would want tracks and current detections
-%   Tracking will add the current detections to their appropriate tracks
-%   So we would actually have two objects, one containing the tracks as
-%   they occur, the other containing the detections of this iteration. 
-% All of the detections (in the tracking cell or in the detections) will
-% have the form... Perhaps TTC will be only in tracks?
+% DETECTION OBJECTS
+% There will be two objects, one for detection, the other for tracking
+% Both of these will have the form of 
 %   x, y, xSize, ySize, probability, (TTC?)
+%   Perhaps TTC will be only in tracks?
+
+% detections
+%   This will be an array of unassigned detections
+%   The detection stage will populate this array
+% tracks
+%   This will be a cell of arrays. Each array will contain a single track.
+%   This will be populated by the tracking phase. The tracking will take
+%   each of the detections to see if they belong in a given track. If they
+%   do not, then a new track will be made.
 % detections = [];
 % tracks = {};
-
 
 
 for i = 1:nFrames
@@ -60,17 +58,26 @@ for i = 1:nFrames
 %   end
 
     % If we do have previous detections, we will want to do a more in depth
-    % analysis of these locations. This will probably be where we run our CNN
+    % analysis of these locations. This will take the most recent detection
+    % of each track and check the area for the most recent detection.
+    % This will probably be where we run our CNN.
     % Will likely want to do this even if we ran a full detection on this run
 %   detections.add(focusedDetection(detections))
 
-    % Will want to overwrite the detections based on what the tracking returns. 
+    % Will want to overwrite the tracks object based on what the tracking returns. 
     % The tracking will update the probability of the detections based on
-    % the motion of the plane. 
+    % the motion of the plane. It will take the new detections and see if
+    % they belong on any of the tracks.
+    % TODO we need to decide if each of the detections gets a probability
+    % or if the whole track gets a probability. If we give each detection a
+    % probability then perhaps we would want to regressively update the
+    % probabilities of previous detections in the track based on the new
+    % detection and the track. Tracks that have a low probability should be
+    % removed from the system.
     % It is possible that we will return new detections though, might want
-    % to structure this similar to tracking where every few frames there is
-    % a more in depth tracking (not during in depth detection though)
-%   detections = tracking(detections)
+    %   to structure this similar to tracking where every few frames there is
+    %   a more in depth tracking (not during in depth detection though)
+%   tracks = tracking(detections, tracks)
 
     % Time to collision estimation
     % Might be a part of tracking
