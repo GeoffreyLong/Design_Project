@@ -31,13 +31,13 @@ height = v.Height;
 mu = 68.0164;
 sigma = 16.2477;
 
-for i = 1:nFrames
+for i = 2100:nFrames
     % Read in necessary data
     img = read(v, i);
     curHost = host(i,:);
 
     % Rotate the image
-    img = imrotate(img, -curHost(3), 'crop');
+    img = imrotate(img, -curHost(4), 'crop');
 
     % Horizon estimation
     y = rotated_horizon_detection(curHost, 2050);

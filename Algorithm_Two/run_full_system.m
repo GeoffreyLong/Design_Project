@@ -20,6 +20,7 @@ filePath = char(filePaths{4})
 v = VideoReader(filePath);
 nFrames = v.NumberOfFrames;
 height = v.Height;
+width = v.Width;
 
 % Read in the SRT data
 % We don't really need to read it one at a time to simulate a real system.
@@ -47,11 +48,16 @@ height = v.Height;
 
 for i = 1:nFrames
     % Read in necessary data
-    img = read(v, i);
+    origImg = read(v, i);
     curHost = host(i,:);
 
     % Rotate the image
-%    img = imageCompensation(
+    rotatedImage = imrotate(origImg, -curHost(4), 'crop');
+
+    % Grab the initial detections
+    % Not running the modulus full screen yet
+    detections = initial_detections(rotatedImage, curHost, height, width)
+    
     
     % So we will want to do a full screen detection sparingly as these are expensive.
     % It should definitely be done every X frames, but also if there are no planes detected.

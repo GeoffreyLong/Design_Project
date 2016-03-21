@@ -10,22 +10,28 @@ function [ detections ] = initial_detections( image, host, height, width )
 %   Then it will perform a CMO in this region.
 %   The CMOs returned will be further vetted by ???
 
+%TODO make this more sophisticated
+% This works, but it could be better
+% We shouldn't use this "bang bang" style of filtering, should attach the probabilities
+% This is a good initial iteration though
+
+% sigma = 1 -> 0.68
+% sigma = 2 -> 0.95
+% sigma = 3 -> 0.997
+
     %TODO get the optimal for these
     % nHood can be found through the exp_cmos
     % high/low thresh from the static CMO response model
-%    nHood = ?;
-%    highThresh = ?;
-%    lowThresh = ?
+    nHood = strel('disk', 7);
+    highThreshMU = 0.163;
+    highThreshSigma = 0.112;
+    lowThreshMU = 0.116;
+    lowThreshSigma = 0.111;
 
     % PDF_Y from Static_Plane_Location_Model
+    % TODO recheck on rotated image
     mu = 68.0164;
     sigma = 16.2477;
-
-
-    detections = [];
-    
-        % Rotate the image
-    img = imrotate(img, -curHost(3), 'crop');
 
     % Horizon estimation
     horizonY = rotated_horizon_detection(host, height);
@@ -43,9 +49,13 @@ function [ detections ] = initial_detections( image, host, height, width )
     im = close - open;
     
     % binarize the image 
-    bw = im2bw(im, thresh);
+    % TODO recheck the thresholds on this image subset
+    bw = im2bw(im, lowThreshMU);
     L = bwlabel(bw);
-    s = regionprops(L);
-
+    
+    s = regionprops(L, 'BoundingBox', 'Centroid');
+    detections = zeros(numel(s),4);
+    for j=1:numel(s)
+        detections(j,:) = s(j).BoundingBox;
+    end
 end
-
