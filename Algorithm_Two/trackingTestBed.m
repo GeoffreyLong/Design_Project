@@ -18,7 +18,8 @@ end
 
 % first detection at frame
 firstDetection = rect(1);
-tracker = [];
+posTracker = [];
+areaTracker = [];
 rectIndx = 1;
 for i = firstDetection:firstDetection+20
     
@@ -43,11 +44,11 @@ for i = firstDetection:firstDetection+20
         % center point is the center of the bounding box on the detection         
         centerPoint = [x y 3];
         
-        newTrack = tracking(tempRect, host(i,:), target(i,:));
-        tracker = [tracker; newTrack];
+        [posTrack, areaTrack] = tracking(tempRect, host(i,:), target(i,:));
+        posTracker = [posTracker; posTrack];
+        areaTracker = [areaTracker; areaTrack];
         
-%   %       next need to pass in detection, srt data of the frame to
-%   tracking file
+%   
     else
         tempRect = [0 0 0 0];   
         centerPoint = [0 0 0];             
