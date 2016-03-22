@@ -12,48 +12,77 @@ function kalmanTracking
         % Create utilities used for reading video, detecting moving objects,
         % and displaying the results.
         utilities = createUtilities(param);
-
+        
+        % Get the number of frame in the video
+        nFrames = utilities.videoReader.NumberOfFrames;
+        
+        % Get frame number of first detection
+        rect = utilities.detections;
+        firstDetection = rect(1);
         isTrackInitialized = false;
-        while ~isDone(utilities.videoReader)
-            frame = readFrame();
+        rectIndx = 1;
+        
+        for i = 1:nFrames
+            
+            
+            frame = read(utilities.videoReader,i);
+   
+            if i >= firstDetection
+                try
+                    % Detect the plane            
+                    detection = [rect(rectIndx,2) rect(rectIndx,3) rect(rectIndx,4) rect(rectIndx,5)];
+                    x = detection(1)+0.5*detection(3);
+                    y = detection(2)+0.5*detection(4);
 
-            % Detect the ball.
-            [detectedLocation, isObjectDetected] = detectObject(frame);
-
+                    % detectedLocation is the midpoint of the detection
+                    detectedLocation = [x y];
+                    isObjectDetected = true;
+                    % Incremement rectIndx
+                   
+                catch
+                    % If no detection captured in this frame
+                    detectedLocation = [];
+                    isObjectDetected = false;
+                    
+                end
+                
+                rectIndx = rectIndx + 1;
+            end
+            
             if ~isTrackInitialized
-              if isObjectDetected
-                % Initialize a track by creating a Kalman filter when the ball is
-                % detected for the first time.
-                initialLocation = computeInitialLocation(param, detectedLocation);
-                kalmanFilter = configureKalmanFilter(param.motionModel, ...
-                  initialLocation, param.initialEstimateError, ...
-                  param.motionNoise, param.measurementNoise);
+                if isObjectDetected
+                    % Initialize a track by creating a Kalman filter when the ball is
+                    % detected for the first time.
+                    initialLocation = computeInitialLocation(param, detectedLocation);
+                    kalmanFilter = configureKalmanFilter(param.motionModel, ...
+                    initialLocation, param.initialEstimateError, ...
+                    param.motionNoise, param.measurementNoise);
 
-                isTrackInitialized = true;
-                trackedLocation = correct(kalmanFilter, detectedLocation);
-                label = 'Initial';
-              else
-                trackedLocation = [];
-                label = '';
-              end
+                    isTrackInitialized = true;
+                    trackedLocation = correct(kalmanFilter, detectedLocation);
+                    label = 'Initial';
+                else
+                    trackedLocation = [];
+                    label = '';
+                end
 
             else
-              % Use the Kalman filter to track the ball.
-              if isObjectDetected % The ball was detected.
-                % Reduce the measurement noise by calling predict followed by
-                % correct.
-                predict(kalmanFilter);
-                trackedLocation = correct(kalmanFilter, detectedLocation);
-                label = 'Corrected';
-              else % The ball was missing.
-                % Predict the ball's location.
-                trackedLocation = predict(kalmanFilter);
-                label = 'Predicted';
-              end
+                % Use the Kalman filter to track the ball.
+                if isObjectDetected % The ball was detected.
+                    % Reduce the measurement noise by calling predict followed by
+                    % correct.
+                    predict(kalmanFilter);
+                    trackedLocation = correct(kalmanFilter, detectedLocation);
+                    label = 'Corrected';
+                else % The ball was missing.
+                    % Predict the ball's location.
+                    trackedLocation = predict(kalmanFilter);
+                    label = 'Predicted';
+                end
             end
 
             annotateTrackedObject();
-          end % while
+        end % while
 
           showTrajectory();
     end
@@ -100,24 +129,7 @@ function kalmanTracking
     end
 
 
-    % Read the next video frame from the video file.
-    function frame = readFrame()
-        frame = step(utilities.videoReader);
-    end
-
-    % Detect the ball in the current video frame.
-    function [detection, isObjectDetected] = detectObject(frame)
-        grayImage = rgb2gray(frame);
-        utilities.foregroundMask = step(utilities.foregroundDetector, grayImage);
-        detection = step(utilities.blobAnalyzer, utilities.foregroundMask);
-        if isempty(detection)
-            isObjectDetected = false;
-        else
-            % To simplify the tracking process, only use the first detected object.
-            detection = detection(1, :);
-            isObjectDetected = true;
-        end
-    end
+   
 
     % Show the current detection and tracking results.
     function annotateTrackedObject()
@@ -142,18 +154,17 @@ function kalmanTracking
         utilities.accumulatedDetections = [utilities.accumulatedDetections; detectedLocation];
         utilities.accumulatedTrackings  = [utilities.accumulatedTrackings; trackedLocation];
     end
+
     % Create utilities for reading video, detecting moving objects, and
     % displaying the results.
+    
     function utilities = createUtilities(param)
         % Create System objects for reading video, displaying video, extracting
         % foreground, and analyzing connected components.
-        utilities.videoReader = vision.VideoFileReader('singleball.avi');
-        utilities.videoPlayer = vision.VideoPlayer('Position', [100,100,500,400]);
-        utilities.foregroundDetector = vision.ForegroundDetector(...
-        'NumTrainingFrames', 10, 'InitialVariance', param.segmentationThreshold);
-        utilities.blobAnalyzer = vision.BlobAnalysis('AreaOutputPort', false, ...
-        'MinimumBlobArea', 70, 'CentroidOutputPort', true);
-
+        videoFile = '/Users/Xavier/Documents/workspace/Design_Project/Algorithm_Two/cam1_01.avi';
+        detectionFile  = '/Users/Xavier/Documents/workspace/Design_Project/testData/Generated_Detections/July_6_cam1_01.avi.dat';
+        utilities.videoReader = VideoReader(videoFile);
+        utilities.detections = csvread(detectionFile);
         utilities.accumulatedImage      = 0;
         utilities.accumulatedDetections = zeros(0, 2);
         utilities.accumulatedTrackings  = zeros(0, 2);
