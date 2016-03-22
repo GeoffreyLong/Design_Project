@@ -1,4 +1,4 @@
-function [ outputVector ] = tracking(rect, host, target)
+function [ tracker ] = tracking(rect, host, target)
 %   tracking function should take in a detection and perform
 %   operations on it, and output results to a seperate file for 
 %   further analysis
@@ -6,10 +6,26 @@ function [ outputVector ] = tracking(rect, host, target)
     x = rect(1)+0.5*rect(3);
     y = rect(2)+0.5*rect(4);
     
-    midpoint = [x y];
+    midPoint = [x y];
+%     trackingStatement = 'Midpoint is [%f, %f]\n';
+%     fprintf(trackingStatement,rect);
     
-%     now write to external file
-
+    % GROUND TRUTH DATA
+    hostData = 'Host: Heading = %f\n';
+    fprintf(hostData, host(5));
+    
+    targetData = 'Target: Azimuth = %f, Distance = %f\n';
+    fprintf(targetData, target(2), target(4));
+    % GROUND TRUTH DATA END
+    
+    fprintf('________________\n');
+    
+   
+        
+   
+    %append new midpoint to track
+    tracker = midPoint;  
+    
 
 
 end
