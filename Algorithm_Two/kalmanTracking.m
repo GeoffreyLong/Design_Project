@@ -6,6 +6,8 @@ function kalmanTracking
     label = '';
     utilities = []; %utilities used process video
     
+    locationTrack = [];
+    sizeTrack = [];
     % The procedure for tracking a single object is shown below.
     function trackSingleObject(param)
         
@@ -22,11 +24,11 @@ function kalmanTracking
         isTrackInitialized = false;
         rectIndx = 1;
         
-        for i = 1:nFrames
+        for i = firstDetection:nFrames
             
             
-            frame = read(utilities.videoReader,i);
-   
+            utilities.currentFrame = read(utilities.videoReader,i);
+    
             if i >= firstDetection
                 try
                     % Detect the plane            
@@ -36,55 +38,63 @@ function kalmanTracking
 
                     % detectedLocation is the midpoint of the detection
                     detectedLocation = [x y];
-                    isObjectDetected = true;
-                    % Incremement rectIndx
-                   
                 catch
                     % If no detection captured in this frame
                     detectedLocation = [];
-                    isObjectDetected = false;
                     
                 end
                 
                 rectIndx = rectIndx + 1;
             end
             
+            if isempty(detectedLocation)
+                isObjectDetected = false;
+            else
+                % To simplify the tracking process, only use the first detected object.
+%                 detection = detectedLocation(1, :);
+                isObjectDetected = true;
+            end
+            
             if ~isTrackInitialized
                 if isObjectDetected
-                    % Initialize a track by creating a Kalman filter when the ball is
+                    % Initialize a track by creating a Kalman filter when the target is
                     % detected for the first time.
-                    initialLocation = computeInitialLocation(param, detectedLocation);
+                    initialLocation = [0 0];
                     kalmanFilter = configureKalmanFilter(param.motionModel, ...
                     initialLocation, param.initialEstimateError, ...
                     param.motionNoise, param.measurementNoise);
 
                     isTrackInitialized = true;
                     trackedLocation = correct(kalmanFilter, detectedLocation);
-                    label = 'Initial';
                 else
                     trackedLocation = [];
-                    label = '';
                 end
 
             else
-                % Use the Kalman filter to track the ball.
-                if isObjectDetected % The ball was detected.
+                % Use the Kalman filter to track the target.
+                if isObjectDetected % The target was detected.
                     % Reduce the measurement noise by calling predict followed by
                     % correct.
                     predict(kalmanFilter);
                     trackedLocation = correct(kalmanFilter, detectedLocation);
-                    label = 'Corrected';
-                else % The ball was missing.
-                    % Predict the ball's location.
+                else % The target was missing.
+                    % Predict the target's location.
                     trackedLocation = predict(kalmanFilter);
-                    label = 'Predicted';
                 end
             end
-
-            annotateTrackedObject();
+            
+            % Accumulate detection locations and tracked locations
+            utilities.accumulatedDetections = [utilities.accumulatedDetections; detectedLocation];
+            utilities.accumulatedTrackings = [utilities.accumulatedTrackings; trackedLocation];
+            
+            test1 = insertShape(utilities.currentFrame, 'Circle', [ detectedLocation, 3], 'LineWidth', 3, 'Color', 'red');
+            test2 = insertShape(test1, 'Circle', [ trackedLocation, 3], 'LineWidth', 3, 'Color', 'green');
+%          RGB = insertText(img,[200 1950; 800 1950; 1500 1950], {'Host Speed', 'Target Speed', 'Estimated Speed'}, 'FontSize',50);
+            imshow(test2);
+            
         end % while
+        
 
-          showTrajectory();
     end
 
 
@@ -116,44 +126,19 @@ function kalmanTracking
 % results. This section illustrates how the example implemented these
 % functions.
 
-
 % Get default parameters for creating Kalman filter and for segmenting the
 % ball.
+    
+    
     function param = getDefaultParameters
         param.motionModel           = 'ConstantAcceleration';
-        param.initialLocation       = 'Same as first detection';
         param.initialEstimateError  = 1E5 * ones(1, 3);
         param.motionNoise           = [25, 10, 1];
         param.measurementNoise      = 25;
         param.segmentationThreshold = 0.05;
     end
 
-
-   
-
-    % Show the current detection and tracking results.
-    function annotateTrackedObject()
-        accumulateResults();
-        % Combine the foreground mask with the current video frame in order to
-        % show the detection result.
-        combinedImage = max(repmat(utilities.foregroundMask, [1,1,3]), frame);
-
-        if ~isempty(trackedLocation)
-            shape = 'circle';
-            region = trackedLocation;
-            region(:, 3) = 5;
-            combinedImage = insertObjectAnnotation(combinedImage, shape, region, {label}, 'Color', 'red');
-        end
-        step(utilities.videoPlayer, combinedImage);
-    end
-
-    % Accumulate video frames, detected locations, and tracked locations to
-    % show the trajectory of the ball.
-    function accumulateResults()
-        utilities.accumulatedImage      = max(utilities.accumulatedImage, frame);
-        utilities.accumulatedDetections = [utilities.accumulatedDetections; detectedLocation];
-        utilities.accumulatedTrackings  = [utilities.accumulatedTrackings; trackedLocation];
-    end
+  
 
     % Create utilities for reading video, detecting moving objects, and
     % displaying the results.
@@ -163,11 +148,14 @@ function kalmanTracking
         % foreground, and analyzing connected components.
         videoFile = '/Users/Xavier/Documents/workspace/Design_Project/Algorithm_Two/cam1_01.avi';
         detectionFile  = '/Users/Xavier/Documents/workspace/Design_Project/testData/Generated_Detections/July_6_cam1_01.avi.dat';
+        utilities.currentFrame = 0;
         utilities.videoReader = VideoReader(videoFile);
         utilities.detections = csvread(detectionFile);
-        utilities.accumulatedImage      = 0;
         utilities.accumulatedDetections = zeros(0, 2);
         utilities.accumulatedTrackings  = zeros(0, 2);
     end
-    
+    param = getDefaultParameters();  % get Kalman configuration that works well
+                                 % for this example
+                                 
+    trackSingleObject(param);  % visualize the results
 end
