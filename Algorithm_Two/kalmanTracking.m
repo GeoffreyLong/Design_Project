@@ -3,7 +3,6 @@ function kalmanTracking
     frame = []; %video frame
     detectedLocation = []; %detected object location
     trackedLocation = []; %location after kalman filtering
-    label = '';
     utilities = []; %utilities used process video
     
     locationTrack = [];
