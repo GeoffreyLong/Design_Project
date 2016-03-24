@@ -1,3 +1,5 @@
+% This file will get the generated detections and bound them tighter via manual selection
+
 %filePath = 'testData/Feb_13_cam1_5.avi';
 %filePath = 'testData/July_6_cam1_01.avi';
 filePath = 'testData/July_8_cam1_03.avi';
