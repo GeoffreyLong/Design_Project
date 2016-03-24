@@ -39,6 +39,8 @@ for i=1:size(readRect,1)
     bw = im2bw(im, thresh);
     L = bwlabel(bw, 4);
     
+    bounds = zeros(9,4);
+    
     % There are a lot of cool regionprops that could be useful
     % Particularly userprops
     s = regionprops(L,'BoundingBox', 'Centroid');
@@ -51,11 +53,9 @@ for i=1:size(readRect,1)
         s = regionprops(L,'BoundingBox', 'Centroid');
     end
     
-    bound = [0 0 0 0];
-    centroid = round(s(1).Centroid);
-    newbound1 = s(1).BoundingBox
-    newImg1 = insertShape(newImg, 'Rectangle', newbound1, 'LineWidth', 1, 'color', 'blue');
-    subplot(1,3,1), subimage(newImg1);
+    bounds(1,:) = s(1).BoundingBox;
+    img = insertShape(newImg, 'Rectangle', s(1).BoundingBox, 'LineWidth', 1, 'color', 'blue');
+    subplot(3,3,1), subimage(img);
 
     lowThresh = 0;
     while (numel(s) == 1 && thresh > 0)
@@ -66,47 +66,38 @@ for i=1:size(readRect,1)
     end
 
     lowThresh = thresh + 1/256;
-    bound = [0 0 0 0];
-    centroid = round(s(1).Centroid);
-    newbound2 = s(1).BoundingBox
-    newImg2 = insertShape(newImg, 'Rectangle', newbound2, 'LineWidth', 1, 'color', 'blue');
-    subplot(1,3,2), subimage(newImg2);
+    bounds(9,:) = s(1).BoundingBox;
+    img = insertShape(newImg, 'Rectangle', s(1).BoundingBox, 'LineWidth', 1, 'color', 'blue');
+    subplot(3,3,9), subimage(img);
     
-    midThresh = (highThresh + lowThresh) / 2;
-    bw = im2bw(im, midThresh);
-    L = bwlabel(bw, 4);
-    s = regionprops(L,'BoundingBox', 'Centroid');
-    if (numel(s) >=1)
-        newbound3 = s(1).BoundingBox
-        newImg3 = insertShape(newImg, 'Rectangle', newbound3, 'LineWidth', 1, 'color', 'blue');
-        subplot(1,3,3), subimage(newImg3);        
+    threshBound = (highThresh - lowThresh) / 7;
+    thresh = highThresh;
+    for j=2:8
+        thresh = thresh - threshBound;
+        bw = im2bw(im, thresh);
+        L = bwlabel(bw, 4);
+        s = regionprops(L,'BoundingBox');
+        if (numel(s) >= 1)
+            bounds(j,:) = s(1).BoundingBox;
+            img = insertShape(newImg, 'Rectangle', s(1).BoundingBox, 'LineWidth', 1, 'color', 'blue');
+            subplot(3,3,j), subimage(img);        
+        end    
     end
-    
-    
 
     
-    % Choose the image to save, press '1', '2', or '3' to choose
+    % Choose the image to save, press '1' through '9' to choose
     % Press ctrl-c to exit
     % Any other key to continue
-    CH = getkey;
-    if CH == 49 % Corresponds to a 'y', will save the image
-        % Normalize the bounds to be from the initial image coords
-        newbound1(1) = curRect(2) + newbound1(1);
-        newbound1(2) = curRect(3) + newbound1(2);
+    CH = getkey
+    if CH >= 49 && CH <= 57 % Corresponds to '1' through '9'
+        % Get the index from the keystroke
+        idx = CH - 48
         
-        newRect = [newRect; [imageNumber newbound1]];
-    elseif CH == 50 % Corresponds to a 'y', will save the image
         % Normalize the bounds to be from the initial image coords
-        newbound2(1) = curRect(2) + newbound2(1);
-        newbound2(2) = curRect(3) + newbound2(2);
+        bounds(idx,1) = curRect(2) + bounds(idx,1);
+        bounds(idx,2) = curRect(3) + bounds(idx,2);
         
-        newRect = [newRect; [imageNumber newbound2]];
-    elseif CH == 51 % Corresponds to a 'y', will save the image
-        % Normalize the bounds to be from the initial image coords
-        newbound3(1) = curRect(2) + newbound3(1);
-        newbound3(2) = curRect(3) + newbound3(2);
-        
-        newRect = [newRect; [imageNumber newbound3]];
+        newRect = [newRect; [imageNumber bounds(idx,:)]];
     elseif CH == 3 % A ctrl-c command will exit the program
        break;
     end
