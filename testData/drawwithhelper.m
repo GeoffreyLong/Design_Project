@@ -49,8 +49,11 @@ nClicks = 0;
 nFrameSkip = 0;
 nSkips = 0;
 
-croppedRect = [0,0,v.Width,v.Height];
-%croppedRect = [900,900,300,300];
+xOffset = 0;
+yOffset = 0;
+width = v.Width;
+height = v.Height;
+croppedRect = [xOffset,yOffset,width,height];
 
 % Iterate through the image frames
 for i = 1:nFrames
@@ -76,7 +79,7 @@ for i = 1:nFrames
                 tmpIdx = 1;
 
                 while (readIdx <= maxRectIdx && readRect(readIdx,1) == i)
-                    tmpRects(tmpIdx, :) = [readRect(readIdx,2)-croppedRect(1) readRect(readIdx,3)-croppedRect(2) readRect(readIdx,4) readRect(readIdx,5)];
+                    tmpRects(tmpIdx, :) = [readRect(readIdx,2) readRect(readIdx,3) readRect(readIdx,4) readRect(readIdx,5)];
                     readIdx = readIdx + 1;
                     tmpIdx = tmpIdx + 1;
                 end

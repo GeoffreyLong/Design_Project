@@ -21,8 +21,8 @@ fileName = strcat(fileName, '.dat')
 
 
 try
-    csvwrite(fileName, rect);
     disp(fileName);
+    csvwrite(fileName, rect);
 catch
     % If error on write then isSuccess is false
     isSuccess = false;
