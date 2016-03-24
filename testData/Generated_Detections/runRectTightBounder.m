@@ -1,7 +1,7 @@
 %filePath = '../Feb_13_cam1_5.avi';
-%filePath = '../July_6_cam1_01.avi';
+filePath = 'testData/July_6_cam1_01.avi';
 %filePath = '../July_8_cam1_01.avi';
-filePath = '../July_8_cam1_02.avi';
+%filePath = '../July_8_cam1_02.avi';
 %filePath = '../July_8_cam1_03.avi';
 %filePath = '../July_8_cam1_04.avi';
 %filePath = '../July_8_cam1_08.avi';
@@ -71,6 +71,6 @@ for i=1:size(readRect,1)
 end
 
 addString = 'tightBound_';
-%readRect = readrectxml(filePath,addString);
-%writeRect = averagerects(newRect,readRect);
-%writerectxml(filePath,writeRect,addString)
+readRect = readrectxml(filePath,addString);
+writeRect = averagerects(newRect,readRect);
+writerectxml(filePath,writeRect,addString)
