@@ -1,5 +1,5 @@
 %filePath = '../Feb_13_cam1_5.avi';
-filePath = 'testData/July_6_cam1_01.avi';
+filePath = 'Test_Data/July_6_cam1_01.avi';
 %filePath = '../July_8_cam1_01.avi';
 %filePath = '../July_8_cam1_02.avi';
 %filePath = '../July_8_cam1_03.avi';
@@ -20,7 +20,11 @@ filePath = 'testData/July_6_cam1_01.avi';
 v = VideoReader(filePath);
 
 readRect = readrectxml(filePath);
-se = strel('disk',7);
+
+% Having a tight bound will actually get tighter detections
+% Note that disk 7 is the se currently used in detection
+se = strel('disk',1);
+dilation = strel('disk',4);
 newRect = [];
 
 for i=1:size(readRect,1)
@@ -33,7 +37,7 @@ for i=1:size(readRect,1)
     open = imopen(newImg,se);
     close = imclose(newImg,se); 
     im = close - open;
-    im = imdilate(im,se);
+    im = imdilate(im,dilation);
 
     thresh = 0.30;
     bw = im2bw(im, thresh);

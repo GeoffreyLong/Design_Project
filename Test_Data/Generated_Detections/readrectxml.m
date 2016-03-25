@@ -19,7 +19,7 @@ end
 videoPathTokens = strread(videoPath,'%s','delimiter','/');
 filePath = videoPathTokens(length(videoPathTokens));
 fileName = char(filePath);
-fileName = strcat('testData/Generated_Detections/', addString, fileName, '.dat');
+fileName = strcat('Test_Data/Generated_Detections/Detections/', addString, fileName, '.dat');
 
 try
     rect = csvread(fileName);
