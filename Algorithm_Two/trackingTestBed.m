@@ -21,7 +21,8 @@ firstDetection = rect(1);
 posTracker = [];
 areaTracker = [];
 rectIndx = 1;
-for i = firstDetection:firstDetection+20
+
+for i = firstDetection:firstDetection+1
     
 %   host: All of the own-ship information
 %       [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
@@ -42,29 +43,40 @@ for i = firstDetection:firstDetection+20
         y = tempRect(2)+0.5*tempRect(4);
         
         % center point is the center of the bounding box on the detection         
-        centerPoint = [x y 3];
+        midPoint = [x y];
         
-        [posTrack, areaTrack] = tracking(tempRect, host(i,:), target(i,:));
-        posTracker = [posTracker; posTrack];
-        areaTracker = [areaTracker; areaTrack];
+%         [posTrack, areaTrack] = tracking(tempRect, host(i,:), target(i,:));
+%         posTracker = [posTracker; posTrack];
+%         areaTracker = [areaTracker; areaTrack];
         
-%   
+        % Get heading of target
+        hostHeading = host(i,5);
+        
+        %estimate distance to target
+        calcRect = estimateDistance(target(i,:), host(i,:));
+        actDist = target(i,4);
+        actAlt = target(i,3);
+       
+        fprintf('Est. Distance: %f, Act. Distance = %f\n', calcRect(1), actDist);
+        fprintf('Est. Size: %f\n',calcRect(3));
+
+
+        % GROUND TRUTH DATA END
+    
+        fprintf('________________\n');
+    
+%         test1 = insertShape(img, 'Circle', [ midPoint, 3], 'LineWidth', 3, 'Color', 'red');
+       % RGB = insertText(test1,[200 1950; 800 1950], {strcat('est. distance: ', distance), strcat('act. distance ',actDist )}, 'FontSize',50);
+%         imshow(test1);
+        
+        
     else
         tempRect = [0 0 0 0];   
         centerPoint = [0 0 0];             
     end
     
     
+   
     
-%     if isEmpty(tracker)
-%         tracker = [newTrack];
-%     else
-        
-%     end
-    
-%     testImage = insertShape(img, 'Rectangle', tempRect, 'LineWidth', 2);
-%     test2 = insertShape(testImage, 'Circle', centerPoint, 'LineWidth', 3);
-%     RGB = insertText(img,[200 1950; 800 1950; 1500 1950], {'Host Speed', 'Target Speed', 'Estimated Speed'}, 'FontSize',50);
-%     imshow(test2);
    
 end

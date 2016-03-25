@@ -86,9 +86,10 @@ function kalmanTracking
             utilities.accumulatedDetections = [utilities.accumulatedDetections; detectedLocation];
             utilities.accumulatedTrackings = [utilities.accumulatedTrackings; trackedLocation];
             
+            
             test1 = insertShape(utilities.currentFrame, 'Circle', [ detectedLocation, 3], 'LineWidth', 3, 'Color', 'red');
             test2 = insertShape(test1, 'Circle', [ trackedLocation, 3], 'LineWidth', 3, 'Color', 'green');
-%          RGB = insertText(img,[200 1950; 800 1950; 1500 1950], {'Host Speed', 'Target Speed', 'Estimated Speed'}, 'FontSize',50);
+           %RGB = insertText(img,[200 1950; 800 1950; 1500 1950], {'Host Speed', 'Target Speed', 'Estimated Speed'}, 'FontSize',50);
             imshow(test2);
             
         end % while
@@ -97,36 +98,6 @@ function kalmanTracking
     end
 
 
-% Track Multiple Objects Using Kalman Filter
-
-% Tracking multiple objects poses several additional challenges:
-
-% * Multiple detections must be associated with the correct tracks
-% * You must handle new objects appearing in a scene 
-% * Object identity must be maintained when multiple objects merge into a
-%   single detection
-%
-% The |vision.KalmanFilter| object together with the
-% |assignDetectionsToTracks| function can help to solve the problems of
-
-
-% * Assigning detections to tracks
-% * Determining whether or not a detection corresponds to a new object, 
-%   in other words, track creation
-% * Just as in the case of an occluded single object, prediction can be
-%   used to help separate objects that are close to each other
-%
-% To learn more about using Kalman filter to track multiple objects, see
-% the example titled <matlab:showdemo('multiObjectTracking')
-% Motion-Based Multiple Object Tracking>.
-
-% Utility Functions Used in the Example
-% Utility functions were used for detecting the objects and displaying the
-% results. This section illustrates how the example implemented these
-% functions.
-
-% Get default parameters for creating Kalman filter and for segmenting the
-% ball.
     
     
     function param = getDefaultParameters
