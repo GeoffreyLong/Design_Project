@@ -9,7 +9,7 @@ videoPathTokens = strread(filePath,'%s','delimiter','/');
 filePath = videoPathTokens(length(videoPathTokens));
 fileName = char(filePath);
 fileName = strsplit(fileName, '.');
-fileName = strcat('testData/Detailed_SRTs/', fileName{1}, '.srt');
+fileName = strcat('Test_Data/Detailed_SRTs/', fileName{1}, '.srt');
 
 fileID = fopen(fileName);
 host = zeros(nFrames, 5);

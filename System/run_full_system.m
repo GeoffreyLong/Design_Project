@@ -3,14 +3,14 @@
 % All the files for the videos... We actually only want the SRT ones,
 %   so pare this down
 filePaths = {
-    '/home/geoffrey/Dropbox/Temps/Design_Project/testData/Feb_13_cam1_5.avi', ...
-    '/home/geoffrey/Dropbox/Temps/Design_Project/testData/July_6_cam1_01.avi', ...
-    '/home/geoffrey/Dropbox/Temps/Design_Project/testData/July_8_cam1_01.avi', ...
-    '/home/geoffrey/Dropbox/Temps/Design_Project/testData/July_8_cam1_02.avi', ... 
-    '/home/geoffrey/Dropbox/Temps/Design_Project/testData/July_8_cam1_03.avi', ...
-    '/home/geoffrey/Dropbox/Temps/Design_Project/testData/July_8_cam1_04.avi', ...
-    '/home/geoffrey/Dropbox/Temps/Design_Project/testData/July_8_cam1_08.avi', ... 
-    '/home/geoffrey/Dropbox/Temps/Design_Project/testData/Oct_20_cam3_07.avi', ...
+    'Test_Data/Feb_13_cam1_5.avi', ...
+    'Test_Data/July_6_cam1_01.avi', ...
+    'Test_Data/July_8_cam1_01.avi', ...
+    'Test_Data/July_8_cam1_02.avi', ... 
+    'Test_Data/July_8_cam1_03.avi', ...
+    'Test_Data/July_8_cam1_04.avi', ...
+    'Test_Data/July_8_cam1_08.avi', ... 
+    'Test_Data/Oct_20_cam3_07.avi', ...
 };
 
 % Select one of the videos for testing
@@ -65,18 +65,24 @@ for i = 1:nFrames
     % away from the plane)
 %   if (mod(i, MODULO) || isEmpty(detections))
 %       detections.add(full_detection(img, curHost));
-%   else
-        % Might ALSO want to do an initial_detections on the other runs
-        % Not so sure how these two should interact
-        % Might only want to run this if full detection takes too long
-%       detections.add(initial_detections(img, curHost));
 %   end
+
+
     % If we do have previous detections, we will want to do a more in depth
     % analysis of these locations. This will take the most recent detection
     % of each track and check the area for the most recent detection.
-    % This will probably be where we run our CNN.
     % Will likely want to do this even if we ran a full detection on this run
-%   detections.add(focusedDetection(detections))
+    % Perhaps we will only want to do this if a suitable next detection has
+    % not been found for a given track? Therefore we might want to move it
+    % down or into the tracking part
+%   for each track cell in the track cell array
+%       detections.add(focused_detections(rotatedImage, track[0]));
+%   end
+
+    % After we get all of our detections, we might want to do some in depth
+    % screening on them. This will take the detections and put them through
+    % the CNN to find the probability that they are indeed detections.
+%   detections = screen_detection(detections)
 
     % Will want to overwrite the tracks object based on what the tracking returns. 
     % The tracking will update the probability of the detections based on
