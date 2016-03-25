@@ -53,13 +53,14 @@ for i = firstDetection:firstDetection+1
         hostHeading = host(i,5);
         
         %estimate distance to target
+        % look up pinhole cameras
         calcRect = estimateDistance(target(i,:), host(i,:));
         actDist = target(i,4);
         actAlt = target(i,3);
        
         fprintf('Est. Distance: %f, Act. Distance = %f\n', calcRect(1), actDist);
         fprintf('Est. Size: %f\n',calcRect(3));
-
+    
 
         % GROUND TRUTH DATA END
     
