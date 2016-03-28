@@ -33,8 +33,9 @@ param.measurementNoise      = 25;
 % param.segmentationThreshold = 0.05;
 
 kalman = KalmanTracker(param);
-
-for i = firstDetection:nFrames+30
+tracker = tr
+tracks = [];
+for i = firstDetection:firstDetection+10
     
 %   host: All of the own-ship information
 %       [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
@@ -47,21 +48,17 @@ for i = firstDetection:nFrames+30
     
     if i >= firstDetection
         
-        tempRect = [rect(rectIndx,2) rect(rectIndx,3) rect(rectIndx,4) rect(rectIndx,5)];
         rectIndx = rectIndx + 1;
-      
-%         fprintf('rectIndx = %f\n',rectIndx);
-        x = tempRect(1)+0.5*tempRect(3);
-        y = tempRect(2)+0.5*tempRect(4);
         
-        % center point is the center of the bounding box on the detection         
-        midPoint = [x y];
+        midPoint = getMidPoint(rect(rectIndx,:));
+        
         track = kalman.track(midPoint);
+        tracks = [tracks;track];
 %         fprintf('detect: %f, track: %f\n', midPoint, track);
-         test1 = insertShape(img, 'Circle', [ midPoint, 3], 'LineWidth', 3, 'Color', 'red');
-         test2 = insertShape(test1, 'Circle', [ track, 3], 'LineWidth', 3, 'Color', 'green');
+%          test1 = insertShape(img, 'Circle', [ midPoint, 3], 'LineWidth', 3, 'Color', 'red');
+%          test2 = insertShape(test1, 'Circle', [ track, 3], 'LineWidth', 3, 'Color', 'green');
            %RGB = insertText(img,[200 1950; 800 1950; 1500 1950], {'Host Speed', 'Target Speed', 'Estimated Speed'}, 'FontSize',50);
-         imshow(test2);
+%          imshow(test2);
 %         [posTrack, areaTrack] = tracking(tempRect, host(i,:), target(i,:));
 %         posTracker = [posTracker; posTrack];
 %         areaTracker = [areaTracker; areaTrack];

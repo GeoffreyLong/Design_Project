@@ -7,6 +7,7 @@ function kalmanTracking
     
     locationTrack = [];
     sizeTrack = [];
+    testTrack=[];
     % The procedure for tracking a single object is shown below.
     function trackSingleObject(param)
         
@@ -23,7 +24,7 @@ function kalmanTracking
         isTrackInitialized = false;
         rectIndx = 1;
         
-        for i = firstDetection:nFrames
+        for i = firstDetection:firstDetection+10
             
             
             utilities.currentFrame = read(utilities.videoReader,i);
@@ -84,17 +85,16 @@ function kalmanTracking
             
             % Accumulate detection locations and tracked locations
             utilities.accumulatedDetections = [utilities.accumulatedDetections; detectedLocation];
-            utilities.accumulatedTrackings = [utilities.accumulatedTrackings; trackedLocation];
+            testTrack = [testTrack; trackedLocation];
             
             
             test1 = insertShape(utilities.currentFrame, 'Circle', [ detectedLocation, 3], 'LineWidth', 3, 'Color', 'red');
             test2 = insertShape(test1, 'Circle', [ trackedLocation, 3], 'LineWidth', 3, 'Color', 'green');
            %RGB = insertText(img,[200 1950; 800 1950; 1500 1950], {'Host Speed', 'Target Speed', 'Estimated Speed'}, 'FontSize',50);
-            imshow(test2);
-            
+%             imshow(test2);
+            fprintf('%f, %f\n', trackedLocation(1), trackedLocation(2));
         end % while
         
-
     end
 
 
@@ -117,7 +117,7 @@ function kalmanTracking
         % Create System objects for reading video, displaying video, extracting
         % foreground, and analyzing connected components.
         videoFile = '/Users/Xavier/Documents/workspace/Design_Project/Algorithm_Two/cam1_01.avi';
-        detectionFile  = '/Users/Xavier/Documents/workspace/Design_Project/testData/Generated_Detections/July_6_cam1_01.avi.dat';
+        detectionFile  = '/Users/Xavier/Documents/workspace/Design_Project/Test_Data/Generated_Detections/Detections/Previous/July_6_cam1_01.avi.dat';
         utilities.currentFrame = 0;
         utilities.videoReader = VideoReader(videoFile);
         utilities.detections = csvread(detectionFile);
