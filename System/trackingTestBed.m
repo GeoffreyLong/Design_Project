@@ -33,9 +33,9 @@ param.measurementNoise      = 25;
 % param.segmentationThreshold = 0.05;
 
 kalman = KalmanTracker(param);
-tracker = tr
-tracks = [];
-for i = firstDetection:firstDetection+10
+tracker = Tracker;
+
+for i = firstDetection:firstDetection+40
     
 %   host: All of the own-ship information
 %       [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
@@ -53,12 +53,27 @@ for i = firstDetection:firstDetection+10
         midPoint = getMidPoint(rect(rectIndx,:));
         
         track = kalman.track(midPoint);
-        tracks = [tracks;track];
+        movAvg = tracker.movingAvg(midPoint);
+        
+        % Get heading of host
+        hostHeading = host(i,5);
+        % get heading estimate of target
+        azimuth = target(i,2);
+%         myAz = radtodeg(-atan((v.width/2 - midPoint(1))/(v.height/2 - midPoint(2))));
+           myAz = (90/v.width)*(v.width/2 - midPoint(1));
+%             targetHeading = tracker.direction(hostHeading);
+        fprintf('azimuth: %f, myAzimuth: %f\n', azimuth, myAz);
+        if movAvg ~= -1
+            
+           
+        end
+        
 %         fprintf('detect: %f, track: %f\n', midPoint, track);
-%          test1 = insertShape(img, 'Circle', [ midPoint, 3], 'LineWidth', 3, 'Color', 'red');
-%          test2 = insertShape(test1, 'Circle', [ track, 3], 'LineWidth', 3, 'Color', 'green');
-           %RGB = insertText(img,[200 1950; 800 1950; 1500 1950], {'Host Speed', 'Target Speed', 'Estimated Speed'}, 'FontSize',50);
-%          imshow(test2);
+%           test1 = insertShape(img, 'Circle', [ midPoint, 3], 'LineWidth', 3, 'Color', 'red');
+%           test2 = insertShape(test1, 'Circle', [ track, 3], 'LineWidth', 3, 'Color', 'green');
+%           
+%           RGB = insertText(test2,[200 1950; 800 1950;], {strcat('Host Heading: ', num2str(hostHeading)), strcat('Target Heading: ', num2str(realHeading))}, 'FontSize',50);
+%           imshow(RGB);
 %         [posTrack, areaTrack] = tracking(tempRect, host(i,:), target(i,:));
 %         posTracker = [posTracker; posTrack];
 %         areaTracker = [areaTracker; areaTrack];
@@ -80,9 +95,7 @@ for i = firstDetection:firstDetection+10
     
 %         fprintf('________________\n');
     
-%         test1 = insertShape(img, 'Circle', [ midPoint, 3], 'LineWidth', 3, 'Color', 'red');
-       % RGB = insertText(test1,[200 1950; 800 1950], {strcat('est. distance: ', distance), strcat('act. distance ',actDist )}, 'FontSize',50);
-%         imshow(test1);
+
         
         
     else

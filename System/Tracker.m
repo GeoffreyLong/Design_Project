@@ -5,6 +5,9 @@ classdef Tracker<handle
         avg = 1;
         sum = 0;
         windowSize = 4;
+        
+        imgHeigh = 2050;
+        imgWidth = 2448;
     end
     
     methods
@@ -37,6 +40,14 @@ classdef Tracker<handle
             this.oldPos = newPos;         
             
         end
+        % This method estimates the relative heading of the target aircraft
+%          function r = heading(this, heading)
+%              avg = this.avg;
+%              pos = this.oldPos;
+%              % Get difference between midpoint of image and target position
+%              change = (this.imgWidth/2) - pos(1);
+%              r = 1;
+%          end
     end
     
 end
