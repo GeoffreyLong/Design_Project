@@ -4,69 +4,240 @@ classdef KalmanTracker<handle
         value;
         isTrackInitialized = false;
         kalmanFilter;
-
+    
+        %for multi 
+        tracks;
+        nextId;
+        centroids;
+        bboxes;
+        mask = [];
+        assignments;
+        unassignedTracks;
+        unassignedDetections;
         
     end
      
     methods (Static)
         
-        function obj = KalmanTracker(param)
-             obj.kalmanFilter = configureKalmanFilter(param.motionModel, ...
-                param.initialLocation, param.initialEstimateError, ...
-                param.motionNoise, param.measurementNoise);
-            
-        end
+       
         
+        % The |initializeTracks| function creates an array of tracks, where each
+        % track is a structure representing a moving object in the video. The
+        % purpose of the structure is to maintain the state of a tracked object.
+        % The state consists of information used for detection to track assignment,
+        % track termination, and display. 
+        
+         function obj = KalmanTracker()
+            %create kalman filter tracker         
+            obj.tracks = struct(...
+                'id', {}, ...
+                'bbox', {}, ...
+                'kalmanFilter', {}, ...
+                'age', {}, ...
+                'totalVisibleCount', {}, ...
+                'consecutiveInvisibleCount', {});
+            
+            obj.nextId = 1; % ID of the next track
+           
+         end
     end
     methods
-%         function obj = KalmanTracker(val)      
-%             obj.value = val;     
-%         end
+        % Predict New Locations of Existing Tracks
+        % Use the Kalman filter to predict the centroid of each track in the
+        % current frame, and update its bounding box accordingly.
+
+        function predictNewLocationsOfTracks(obj)
+            for i = 1:length(obj.tracks)
+            
+                bbox = obj.tracks(i).bbox;
+
+                % Predict the current location of the track.
+                predictedCentroid = predict(obj.tracks(i).kalmanFilter);
+                
+                % Shift the bounding box so that its center is at 
+                % the predicted location.
+                predictedCentroid = predictedCentroid - bbox(3:4) / 2;
+                obj.tracks(i).bbox = [predictedCentroid, bbox(3:4)];
+            end
+        end
+        
+        % Assign Detections to Tracks
+        % Assigning object detections in the current frame to existing tracks is
+        % done by minimizing cost. The cost is defined as the negative
+        % log-likelihood of a detection corresponding to a track.  
+        function [assignments, unassignedTracks, unassignedDetections] = ...
+            detectionToTrackAssignment(this)
+            nTracks = length(this.tracks);
+            nDetections = size(this.centroids, 1);
+
+            % Compute the cost of assigning each detection to each track.
+            cost = zeros(nTracks, nDetections);
+            for i = 1:nTracks
+                cost(i, :) = distance(this.tracks(i).kalmanFilter, this.centroids);
+            end
+        
+            % Solve the assignment problem.
+            costOfNonAssignment = 20;
+            [assignments, unassignedTracks, unassignedDetections] = ...
+            assignDetectionsToTracks(cost, costOfNonAssignment);
+        end
+        
+        % Update Assigned Tracks
+        % The |updateAssignedTracks| function updates each assigned track with the
+        % corresponding detection. It calls the |correct| method of
+        % |vision.KalmanFilter| to correct the location estimate. Next, it stores
+        % the new bounding box, and increases the age of the track and the total
+        % visible count by 1. Finally, the function sets the invisible count to 0. 
+
+        function updateAssignedTracks(this)
+            numAssignedTracks = size(this.assignments, 1);
+            for i = 1:numAssignedTracks
+                trackIdx = this.assignments(i, 1);
+                detectionIdx = this.assignments(i, 2);
+                centroid = this.centroids(detectionIdx, :);
+                bbox = this.bboxes(detectionIdx, :);
+
+                % Correct the estimate of the object's location
+                % using the new detection.
+                correct(this.tracks(trackIdx).kalmanFilter, centroid);
+
+                % Replace predicted bounding box with detected
+                % bounding box.
+                this.tracks(trackIdx).bbox = bbox;
+
+                % Update track's age.
+                this.tracks(trackIdx).age = this.tracks(trackIdx).age + 1;
+
+                % Update visibility.
+                this.tracks(trackIdx).totalVisibleCount = ...
+                    this.tracks(trackIdx).totalVisibleCount + 1;
+                this.tracks(trackIdx).consecutiveInvisibleCount = 0;
+            end
+        end
+        
+        % Update Unassigned Tracks
+        % Mark each unassigned track as invisible, and increase its age by 1.
+
+        function updateUnassignedTracks(this)
+            for i = 1:length(this.unassignedTracks)
+                ind = this.unassignedTracks(i);
+                this.tracks(ind).age = this.tracks(ind).age + 1;
+                this.tracks(ind).consecutiveInvisibleCount = ...
+                    this.tracks(ind).consecutiveInvisibleCount + 1;
+            end
+        end
+        
+        % Delete Lost Tracks
+        % The |deleteLostTracks| function deletes tracks that have been invisible
+        % for too many consecutive frames. It also deletes recently created tracks
+        % that have been invisible for too many frames overall. 
+
+        function deleteLostTracks(this)
+            if isempty(this.tracks)
+                return;
+            end
+
+            invisibleForTooLong = 20;
+            ageThreshold = 8;
+
+            % Compute the fraction of the track's age for which it was visible.
+            ages = [this.tracks(:).age];
+            totalVisibleCounts = [this.tracks(:).totalVisibleCount];
+            visibility = totalVisibleCounts ./ ages;
+
+            % Find the indices of 'lost' tracks.
+            lostInds = (ages < ageThreshold & visibility < 0.6) | ...
+                [this.tracks(:).consecutiveInvisibleCount] >= invisibleForTooLong;
+
+            % Delete lost tracks.
+            this.tracks = this.tracks(~lostInds);
+        end
+    
+        % Create New Tracks
+        % Create new tracks from unassigned detections. Assume that any unassigned
+        % detection is a start of a new track. In practice, you can use other cues
+        % to eliminate noisy detections, such as size, location, or appearance.
+
+        function createNewTracks(this)
+            this.centroids = this.centroids(this.unassignedDetections, :);
+            this.bboxes = this.bboxes(this.unassignedDetections, :);
+
+            for i = 1:size(this.centroids, 1)
+
+                centroid = this.centroids(i,:);
+                bbox = this.bboxes(i, :);
+
+                % Create a Kalman filter object.
+                kalmanFilter = configureKalmanFilter('ConstantVelocity', ...
+                    centroid, [200, 50], [100, 25], 100);
+
+                % Create a new track.
+                newTrack = struct(...
+                    'id', this.nextId, ...
+                    'bbox', bbox, ...
+                    'kalmanFilter', kalmanFilter, ...
+                    'age', 1, ...
+                    'totalVisibleCount', 1, ...
+                    'consecutiveInvisibleCount', 0);
+
+                % Add it to the array of tracks.
+                this.tracks(end + 1) = newTrack;
+
+                % Increment the next id.
+                this.nextId = this.nextId + 1;
+            end
+        end
+        
+        function r = getTracks(this)
+
+            minVisibleCount = 8;
+            if ~isempty(this.tracks)
+
+                % Noisy detections tend to result in short-lived tracks.
+                % Only display tracks that have been visible for more than 
+                % a minimum number of frames.
+                reliableTrackInds = ...
+                    [this.tracks(:).totalVisibleCount] > minVisibleCount;
+                reliableTracks = this.tracks(reliableTrackInds);
+
+                % Display the objects. If an object has not been detected
+                % in this frame, display its predicted bounding box.
+                if ~isempty(reliableTracks)
+                    % Get bounding boxes.
+                    this.bboxes = cat(1, reliableTracks.bbox);
+                 
+                    %return valid bboxes
+                    r = this.bboxes;
+                else  
+                    r = [];
+                end
+                
+            end 
+        end
+        
+
+        function r = track(this, centroids, bboxes)
+            
+            this.centroids = centroids;
+            this.bboxes = bboxes;
+         
+            this.predictNewLocationsOfTracks();
+            
+            [this.assignments, this.unassignedTracks, this.unassignedDetections] = this.detectionToTrackAssignment();
+
+            this.updateAssignedTracks();
+            this.updateUnassignedTracks();
+            this.deleteLostTracks();
+            this.createNewTracks();
+    
+            r = this.getTracks();
+        end
         function r = add(this, val)
             this.value = this.value + val;
             r = this.value;
         end
              
-        % The procedure for tracking a single object is shown below.
-        function trackedLocation = track(this, detection)                         
-            
-            if isempty(detection)
-                isObjectDetected = false;
-            else
-                % To simplify the tracking process, only use the first detected object.
-                % detection = detectedLocation(1, :);
-                isObjectDetected = true;
 
-            end
-            
-            if ~this.isTrackInitialized
-                if isObjectDetected
-                    % Initialize a track by creating a Kalman filter when the target is
-                    % detected for the first time.
-                    initialLocation = [0 0];
-                   
-                    this.isTrackInitialized = true;
-                    trackedLocation = correct(this.kalmanFilter, detection);
-                else
-                    trackedLocation = [];
-                end
-
-            else
-                % Use the Kalman filter to track the target.
-                kf = this.kalmanFilter;
-                if isObjectDetected % The target was detected.
-                    % Reduce the measurement noise by calling predict followed by
-                    % correct.
-                   
-                    predict(kf);
-                    trackedLocation = correct(kf, detection);
-                else % The target was missing.
-                    % Predict the target's location.
-                    trackedLocation = predict(kf);
-                end
-            end
-        end
-        % end tracking method
         
     end
 end

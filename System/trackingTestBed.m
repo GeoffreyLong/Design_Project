@@ -24,18 +24,18 @@ rectIndx = 1;
 
 
 %create kalman filter tracker
-param = [];
-param.motionModel           = 'ConstantAcceleration';
-param.initialLocation       = [0 0];
-param.initialEstimateError  = 1E5 * ones(1, 3);
-param.motionNoise           = [25, 10, 1];
-param.measurementNoise      = 25;
+% param = [];
+% param.motionModel           = 'ConstantAcceleration';
+% param.initialLocation       = [0 0];
+% param.initialEstimateError  = 1E5 * ones(1, 3);
+% param.motionNoise           = [25, 10, 1];
+% param.measurementNoise      = 25;
 % param.segmentationThreshold = 0.05;
 
-kalman = KalmanTracker(param);
+kalman = KalmanTracker;
 tracker = Tracker;
-
-for i = firstDetection:firstDetection+40
+rectIndx = 1900 - firstDetection;
+for i = 1900:nFrames
     
 %   host: All of the own-ship information
 %       [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
@@ -48,29 +48,32 @@ for i = firstDetection:firstDetection+40
     
     if i >= firstDetection
         
+        
+        
+        centroid = getMidPoint(rect(rectIndx,:));
+        bbox = [rect(rectIndx,4) rect(rectIndx,5)];
+        
+%         centroids = [centroid; [0 10] ];
+        box1 = [rect(rectIndx,2) rect(rectIndx,3) rect(rectIndx,4) rect(rectIndx,5)];
+%         box2 = [0 10 5 6];
+        bboxes = [box1;box2];
+        track = kalman.track(centroid, box1);
+%         movAvg = tracker.movingAvg(midPoint);
         rectIndx = rectIndx + 1;
-        
-        midPoint = getMidPoint(rect(rectIndx,:));
-        
-        track = kalman.track(midPoint);
-        movAvg = tracker.movingAvg(midPoint);
-        
         % Get heading of host
-        hostHeading = host(i,5);
+%         hostHeading = host(i,5);
         % get heading estimate of target
-        azimuth = target(i,2);
+%         azimuth = target(i,2);
 %         myAz = radtodeg(-atan((v.width/2 - midPoint(1))/(v.height/2 - midPoint(2))));
-           myAz = (90/v.width)*(v.width/2 - midPoint(1));
+%            myAz = (90/v.width)*(v.width/2 - midPoint(1));
 %             targetHeading = tracker.direction(hostHeading);
-        fprintf('azimuth: %f, myAzimuth: %f\n', azimuth, myAz);
-        if movAvg ~= -1
-            
-           
-        end
+%         fprintf('azimuth: %f, myAzimuth: %f\n', azimuth, myAz);
+   
         
 %         fprintf('detect: %f, track: %f\n', midPoint, track);
-%           test1 = insertShape(img, 'Circle', [ midPoint, 3], 'LineWidth', 3, 'Color', 'red');
-%           test2 = insertShape(test1, 'Circle', [ track, 3], 'LineWidth', 3, 'Color', 'green');
+           test1 = insertShape(img, 'Circle', [ centroid, 3], 'LineWidth', 3, 'Color', 'red');
+           test2 = insertShape(test1, 'Rectangle', track , 'LineWidth', 5, 'Color', 'green');
+           imshow(test2);
 %           
 %           RGB = insertText(test2,[200 1950; 800 1950;], {strcat('Host Heading: ', num2str(hostHeading)), strcat('Target Heading: ', num2str(realHeading))}, 'FontSize',50);
 %           imshow(RGB);
