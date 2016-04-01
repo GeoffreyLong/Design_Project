@@ -9,7 +9,21 @@ classdef Tracker<handle
         imgHeigh = 2050;
         imgWidth = 2448;
     end
-    
+    methods (Static)
+       function distance = estimateDistance(height)
+            
+         %  distance to object (mm) = focal length (mm) * real height of the object (mm) * image height (pixels)
+         %                            ---------------------------------------------------------------------------
+         %                                      object height (pixels) * sensor height (mm) 
+            imgHeight = 2050;
+            realHeight = 2; % height in meters
+            focalLength = 12e-3; %focal length of camera in meters, 12mm
+            objHeight = height/2;
+            sensorHeight = 3.45e-6 * 2050; % 2/3 inch
+            distance = (focalLength * realHeight * imgHeight)/(objHeight*sensorHeight);
+            
+        end 
+    end
     methods
         % this method is for a cummulative moving average      
         function r = movingAvg(this, newPos) 
@@ -40,6 +54,7 @@ classdef Tracker<handle
             this.oldPos = newPos;         
             
         end
+        
         % This method estimates the relative heading of the target aircraft
 %          function r = heading(this, heading)
 %              avg = this.avg;

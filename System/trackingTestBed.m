@@ -35,7 +35,7 @@ rectIndx = 1;
 kalman = KalmanTracker;
 tracker = Tracker;
 rectIndx = 1900 - firstDetection;
-for i = 1900:nFrames
+for i = 1900:1910
     
 %   host: All of the own-ship information
 %       [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
@@ -55,15 +55,18 @@ for i = 1900:nFrames
         
         centroids = [centroid; [2000 2000] ];
         box1 = [rect(rectIndx,2) rect(rectIndx,3) rect(rectIndx,4) rect(rectIndx,5)];
+        height = rect(rectIndx,5);
         box2 = [2000 200 50 60];
         bboxes = [box1;box2];
         tracks = kalman.track(bboxes);
 %         tracks = [[10 10 10 10];[20 20 10 10];[100 100 40 50]];
-        test1 = insertShape(img, 'Circle', [[centroid 3];[2000 2000 3] ], 'LineWidth', 3, 'Color', 'red');
-        test2 = insertShape(test1, 'Rectangle', tracks , 'LineWidth', 5, 'Color', 'green');
-        imshow(test2);
+%         test1 = insertShape(img, 'Circle', [[centroid 3];[2000 2000 3] ], 'LineWidth', 3, 'Color', 'red');
+%         test2 = insertShape(test1, 'Rectangle', tracks , 'LineWidth', 5, 'Color', 'green');
+%         imshow(test2);
 %         movAvg = tracker.movingAvg(midPoint);
         rectIndx = rectIndx + 1;
+        fprintf('distance: %f, myDistance: %f\n', target(i,4)*0.3048, tracker.estimateDistance(height));
+
         % Get heading of host
 %         hostHeading = host(i,5);
         % get heading estimate of target
