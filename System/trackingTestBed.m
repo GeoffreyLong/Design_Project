@@ -53,11 +53,15 @@ for i = 1900:nFrames
         centroid = getMidPoint(rect(rectIndx,:));
         bbox = [rect(rectIndx,4) rect(rectIndx,5)];
         
-%         centroids = [centroid; [0 10] ];
+        centroids = [centroid; [2000 2000] ];
         box1 = [rect(rectIndx,2) rect(rectIndx,3) rect(rectIndx,4) rect(rectIndx,5)];
-%         box2 = [0 10 5 6];
+        box2 = [2000 200 50 60];
         bboxes = [box1;box2];
-        track = kalman.track(centroid, box1);
+        tracks = kalman.track(bboxes);
+%         tracks = [[10 10 10 10];[20 20 10 10];[100 100 40 50]];
+        test1 = insertShape(img, 'Circle', [[centroid 3];[2000 2000 3] ], 'LineWidth', 3, 'Color', 'red');
+        test2 = insertShape(test1, 'Rectangle', tracks , 'LineWidth', 5, 'Color', 'green');
+        imshow(test2);
 %         movAvg = tracker.movingAvg(midPoint);
         rectIndx = rectIndx + 1;
         % Get heading of host
@@ -71,9 +75,7 @@ for i = 1900:nFrames
    
         
 %         fprintf('detect: %f, track: %f\n', midPoint, track);
-           test1 = insertShape(img, 'Circle', [ centroid, 3], 'LineWidth', 3, 'Color', 'red');
-           test2 = insertShape(test1, 'Rectangle', track , 'LineWidth', 5, 'Color', 'green');
-           imshow(test2);
+         
 %           
 %           RGB = insertText(test2,[200 1950; 800 1950;], {strcat('Host Heading: ', num2str(hostHeading)), strcat('Target Heading: ', num2str(realHeading))}, 'FontSize',50);
 %           imshow(RGB);

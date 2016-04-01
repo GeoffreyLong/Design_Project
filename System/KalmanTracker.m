@@ -40,6 +40,11 @@ classdef KalmanTracker<handle
             obj.nextId = 1; % ID of the next track
            
          end
+         % This method splits the detections into centroids and bboxes
+        function [centroids, bboxes] = formatInputs(detections)
+           centroids = detections(:,1:2);
+           bboxes = detections;         
+        end
     end
     methods
         % Predict New Locations of Existing Tracks
@@ -215,11 +220,14 @@ classdef KalmanTracker<handle
             end 
         end
         
-
-        function r = track(this, centroids, bboxes)
+        
+        
+        % This is the main function which calls all the 
+        % Kalman filter helper methods and returns the detection tracks
+        
+        function r = track(this, detections)
             
-            this.centroids = centroids;
-            this.bboxes = bboxes;
+            [this.centroids, this.bboxes] = this.formatInputs(detections);
          
             this.predictNewLocationsOfTracks();
             
@@ -232,12 +240,7 @@ classdef KalmanTracker<handle
     
             r = this.getTracks();
         end
-        function r = add(this, val)
-            this.value = this.value + val;
-            r = this.value;
-        end
-             
-
+       
         
     end
 end
