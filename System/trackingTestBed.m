@@ -7,7 +7,7 @@ nFrames = v.NumberOfFrames;
 % Get SRT data
 
 [host, target] = getdetailedsrt('/Users/Xavier/Documents/workspace/Design_Project/Test_Data/July_6_cam1_01.srt',nFrames);
-rectFileName = '/Users/Xavier/Documents/workspace/Design_Project/Test_Data/Generated_Detections/Detections/Previous/July_6_cam1_01.avi.dat';
+rectFileName = '/Users/Xavier/Documents/workspace/Design_Project/Test_Data/Generated_Detections/Detections/Previous/tightBound_July_6_cam1_01.avi.dat';
 
 % should use readrectxml.m file
 try
@@ -34,8 +34,9 @@ rectIndx = 1;
 
 kalman = KalmanTracker;
 tracker = Tracker;
-rectIndx = 1900 - firstDetection;
-for i = 1900:1910
+rectIndx = 1;
+tempCount = 1;
+for i = firstDetection:nFrames
     
 %   host: All of the own-ship information
 %       [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
@@ -59,13 +60,22 @@ for i = 1900:1910
         box2 = [2000 200 50 60];
         bboxes = [box1;box2];
         tracks = kalman.track(bboxes);
+        dist = target(i,4)*0.3048;
+         realTTC = tracker.movingAvg(tracker.realTTC(dist));
+         estTTC = tracker.estTTC(dist);
+%          if mod(tempCount,15) == 0
+             fprintf('distance: %f, realTTC: %f, estTTC: %f\n', dist, realTTC, estTTC);
+%              tempCount = 0;
+%          end
+        tempCount = tempCount + 1;
+        
 %         tracks = [[10 10 10 10];[20 20 10 10];[100 100 40 50]];
-%         test1 = insertShape(img, 'Circle', [[centroid 3];[2000 2000 3] ], 'LineWidth', 3, 'Color', 'red');
-%         test2 = insertShape(test1, 'Rectangle', tracks , 'LineWidth', 5, 'Color', 'green');
-%         imshow(test2);
+%          test1 = insertShape(img, 'Circle', [[centroid 3];[2000 2000 3] ], 'LineWidth', 3, 'Color', 'red');
+%          test2 = insertShape(img, 'Rectangle', tracks , 'LineWidth', 5, 'Color', 'green');
+%          imshow(test2);
 %         movAvg = tracker.movingAvg(midPoint);
         rectIndx = rectIndx + 1;
-        fprintf('distance: %f, myDistance: %f\n', target(i,4)*0.3048, tracker.estimateDistance(height));
+%          fprintf('distance: %f, myDistance: %f\n', target(i,4)*0.3048, tracker.estimateDistance(height));
 
         % Get heading of host
 %         hostHeading = host(i,5);
@@ -104,7 +114,12 @@ for i = 1900:1910
 %         fprintf('________________\n');
     
 
-        
+    %distance (m or pixels)
+    %speed (pixels/s)
+    % TTC 15 +2T time  before collision
+    % at radius of 500feet = 152.4m
+    %TTC = (distance-152.4)/(speed)
+    % fps = 15;
         
     else
         tempRect = [0 0 0 0];   
