@@ -34,6 +34,7 @@ rectIndx = 1;
 
 kalman = KalmanTracker;
 tracker = Tracker;
+realTracker = Tracker;
 rectIndx = 1;
 tempCount = 1;
 for i = firstDetection:nFrames
@@ -61,10 +62,12 @@ for i = firstDetection:nFrames
         bboxes = [box1;box2];
         tracks = kalman.track(bboxes);
         dist = target(i,4)*0.3048;
-         realTTC = tracker.movingAvg(tracker.realTTC(dist));
-         estTTC = tracker.estTTC(dist);
+        estDist = tracker.estimateDistance(height);
+        realTTC = tracker.movingAvg(tracker.ttc(dist));
+        estTTC = realTracker.movingAvg(realTracker.ttc(estDist));
+%          fprintf('distance: %f, estDist: %f\n', dist, estDist);
 %          if mod(tempCount,15) == 0
-             fprintf('distance: %f, realTTC: %f, estTTC: %f\n', dist, realTTC, estTTC);
+        fprintf('distance: %f, estDist: %f, realTTC: %f, estTTC: %f\n', dist, estDist, realTTC, estTTC);
 %              tempCount = 0;
 %          end
         tempCount = tempCount + 1;
