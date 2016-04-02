@@ -1,16 +1,33 @@
-function [ output_args ] = testgenerator( videos, detect )
+function [ output_args ] = testgenerator( videos, anon_detect )
 %TESTGENERATOR responsible for generating the testing data
+
+    % Dummy output_args argument... literally does nothing
+    % should consider having this output a 1 on success and 0 on failure
     output_args = 10;
+
+    % Make the folder
+    folderName = datestr(now,'yyyymmddTHHMMSS');
+    mkdir('../Testing/Test_Instances/', folderName);
+    testFileBase = strcat('../Testing/Test_Instances/',folderName,'/');
+
+    % Create the formatspecs??
+
+    
+    % Iterate through the cell of videos
     for vidIdx = 1:numel(videos)
         % Select one of the videos for testing
         filePath = char(videos{vidIdx});
 
+        % Check to see if the video actually exists
         try
             v = VideoReader(filePath);
         catch
+            outputString = strcat('filePath: "', filePath, '" Not found');
+            display(outputString);
             continue;
         end
 
+        %TODO consider adding if statement to host w/ continue like for readrect
         % Get the truth rects if they exist
         % If they don't then skip the video
         readRect = readrectxml(filePath, 'Previous/');
@@ -24,9 +41,22 @@ function [ output_args ] = testgenerator( videos, detect )
 
         % Read in the SRT data
         [host, target] = getdetailedsrt(filePath, nFrames);
-
-        %TODO consider adding if statement to host w/ continue like for readrect
-
+        
+        
+        % If all the requisite information is in the system, 
+        % then we can proceed with testing.
+        % Get the video name
+        filePathTokens = strread(filePath,'%s','delimiter','/');
+        fileName = filePathTokens(length(filePathTokens));
+        vidName = char(fileName);
+        
+        % Create the files
+        detection_file = strcat(testFileBase,'detection_',vidName,'.dat');
+        detectionFilter_file = strcat(testFileBase,'detectionFilter_',vidName,'.dat');
+        tracking_file = strcat(testFileBase,'tracking_',vidName);
+        ttc_file = strcat(testFileBase,'ttc_',vidName);
+        
+        
         for i = 1:nFrames
             detections = [];
             % Read in necessary data
@@ -35,10 +65,13 @@ function [ output_args ] = testgenerator( videos, detect )
 
             % Rotate the image
             rotatedImage = imrotate(origImg, -curHost(4), 'crop');
-            detections = detect(rotatedImage, curHost, height, width)
-            %TODO write detections to file
             
-            
+            % Get detections
+            detections = anon_detect(rotatedImage, curHost, height, width);
+            % Add the frame number to the detections
+            detectionsWrite = [i*ones(size(detections,1),1),detections]
+            % Write the detections
+            dlmwrite(detection_file,detectionsWrite,'-append');
         end
     end
 
@@ -97,4 +130,3 @@ function [ output_args ] = testgenerator( videos, detect )
 
     output_args = 0;
 end
-

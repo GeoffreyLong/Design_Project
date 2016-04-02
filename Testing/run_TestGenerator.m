@@ -1,3 +1,6 @@
+% NOTE: Need to be in Design_Project/System for this to work...
+% Any file that you want to function handle also has to be in this directory
+
 % Add all videos for testing
 videos = {
     'Test_Data/Feb_13_cam1_5.avi', ...
@@ -11,10 +14,9 @@ videos = {
 };
 
 % Declare a detection function
-detection = @(im,host,height,width) initial_detections(im,host,height,width);
-
+anon_detect = @(im,host,height,width) initial_detections(im,host,height,width);
 
 % Run the test generator
-testgenerator(videos, detection);
+testgenerator(videos, anon_detect);
 
 
