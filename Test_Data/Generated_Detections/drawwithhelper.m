@@ -1,4 +1,4 @@
-function [ rect ] = drawwithhelper( filePath, rotate )
+function [ rect ] = drawwithhelper( filePath, croppedRect, rotate )
 %drawrectangles: This function returns bounded rectangles from images
 %   rect: A nx5 matrix where 
 %       n is the number of detections
@@ -49,12 +49,6 @@ rect = zeros(nFrames,5);
 nClicks = 0;
 nFrameSkip = 0;
 nSkips = 0;
-
-xOffset = 500;
-yOffset = 800;
-width = 800;
-height = 400;
-croppedRect = [xOffset,yOffset,width,height];
 
 % Iterate through the image frames
 for i = 1:nFrames

@@ -1,4 +1,4 @@
-function [ rect ] = drawscramble( filePath )
+function [ rect ] = drawscramble( filePath, croppedRect, startIdx )
 %DRAWSCRAMBLE 
 %   Often times when a photo is searched for a possible plane, the search
 %   is biased by the location of the previous plane. This rectangle
@@ -17,18 +17,12 @@ height = v.Height;
 % Create an empty array
 rect = [];
 
-startPos = 1400;
-indices = randperm(nFrames-startPos);
-indices = indices + startPos;
+% Only take a subset of the images
+indices = randperm(nFrames-startIdx);
+indices = indices + startIdx;
 
 % Read in the SRT
 [host, target] = getdetailedsrt(filePath, nFrames);
-
-xOffset = 0;
-yOffset = 600;
-width = 1200;
-height = 700;
-croppedRect = [xOffset,yOffset,width,height];
 
 % Iterate through the image frames
 for i = 1:numel(indices)
