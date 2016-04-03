@@ -1,4 +1,4 @@
-function [ rect ] = drawwithhelper( videoPath )
+function [ rect ] = drawwithhelper( filePath, rotate )
 %drawrectangles: This function returns bounded rectangles from images
 %   rect: A nx5 matrix where 
 %       n is the number of detections
@@ -22,24 +22,25 @@ function [ rect ] = drawwithhelper( videoPath )
 %       3) Close the image viewer to terminate the loop
 %           All subsequent frames will have rects of (0,0,0,0)
 
-readRect = readrectxml(videoPath);
+readRect = readrectxml(filePath);
 
-if (readRect(1,1) == 0)
-    printString = sprintf('No Rect found, defaulting to drawrectangles');
-    display(printString)
-    rect = drawrectangles(videoPath);
-    return;
-end
 readIdx = 1;
 maxRectIdx = size(readRect,1);
 
 % Instantiate the video reader
-v = VideoReader(videoPath);
+v = VideoReader(filePath);
 
 % Get the number of frames, frame width, and frame height from the video data
 nFrames = v.NumberOfFrames;
 width = v.Width;
 height = v.Height;
+
+% Read in the SRT data if rotation is desired
+host = [];
+if (rotate)
+    [host, target] = getdetailedsrt(filePath, nFrames);
+end
+
 
 % Create an empty array
 rect = zeros(nFrames,5);
@@ -49,10 +50,10 @@ nClicks = 0;
 nFrameSkip = 0;
 nSkips = 0;
 
-xOffset = 0;
-yOffset = 0;
-width = v.Width;
-height = v.Height;
+xOffset = 500;
+yOffset = 800;
+width = 800;
+height = 400;
 croppedRect = [xOffset,yOffset,width,height];
 
 % Iterate through the image frames
@@ -70,6 +71,12 @@ for i = 1:nFrames
         try
             % Show the image with the frame number as title
             video = read(v,i);
+            
+            % Rotate the image if rotation is desired
+            if (rotate)
+                curHost = host(host(:,1)==i,:);
+                video = imrotate(video, -curHost(4), 'crop');
+            end
             
             while (readIdx <= maxRectIdx && readRect(readIdx,1) < i)
                 readIdx = readIdx + 1;
@@ -131,6 +138,7 @@ for i = 1:nFrames
                 rect(i,:) = [i curRect];            
             end
         catch
+            display('Terminating rectangle generation');
             % If you close the image without a selection, the for loop terminates
             break;
         end     
