@@ -16,9 +16,14 @@ width = 1200;
 height = 700;
 croppedRect = [xOffset,yOffset,width,height];
 
-% rect = drawwithhelper(filePath, croppedRect, true)
-rect = drawscramble(filePath, croppedRect, 1400)
+% extension=''; rect = drawwithhelper(filePath, croppedRect, true)
+% extension='scrambled_'; rect = drawscramble(filePath, croppedRect, 1400)
 
-readRect = readrectxml(filePath);
+% The frame you want to start at (going backwards)
+% If unsure then set to nFrames (or 0, which will default to nFrames)
+lastFrame = 2035;
+extension='optimized_'; rect = drawoptimized(filePath, lastFrame)
+
+readRect = readrectxml(filePath, extension);
 writeRect = averagerects(rect, readRect)
-writerectxml(filePath, writeRect)
+writerectxml(filePath, writeRect, extension)
