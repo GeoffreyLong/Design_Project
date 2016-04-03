@@ -17,6 +17,7 @@ videos = {
 anon_detect = @(im,host,height,width) initial_detections(im,host,height,width);
 
 % Run the test generator
+%TODO Consider name-value pair arguments
 testgenerator(videos, anon_detect);
 
 

@@ -27,7 +27,7 @@ function [ output_args ] = testgenerator( videos, anon_detect )
             continue;
         end
 
-        %TODO consider adding if statement to host w/ continue like for readrect
+        
         % Get the truth rects if they exist
         % If they don't then skip the video
         readRect = readrectxml(filePath, 'Previous/');
@@ -35,10 +35,12 @@ function [ output_args ] = testgenerator( videos, anon_detect )
             continue
         end
 
+        % Get the video information
         nFrames = v.NumberOfFrames;
         height = v.Height;
         width = v.Width;
 
+        %TODO consider adding if statement to host w/ continue like for readrect
         % Read in the SRT data
         [host, target] = getdetailedsrt(filePath, nFrames);
         

@@ -82,4 +82,12 @@ test_metrics(folder_array)
 
 
 DESCRIPTION EVALUATOR
+TESTS
+	Compare the SRT data for the plane detection (distance) with the bounding box generated
+		Use the distance equation to calculate what the pixel height should be
+	Compare the bounding box generated with the actual size of the plane in pixels
+		Use a tighter CMO to bound more accurately... might not turn out well
+
+
+
 
