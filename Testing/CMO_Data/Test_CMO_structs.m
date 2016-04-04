@@ -27,33 +27,36 @@ nHoodNames = {'disk1','diamond1','rect[1,3]', ...
     'disk25','diamond25','rect[5,3]', ...
     'disk100','diamond100','rect[4,10]'};
 thresholds = [0.07 0.09 0.11 0.13 0.15];
-% nHoodDilate = ones(3,3);
+nHoodDilate = ones(3,3);
 
 
-fileID = fopen('exp_cmo.txt','w');
 formatspec = 'nHood: %s, threshold: %f, totalDetections: %d, planes: %d/%d, time: %d \n';
 
 % Read in the SRT
 [host, target] = getdetailedsrt(filePath, nFrames);
 
-for j = 1:size(thresholds,2)
-    thresh = thresholds(j);
-    for k = 1:size(nHoods,2)
-        nHood = nHoods(k);
-        nHoodName = nHoodNames{k}
-        
+parfor k = 1:size(nHoods,2)
+    nHood = nHoods(k);
+    nHoodName = nHoodNames{k};
+
+    fileName = strcat('exp_cmo_',nHoodName,'.txt');
+    fileID = fopen(fileName,'w');
+
+    for j = 1:size(thresholds,2)
+        thresh = thresholds(j);
+    
         positives = 0;
         total = 0;
         frames = 0;
         tstart = tic;
         for i = 1:nFrames
-            i
             curRect = readRect(readRect(:,1)==i,:);
             if (isempty(curRect))
                 continue;
             end
             
             image = read(v,i);
+            %image = gpuArray(image);
 
             image = imrotate(image, -host(i,4), 'crop');
             
@@ -61,7 +64,8 @@ for j = 1:size(thresholds,2)
             open = imopen(image,nHood);
             close = imclose(image,nHood); 
             im = close - open;
-
+            im = imdilate(im,nHoodDilate);
+            
             bw = im2bw(im, thresh);
             L = bwlabel(bw);
 
@@ -71,8 +75,8 @@ for j = 1:size(thresholds,2)
             for l=1:numel(s)
                 newBound = s(l).BoundingBox;
                 
-                % Value of 0.50 arbitrarily set
-                if (bboxOverlapRatio(newBound,curRect(2:5)) >= 0.50)
+                % Value of 0.33 arbitrarily set
+                if (rectint(newBound,curRect(2:5)) / ((newBound(3)*newBound(4) + curRect(4)*curRect(5))/2) >= 0.25)
                     plane = 1;
                 end
                 total = total + 1;
@@ -85,6 +89,5 @@ for j = 1:size(thresholds,2)
         time = toc(tstart)
         fprintf(fileID, formatspec, nHoodName, thresh, total, positives, frames, time);
     end
+    fclose(fileID);
 end
-
-fclose(fileID);
