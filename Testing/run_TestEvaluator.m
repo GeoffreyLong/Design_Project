@@ -15,9 +15,12 @@ for i=1:numel(files)
     [component, video] = strtok(fileName, '_');
     video = video(2:end);
 
+    
+    truthRects = readrectxml(video,'optimized_')
+    detections = [];
     % Read in the data corresponding to the file
     if strcmp(component,'detection')
-        
+        detections = csvread(filename);
     elseif strcmp(component,'tracking')
         
     elseif strcmp(component,'ttc')

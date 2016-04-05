@@ -1,4 +1,4 @@
-function [ detections ] = initial_detections( image, host, height, width )
+function [ detections ] = initial_detections( origImage, host, height, width )
 %INITIAL_DETECTIONS Summary of this function goes here
 %   This function will pull out the detections apart from the tracking info.
 %   This will be a quick way of getting detections. We only want to return
@@ -41,7 +41,7 @@ function [ detections ] = initial_detections( image, host, height, width )
     upper = midpoint - 3*sigma;
     %lower = midpoint + 3*sigma;
     
-    image = imcrop(image, [0 upper width abs(upper-horizonY)]);
+    image = imcrop(origImage, [0 upper width abs(upper-horizonY)]);
     
     % Perform a CMO
     open = imopen(image,nHood);
@@ -54,8 +54,23 @@ function [ detections ] = initial_detections( image, host, height, width )
     L = bwlabel(bw);
     
     s = regionprops(L, 'BoundingBox', 'Centroid');
-    detections = zeros(numel(s),4);
+    detections = [];
     for j=1:numel(s)
-        detections(j,:) = s(j).BoundingBox;
+        xCenter = ceil(s(j).Centroid(1));
+        yCenter = ceil(s(j).Centroid(2));
+        
+        if (xCenter ~= 1)
+            xCenter = xCenter - 1;
+        end
+        
+        if (yCenter ~= 1)
+            yCenter = yCenter - 1;
+        end
+
+        if (origImage(yCenter, xCenter) ~= 0 && s(j).BoundingBox(3) * s(j).BoundingBox(4) ~= 0)
+            detections = [detections; s(j).BoundingBox];
+            image = insertShape(image, 'rectangle', s(j).BoundingBox);
+        end
     end
+    imshow(image);
 end
