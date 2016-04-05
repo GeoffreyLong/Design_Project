@@ -1,14 +1,7 @@
-function [ output_args ] = testgenerator( videos, anon_detect )
+function testgenerator( videos, anon_detect, testFileBase )
 %TESTGENERATOR responsible for generating the testing data
+% should consider having this output a 1 on success and 0 on failure
 
-    % Dummy output_args argument... literally does nothing
-    % should consider having this output a 1 on success and 0 on failure
-    output_args = 10;
-
-    % Make the folder
-    folderName = datestr(now,'yyyymmddTHHMMSS');
-    mkdir('../Testing/Test_Instances/', folderName);
-    testFileBase = strcat('../Testing/Test_Instances/',folderName,'/');
 
     % Create the formatspecs??
 
@@ -129,6 +122,4 @@ function [ output_args ] = testgenerator( videos, anon_detect )
 % 		write all timing stuff to file
 % 			NAME: timing_<video>
 % 			STRUCTURE: frameNo, detection
-
-    output_args = 0;
 end
