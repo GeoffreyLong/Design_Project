@@ -1,6 +1,6 @@
 % This script runs the tests for a given testing instance or instances
 % Want to pass a folder to the test evaluator function
-folderName = '20160406T024136';
+folderName = '20160406T153246';
 
 % Set the name of the specific directory and get the files from it
 testFileBase = strcat('../Testing/Test_Instances/',folderName,'/')
@@ -59,13 +59,18 @@ end
 mkdir(strcat('../Testing/Test_Instances/', folderName, '/'), 'Results');
 resultFileBase = strcat('../Testing/Test_Instances/', folderName, '/Results/');
 
+% These next if statements test the detection results against the truth files
 if (~isempty(detections) && ~isempty(opt_truth))
     test_DetectionVSRects(strcat(resultFileBase,'optimized_'), nFrames, detections, opt_truth);
 end
-   
 if (~isempty(detections) && ~isempty(scramble_truth))
+    %TODO some false positives in this case might not actually be an issue
     test_DetectionVSRects(strcat(resultFileBase,'scrambled_'), nFrames, detections, scramble_truth);    
 end
 
-%    %test_DetectionVSRects(nFrames, detections, opt_truth, scramble_truth, target);
-
+% This will gather metrics such as 
+%   distance of first sighting
+%   estimated time to collision of first sighting 
+if (~isempty(detections) && ~isempty(opt_truth) && ~isempty(target))
+    
+end

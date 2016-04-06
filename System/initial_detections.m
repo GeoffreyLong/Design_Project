@@ -67,7 +67,7 @@ function [ detections ] = initial_detections( origImage, host, height, width )
         % remove it.
         bound = ceil(s(j).BoundingBox);
         if (~(bound(1) <= 2 && bound(3) < 20) ...
-            && ~(abs(bound(1)+bound(3) - height) <= 2 && bound(3) < 20))
+            && ~(abs(bound(1)+bound(3) - width) <= 2 && bound(3) < 20))
             bound(2) = bound(2) + upper;
             detections = [detections; bound];
             %image = insertShape(image, 'rectangle', s(j).BoundingBox);
