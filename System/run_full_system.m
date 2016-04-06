@@ -53,7 +53,7 @@ for i = 1:nFrames
 
     % Grab the initial detections
     % Not running the modulus full screen yet
-    detections = initial_detections(rotatedImage, curHost, height, width)
+    detections = initial_detections(origImg, curHost, height, width)
     
     
     % So we will want to do a full screen detection sparingly as these are expensive.

@@ -1,4 +1,4 @@
-function [ detections ] = initial_detections( origImage, host, height, width )
+function [ detections ] = initial_detections( origImg, host, height, width )
 %INITIAL_DETECTIONS Summary of this function goes here
 %   This function will pull out the detections apart from the tracking info.
 %   This will be a quick way of getting detections. We only want to return
@@ -34,7 +34,7 @@ function [ detections ] = initial_detections( origImage, host, height, width )
     sigma = 16.2477;
     
     % Rotate the image
-    rotatedImage = imrotate(origImg, -curHost(4), 'crop');
+    rotatedImage = imrotate(origImg, -host(4), 'crop');
 
     % Horizon estimation
     horizonY = rotated_horizon_detection(host, height);
@@ -44,7 +44,7 @@ function [ detections ] = initial_detections( origImage, host, height, width )
     upper = midpoint - 3*sigma;
     %lower = midpoint + 3*sigma;
     
-    image = imcrop(origImage, [0 upper width 1.25*abs(upper-horizonY)]);
+    image = imcrop(rotatedImage, [0 upper width 1.25*abs(upper-horizonY)]);
     
     % Perform a CMO
     open = imopen(image,nHood);
