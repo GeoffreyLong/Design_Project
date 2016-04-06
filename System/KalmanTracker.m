@@ -208,11 +208,8 @@ classdef KalmanTracker<handle
                 % Display the objects. If an object has not been detected
                 % in this frame, display its predicted bounding box.
                 if ~isempty(reliableTracks)
-                    % Get bounding boxes.
-                    this.bboxes = cat(1, reliableTracks.bbox);
-                 
-                    %return valid bboxes
-                    r = this.bboxes;
+                
+                    r = reliableTracks;
                 else  
                     r = [];
                 end
