@@ -50,20 +50,53 @@ function testgenerator( videos, anon_detect, testFileBase )
         detectionFilter_file = strcat(testFileBase,'detectionFilter_',vidName,'.dat');
         tracking_file = strcat(testFileBase,'tracking_',vidName);
         ttc_file = strcat(testFileBase,'ttc_',vidName);
+
+        % Timing in the form nFrames x 5 matrix
+        %   frameNumber, 
+        %   detection time,
+        %   detection filter time,
+        %   tracking time,
+        %   ttc calc time
+        % Full system time can be calculated from adding up the others
+        %   Don't want to combine that in since there is filewriting time
+        
         timing_file = strcat(testFileBase, 'timing_', vidName);
+
         
         for i = 1:nFrames
             detections = [];
+            timing = zeros(5);
+            timing(1) = i;
+
             % Read in necessary data
             origImg = read(v, i);
             curHost = host(i,:);
             
+            %%%%% DETECTION %%%%%
+            % Start detection timing
+            time_detect = tic;
             % Get detections
             detections = anon_detect(rotatedImage, curHost, height, width);
+            % End detection timing
+            timing(2) = toc(time_detect);
+            
             % Add the frame number to the detections
             detectionsWrite = [i*ones(size(detections,1),1),detections]
             % Write the detections
             dlmwrite(detection_file,detectionsWrite,'-append');
+            
+            
+            
+            %TODO add in tracking and TTC 
+            %%%%% TRACKING %%%%%
+            
+            
+            
+            %%%%% TTC %%%%%
+            
+            
+            % Write timing file
+            dlmwrite(timing_file,timing,'-append');
         end
     end
 
