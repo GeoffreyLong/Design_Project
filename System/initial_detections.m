@@ -41,7 +41,7 @@ function [ detections ] = initial_detections( origImage, host, height, width )
     upper = midpoint - 3*sigma;
     %lower = midpoint + 3*sigma;
     
-    image = imcrop(origImage, [0 upper width abs(upper-horizonY)]);
+    image = imcrop(origImage, [0 upper width 1.25*abs(upper-horizonY)]);
     
     % Perform a CMO
     open = imopen(image,nHood);
@@ -51,6 +51,7 @@ function [ detections ] = initial_detections( origImage, host, height, width )
     % binarize the image 
     % TODO recheck the thresholds on this image subset
     bw = im2bw(im, lowThreshMU);
+    bw = imdilate(bw, ones(3,3));
     L = bwlabel(bw);
     
     s = regionprops(L, 'BoundingBox', 'Centroid');
@@ -68,9 +69,11 @@ function [ detections ] = initial_detections( origImage, host, height, width )
         end
 
         if (origImage(yCenter, xCenter) ~= 0 && s(j).BoundingBox(3) * s(j).BoundingBox(4) ~= 0)
-            detections = [detections; s(j).BoundingBox];
-            image = insertShape(image, 'rectangle', s(j).BoundingBox);
+            bound = s(j).BoundingBox;
+            bound(2) = bound(2) + upper;
+            detections = [detections; bound];
+            %image = insertShape(image, 'rectangle', s(j).BoundingBox);
         end
     end
-    imshow(image);
+    %imshow(image);
 end
