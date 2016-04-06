@@ -32,6 +32,9 @@ function [ detections ] = initial_detections( origImage, host, height, width )
     % TODO recheck on rotated image
     mu = 68.0164;
     sigma = 16.2477;
+    
+    % Rotate the image
+    rotatedImage = imrotate(origImg, -curHost(4), 'crop');
 
     % Horizon estimation
     horizonY = rotated_horizon_detection(host, height);

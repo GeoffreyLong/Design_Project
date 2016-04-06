@@ -50,16 +50,13 @@ function testgenerator( videos, anon_detect, testFileBase )
         detectionFilter_file = strcat(testFileBase,'detectionFilter_',vidName,'.dat');
         tracking_file = strcat(testFileBase,'tracking_',vidName);
         ttc_file = strcat(testFileBase,'ttc_',vidName);
-        
+        timing_file = strcat(testFileBase, 'timing_', vidName);
         
         for i = 1:nFrames
             detections = [];
             % Read in necessary data
             origImg = read(v, i);
             curHost = host(i,:);
-
-            % Rotate the image
-            rotatedImage = imrotate(origImg, -curHost(4), 'crop');
             
             % Get detections
             detections = anon_detect(rotatedImage, curHost, height, width);

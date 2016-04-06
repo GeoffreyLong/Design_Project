@@ -51,9 +51,6 @@ for i = 1:nFrames
     origImg = read(v, i);
     curHost = host(i,:);
 
-    % Rotate the image
-    rotatedImage = imrotate(origImg, -curHost(4), 'crop');
-
     % Grab the initial detections
     % Not running the modulus full screen yet
     detections = initial_detections(rotatedImage, curHost, height, width)
