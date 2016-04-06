@@ -47,7 +47,7 @@ for i=1:numel(files)
     
     % Read in the data corresponding to the file
     if strcmp(component,'detection')
-        detections = csvread(strcat(testFileBase,fileName))
+        detections = csvread(strcat(testFileBase,fileName));
     elseif strcmp(component,'tracking')
         
     elseif strcmp(component,'ttc')
