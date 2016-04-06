@@ -26,12 +26,12 @@ classdef Tracker<handle
             imgHeight = 2050;
             realHeight = 1.8; % height in meters
             focalLength = 12e-3; %focal length of camera in meters, 12mm
-            objHeight = height/2;%/10;
+            objHeight = height;%/10;
 %             if objHeight < 5
 %                 objHeight = 2;
 %             end
             sensorHeight = 3.45e-6 * 2050; % 2/3 inch
-            distance = (focalLength * realHeight * imgHeight)/(objHeight*sensorHeight);
+            distance = (focalLength * realHeight * imgHeight)/(objHeight*sensorHeight)*3.28084; %return distance in feet
             
         end 
         
@@ -41,7 +41,7 @@ classdef Tracker<handle
          % Real TTC
         function time = ttc(this, dist)
             speed = (this.dist1 - dist)*15;
-            this.time1 = (dist - 152.4)/speed;               
+            this.time1 = (dist-500)/speed;               
             this.dist1 = dist;
             time = this.time1;
         end
