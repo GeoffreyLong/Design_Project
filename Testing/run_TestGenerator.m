@@ -2,7 +2,9 @@
 % Any file that you want to function handle also has to be in this directory
 
 % NOTE: Fill this in to save a description of the tests run
-testDescription = 'These tests were run with July 6th cam1 01. Initial_Detections had 1.25 times on the horizon y component';
+testDescription = ['These tests were run with July 6th cam1 01. \n'...
+    'Initial_Detections had 1.25 times on the horizon y component \n'...
+    '2nd version of erroneous side detections'];
 
 % Add all videos for testing
 videos = {
@@ -18,6 +20,11 @@ videos = {
 
 % Declare a detection function
 anon_detect = @(im,host,height,width) initial_detections(im,host,height,width);
+
+
+
+% NOTE: Tracker is not anonymous
+% Any changes to tracker must be made in testgenerator
 
 
 % Make the test folder

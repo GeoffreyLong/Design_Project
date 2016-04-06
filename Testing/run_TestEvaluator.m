@@ -17,6 +17,7 @@ height = 0;
 width = 0;
 
 detections = [];
+timing = [];
 
 % Loop over the files in the directory
 for i=1:numel(files)
@@ -52,6 +53,8 @@ for i=1:numel(files)
         
     elseif strcmp(component,'ttc')
         
+    elseif strcmp(component,'timing')
+        timing = csvread(strcat(testFileBase,fileName));
     end
 end
 
@@ -71,6 +74,7 @@ end
 % This will gather metrics such as 
 %   distance of first sighting
 %   estimated time to collision of first sighting 
-if (~isempty(detections) && ~isempty(opt_truth) && ~isempty(target))
-    
+%   timing metrics
+if (~isempty(detections) && ~isempty(opt_truth) && ~isempty(target) && ~isempty(timing))
+    test_DetectionMetrics(resultFileBase, detections, opt_truth, target, timing);
 end

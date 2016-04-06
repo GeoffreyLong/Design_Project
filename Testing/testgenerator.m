@@ -20,7 +20,7 @@ function testgenerator( videos, anon_detect, testFileBase )
             continue;
         end
 
-        
+        % TODO might be unecessary
         % Get the truth rects if they exist
         % If they don't then skip the video
         readRect = readrectxml(filePath, 'Previous/');
@@ -48,8 +48,8 @@ function testgenerator( videos, anon_detect, testFileBase )
         % Create the files
         detection_file = strcat(testFileBase,'detection_',vidName,'.dat');
         detectionFilter_file = strcat(testFileBase,'detectionFilter_',vidName,'.dat');
-        tracking_file = strcat(testFileBase,'tracking_',vidName);
-        ttc_file = strcat(testFileBase,'ttc_',vidName);
+        tracking_file = strcat(testFileBase,'tracking_',vidName,'.dat');
+        ttc_file = strcat(testFileBase,'ttc_',vidName,'.dat');
 
         % Timing in the form nFrames x 5 matrix
         %   frameNumber, 
@@ -60,8 +60,11 @@ function testgenerator( videos, anon_detect, testFileBase )
         % Full system time can be calculated from adding up the others
         %   Don't want to combine that in since there is filewriting time
         
-        timing_file = strcat(testFileBase, 'timing_', vidName);
+        timing_file = strcat(testFileBase, 'timing_', vidName, '.dat');
 
+
+        kalman = KalmanTracker;
+        
         
         for i = 1:nFrames
             detections = [];
@@ -76,7 +79,7 @@ function testgenerator( videos, anon_detect, testFileBase )
             % Start detection timing
             time_detect = tic;
             % Get detections
-            detections = anon_detect(rotatedImage, curHost, height, width);
+            detections = anon_detect(origImg, curHost, height, width);
             % End detection timing
             timing(2) = toc(time_detect);
             
@@ -89,7 +92,7 @@ function testgenerator( videos, anon_detect, testFileBase )
             
             %TODO add in tracking and TTC 
             %%%%% TRACKING %%%%%
-            
+            tracks = kalman.track(detections)
             
             
             %%%%% TTC %%%%%
