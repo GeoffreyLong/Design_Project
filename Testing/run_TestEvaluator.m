@@ -55,12 +55,16 @@ for i=1:numel(files)
     end
 end
 
+% Make a results folder
+mkdir(strcat('../Testing/Test_Instances/', folderName, '/'), 'Results');
+resultFileBase = strcat('../Testing/Test_Instances/', folderName, '/Results/');
+
 if (~isempty(detections) && ~isempty(opt_truth))
-    test_DetectionVSRects(nFrames, detections, opt_truth);
+    test_DetectionVSRects(strcat(resultFileBase,'optimized_'), nFrames, detections, opt_truth);
 end
    
 if (~isempty(detections) && ~isempty(scramble_truth))
-    test_DetectionVSRects(nFrames, detections, scramble_truth);    
+    test_DetectionVSRects(strcat(resultFileBase,'scrambled_'), nFrames, detections, scramble_truth);    
 end
 
 %    %test_DetectionVSRects(nFrames, detections, opt_truth, scramble_truth, target);

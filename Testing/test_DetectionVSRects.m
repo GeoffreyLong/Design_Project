@@ -1,4 +1,4 @@
-function [ output_args ] = test_DetectionVSRects( nFrames, rect, truth )
+function [ output_args ] = test_DetectionVSRects( resultFile, nFrames, rect, truth )
 %TEST_DETECTIONVSRECTS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -77,18 +77,38 @@ function [ output_args ] = test_DetectionVSRects( nFrames, rect, truth )
         end
     end
 
+    fileID = fopen(strcat(resultFile, 'vsRect.txt'), 'w');
+    formatspec = 'False Positives: %d \n False Negatives: %d \n';
+    
+    truePositives
+    fprintf(fileID, 'True Positives: \t\t %d \n', truePositives);
+    falsePositives
+    fprintf(fileID, 'False Positives: \t\t %d \n', falsePositives);
+    falseNegatives
+    fprintf(fileID, 'False Negatives: \t\t %d \n', falseNegatives);
+    
     % Loosely, the number of erroneous detections 
     % (extra detections, false positives, etc)
     detectionToPlaneRatio = totalDetections / totalPlanes
+    fprintf(fileID, 'Detection To Plane Ratio: \t %f \n', detectionToPlaneRatio);
+
     
     % The number of detections on each plane
     % Sometimes there may be several bounding boxes on a single plane
     % that grab wings, decals, etc
     detectionsPerPlane = truePositives / foundPlanes
+    fprintf(fileID, 'Detection Per Plane: \t\t %f \n', detectionsPerPlane);
     
     % boundQuality: the quality of the bounding (how much the rects overlap)
     %   Make a histogram
     %   Fit a gaussian
-    %   Both of these can be found in static plane location model
+    boundQuality = fitdist(bboxratios, 'Normal')
+    boundValues = 0:0.01:1;
+    points = pdf(boundQuality,boundValues);
+    boundPlot = plot(boundValues,points,'LineWidth',2);
+    title('Gaussian Fit of Bounding Box Overlap Ratio');
+    fprintf(fileID, 'Detection Quality: \t\t Mu=%f, \n\t\t\t\t sigma=%f \n', boundQuality.mu, boundQuality.sigma);
+    saveas(boundPlot, strcat(resultFile, 'vsRect_Quality.png'));
+    
+    fclose(fileID)
 end
-
