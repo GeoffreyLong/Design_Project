@@ -57,19 +57,17 @@ function [ detections ] = initial_detections( origImage, host, height, width )
     s = regionprops(L, 'BoundingBox', 'Centroid');
     detections = [];
     for j=1:numel(s)
-        xCenter = ceil(s(j).Centroid(1));
-        yCenter = ceil(s(j).Centroid(2));
-        
-        if (xCenter ~= 1)
-            xCenter = xCenter - 1;
-        end
-        
-        if (yCenter ~= 1)
-            yCenter = yCenter - 1;
-        end
-
-        if (origImage(yCenter, xCenter) ~= 0 && s(j).BoundingBox(3) * s(j).BoundingBox(4) ~= 0)
-            bound = s(j).BoundingBox;
+        % If the bounding box has an edge within 2 pixels of the frame x axis
+        % Then we expect the size of the box to be larger than 20 pixels
+        % Due to the nature of headon approaches
+        % Note: not sure if this is a better approach to filtering the side
+        % noise than the previous iteration
+        % Could alternatively do a count of number of 0 valued elements in
+        % the detection box, if the count is higher than a threshold then
+        % remove it.
+        bound = ceil(s(j).BoundingBox);
+        if (~(bound(1) <= 2 && bound(3) < 20) ...
+            && ~(abs(bound(1)+bound(3) - height) <= 2 && bound(3) < 20))
             bound(2) = bound(2) + upper;
             detections = [detections; bound];
             %image = insertShape(image, 'rectangle', s(j).BoundingBox);
