@@ -88,11 +88,29 @@ for i = lastFrame:-1:1
                 ch = getkey
                 if (ch == 3)
                     return;
-                elseif (ch == 121)
+                elseif (ch == 8) % backspace, will skip frame
+                    break;
+                elseif (ch == 13) % enter, will add rect
                     tempRect(1) = tempRect(1) + croppedRect(1);
                     tempRect(2) = tempRect(2) + croppedRect(2);
                     rect = [rect; i tempRect];
                     break
+                elseif (ch == 28) % Left arrow key, move box left
+                    tempRect(1) = tempRect(1) - 1;
+                elseif (ch == 30) % Up arrow key, move box up
+                    tempRect(2) = tempRect(2) - 1;
+                elseif (ch == 29) % Right arrow key, move box right
+                    tempRect(1) = tempRect(1) + 1;
+                elseif (ch == 31) % Down arrow key, move box down
+                    tempRect(2) = tempRect(2) + 1;
+                elseif (ch == 97) % 'a', will horizontally downscale box
+                    tempRect(3) = tempRect(3) - 1;
+                elseif (ch == 119) % 'w', will vertically upscale box
+                    tempRect(4) = tempRect(4) + 1;
+                elseif (ch == 100) % 'd', will horizontally upscale box
+                    tempRect(3) = tempRect(3) + 1;
+                elseif (ch == 115) % 'w', will vertically downscale box
+                    tempRect(4) = tempRect(4) - 1;
                 else
                     continue
                 end
