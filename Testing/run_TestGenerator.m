@@ -36,6 +36,17 @@ fileID = fopen(strcat(testFileBase,'Description.txt'),'w');
 fprintf(fileID, testDescription);
 fclose(fileID);
 
-% Run the test generator
-%TODO Consider name-value pair arguments
-testgenerator(videos, anon_detect, testFileBase);
+% Iterate through the cell of videos
+for vidIdx = 1:numel(videos)
+    % Select one of the videos for testing
+    filePath = char(videos{vidIdx});
+
+    filePathTokens = strsplit(filePath(1:end-4), '/');
+    vidName = filePathTokens(end);
+    mkdir(testFileBase, vidName{1});
+    newFileBase = strcat(testFileBase, vidName{1}, '/')
+
+    % Run the test generator
+    %TODO Consider name-value pair arguments
+    testgenerator(filePath, anon_detect, newFileBase);
+end

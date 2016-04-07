@@ -1,11 +1,13 @@
 % This script runs the tests for a given testing instance or instances
 % Want to pass a folder to the test evaluator function
-folderName = '20160406T153246';
+folderName = '20160406T201401';
 
 % Set the name of the specific directory and get the files from it
 testFileBase = strcat('../Testing/Test_Instances/',folderName,'/')
-files = dir(testFileBase);
-
+d = dir(testFileBase);
+isub = [d(:).isdir]; %# returns logical vector
+videoDirectories = {d(isub).name}';
+videoDirectories(ismember(videoDirectories,{'.','..'})) = [];
 
 opt_truth = [];
 scramble_truth = [];
@@ -20,44 +22,40 @@ detections = [];
 timing = [];
 
 % Loop over the files in the directory
-for i=1:numel(files)
-    fileName = files(i).name
-    
-    % The string to the left of the first underscore is the system component
-    % The string to the right of the first underscore is the video
-    [component, video] = strtok(fileName, '_');
-    video = video(2:end-4);
-    if (isempty(video)) 
-        continue;
-    end
+for i=1:numel(videoDirectories)
+    video = videoDirectories{i}
 
-    if (nFrames == 0)
-        opt_truth = readrectxml(video,'optimized_');
-        scramble_truth = readrectxml(video,'scramble_'); 
-        
-        % Might be a bad idea to require reading in the video
-        % Might be better just to store this information somewhere
-        videoFile = strcat('../Test_Data/', video);
-        v = VideoReader(videoFile);
-        nFrames = v.NumberOfFrames;
-        height = v.Height;
-        width = v.Width;
-        
-        [host, target] = getdetailedsrt(videoFile, nFrames);
-    end
+    newFileBase = strcat(testFileBase, video, '/')
+
+    opt_truth = readrectxml(strcat(video,'.avi'),'optimized_');
+    scramble_truth = readrectxml(strcat(video,'.avi'),'scramble_'); 
+
+    % Might be a bad idea to require reading in the video
+    % Might be better just to store this information somewhere
+    videoFile = strcat('../Test_Data/', video, '.avi');
+    v = VideoReader(videoFile);
+    nFrames = v.NumberOfFrames;
+    height = v.Height;
+    width = v.Width;
+
+    [host, target] = getdetailedsrt(videoFile, nFrames);
     
-    % Read in the data corresponding to the file
-    if strcmp(component,'detection')
-        detections = csvread(strcat(testFileBase,fileName));
-    elseif strcmp(component,'tracking')
-        
-    elseif strcmp(component,'ttc')
-        
-    elseif strcmp(component,'timing')
-        timing = csvread(strcat(testFileBase,fileName));
+    files = dir(newFileBase);
+    for j=1:numel(files)
+        fileName = files(j).name
+
+        % Read in the data corresponding to the file
+        if strcmp(fileName,'detection.dat')
+            detections = csvread(strcat(newFileBase,fileName));
+        elseif strcmp(fileName,'tracking.dat')
+
+        elseif strcmp(fileName,'ttc.dat')
+
+        elseif strcmp(fileName,'timing.dat')
+            timing = csvread(strcat(testFileBase,fileName));
+        end     
     end
 end
-
 % Make a results folder
 mkdir(strcat('../Testing/Test_Instances/', folderName, '/'), 'Results');
 resultFileBase = strcat('../Testing/Test_Instances/', folderName, '/Results/');
