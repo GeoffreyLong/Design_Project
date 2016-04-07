@@ -61,6 +61,7 @@ for i = 1800:nFrames
         box2 = [2000 200 50 60];
         bboxes = [box1;box2];
         tracks = kalman.track(bboxes);
+        
         dist = target(i,4);
         estDist = tracker.estimateDistance(height);
         realTTC = tracker.ttc(dist);
