@@ -1,10 +1,6 @@
-function RectGeneratorV2(  )
-%RECTGENERATORV2
-%   Allows the user to enter explicit numbers to permute after initial selection
-%   NOTE not finished... phased out in favor of RectGeneratorV3
-
-filePath = 'Test_Data/July_6_cam1_01.avi';
-lastFrame = 0;
+function [rect] = rectgeneratorV3( filePath, lastFrame )
+%RECTGENERATORV3 A quicker rect generator
+%   Uses arrow keys after first selection to position the new bounding box
 
 
 % Instantiate the video reader
@@ -30,6 +26,7 @@ end
 
 % Iterate through the image frames
 for i = lastFrame:-1:1
+    try
         % Show the image with the frame number as title
         img = read(v,i);
 
@@ -86,20 +83,34 @@ for i = lastFrame:-1:1
                 tempRect
                 tempImg = insertShape(img, 'Rectangle', tempRect);
                 imshow(tempImg);
-                prompt = ['Either enter a shift to the rect by' ...
-                    '[x y sizeX sizeY], or 0 to reject, or 1 to accept: '];
-                x = input(prompt)
-                if (x == 1)
+                ch = getkey
+                if (ch == 3)
+                    return; % This seems to work
+                elseif (ch == 8) % backspace, will skip frame
+                    break;
+                elseif (ch == 13) % enter, will add rect
                     tempRect(1) = tempRect(1) + croppedRect(1);
                     tempRect(2) = tempRect(2) + croppedRect(2);
                     rect = [rect; i tempRect];
                     break
-                elseif(x == 0)
-                    break
+                elseif (ch == 28) % Left arrow key, move box left
+                    tempRect(1) = tempRect(1) - 1;
+                elseif (ch == 30) % Up arrow key, move box up
+                    tempRect(2) = tempRect(2) - 1;
+                elseif (ch == 29) % Right arrow key, move box right
+                    tempRect(1) = tempRect(1) + 1;
+                elseif (ch == 31) % Down arrow key, move box down
+                    tempRect(2) = tempRect(2) + 1;
+                elseif (ch == 97) % 'a', will horizontally downscale box
+                    tempRect(3) = tempRect(3) - 1;
+                elseif (ch == 119) % 'w', will vertically upscale box
+                    tempRect(4) = tempRect(4) + 1;
+                elseif (ch == 100) % 'd', will horizontally upscale box
+                    tempRect(3) = tempRect(3) + 1;
+                elseif (ch == 115) % 'w', will vertically downscale box
+                    tempRect(4) = tempRect(4) - 1;
                 else
-                    if numel(x) == 4
-                        tempRect = tempRect + x;
-                    end
+                    continue
                 end
             end
         else
@@ -124,10 +135,10 @@ for i = lastFrame:-1:1
                 rect = [rect; i curRect];            
             end
         end
-            
-%     catch
-%         break;
-%     end
+    
+    catch
+        break;
+    end
 end
 
 % Remove rows with all 0's
@@ -137,4 +148,5 @@ rect( ~any(rect,2), : ) = [];
 sort(rect,1)
 
 end
+
 

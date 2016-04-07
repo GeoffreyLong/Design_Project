@@ -1,5 +1,5 @@
-function [ output_args ] = test_DetectionVSRects( resultFile, nFrames, rect, truth )
-%TEST_DETECTIONVSRECTS Summary of this function goes here
+function test_DetectionVSRects( resultFile, nFrames, rect, truth )
+%TEST_DETECTIONVSRECTSmary of this function goes here
 %   Detailed explanation goes here
 
     truePositives = 0;
@@ -10,10 +10,11 @@ function [ output_args ] = test_DetectionVSRects( resultFile, nFrames, rect, tru
     foundPlanes = 0;
     totalDetections = 0;
     bboxratios = [];
+    
     for i = 1:nFrames
         curTruth = truth(truth(:,1)==i,:);    
         curRect = rect(rect(:,1)==i,:); 
-
+        
         % If there were no planes found by the algorithm
         % But there were planes in the image
         if size(curRect,1) == 0 && size(curTruth,1) ~= 0
@@ -88,7 +89,6 @@ function [ output_args ] = test_DetectionVSRects( resultFile, nFrames, rect, tru
     % http://www.hpl.hp.com/techreports/2003/HPL-2003-4.pdf
     
     fileID = fopen(strcat(resultFile, 'vsRect.txt'), 'w');
-    formatspec = 'False Positives: %d \n False Negatives: %d \n';
     
     truePositives
     fprintf(fileID, 'True Positives: \t\t %d \n', truePositives);
@@ -163,5 +163,5 @@ function [ output_args ] = test_DetectionVSRects( resultFile, nFrames, rect, tru
     fprintf(fileID, 'Detection Quality: \t\t Mu=%f, \n\t\t\t\t sigma=%f \n', boundQuality.mu, boundQuality.sigma);
     saveas(boundPlot, strcat(resultFile, 'vsRect_Quality.png'));
     
-    fclose(fileID)
+    fclose(fileID);
 end

@@ -1,6 +1,8 @@
-function RectGeneratorV3(  )
-%RECTGENERATORV3 Summary of this function goes here
-%   Detailed explanation goes here
+function [rect] = rectgeneratorV2( filePath, lastFrame )
+%RECTGENERATORV2
+%   Allows the user to enter explicit numbers to permute after initial selection
+%   NOTE not fully tested... phased out in favor of RectGeneratorV3
+
 
 filePath = 'Test_Data/July_6_cam1_01.avi';
 lastFrame = 0;
@@ -85,34 +87,20 @@ for i = lastFrame:-1:1
                 tempRect
                 tempImg = insertShape(img, 'Rectangle', tempRect);
                 imshow(tempImg);
-                ch = getkey
-                if (ch == 3)
-                    return;
-                elseif (ch == 8) % backspace, will skip frame
-                    break;
-                elseif (ch == 13) % enter, will add rect
+                prompt = ['Either enter a shift to the rect by' ...
+                    '[x y sizeX sizeY], or 0 to reject, or 1 to accept: '];
+                x = input(prompt)
+                if (x == 1)
                     tempRect(1) = tempRect(1) + croppedRect(1);
                     tempRect(2) = tempRect(2) + croppedRect(2);
                     rect = [rect; i tempRect];
                     break
-                elseif (ch == 28) % Left arrow key, move box left
-                    tempRect(1) = tempRect(1) - 1;
-                elseif (ch == 30) % Up arrow key, move box up
-                    tempRect(2) = tempRect(2) - 1;
-                elseif (ch == 29) % Right arrow key, move box right
-                    tempRect(1) = tempRect(1) + 1;
-                elseif (ch == 31) % Down arrow key, move box down
-                    tempRect(2) = tempRect(2) + 1;
-                elseif (ch == 97) % 'a', will horizontally downscale box
-                    tempRect(3) = tempRect(3) - 1;
-                elseif (ch == 119) % 'w', will vertically upscale box
-                    tempRect(4) = tempRect(4) + 1;
-                elseif (ch == 100) % 'd', will horizontally upscale box
-                    tempRect(3) = tempRect(3) + 1;
-                elseif (ch == 115) % 'w', will vertically downscale box
-                    tempRect(4) = tempRect(4) - 1;
+                elseif(x == 0)
+                    break
                 else
-                    continue
+                    if numel(x) == 4
+                        tempRect = tempRect + x;
+                    end
                 end
             end
         else
@@ -150,5 +138,4 @@ rect( ~any(rect,2), : ) = [];
 sort(rect,1)
 
 end
-
 
