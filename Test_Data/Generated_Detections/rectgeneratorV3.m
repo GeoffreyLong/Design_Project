@@ -1,4 +1,4 @@
-function [rect] = rectgeneratorV3( filePath, lastFrame )
+function [rect] = rectgeneratorV3( filePath, lastFrame, rect )
 %RECTGENERATORV3 A quicker rect generator
 %   Uses arrow keys after first selection to position the new bounding box
 
@@ -11,9 +11,6 @@ nFrames = v.NumberOfFrames;
 width = v.Width;
 height = v.Height;
 
-% Create an empty array
-rect = [];
-
 % Read in the SRT
 [host, target] = getdetailedsrt(filePath, nFrames);
 
@@ -22,6 +19,10 @@ croppedRect = [0,0,width,height];
 
 if (lastFrame == 0)
     lastFrame = nFrames;
+end
+if (~isempty(rect))
+    rect = sortrows(rect,-1);
+    lastFrame = rect(end,1) - 1;
 end
 
 % Iterate through the image frames
@@ -69,8 +70,8 @@ for i = lastFrame:-1:1
             end
         end
         croppedRect
-        img = imcrop(img,croppedRect);
-        imshow(img);
+        imCrop = imcrop(img,croppedRect);
+        imshow(imCrop);
         imgTitle = sprintf('frame %d of %d', i, nFrames);
         title(imgTitle);
 
@@ -81,7 +82,7 @@ for i = lastFrame:-1:1
             tempRect(2) = tempRect(2) - croppedRect(2);
             while (1)
                 tempRect
-                tempImg = insertShape(img, 'Rectangle', tempRect);
+                tempImg = insertShape(imCrop, 'Rectangle', tempRect, 'Color', 'blue');
                 imshow(tempImg);
                 ch = getkey
                 if (ch == 3)
@@ -109,6 +110,28 @@ for i = lastFrame:-1:1
                     tempRect(3) = tempRect(3) + 1;
                 elseif (ch == 115) % 'w', will vertically downscale box
                     tempRect(4) = tempRect(4) - 1;
+                elseif (ch == 32)
+                    croppedRect(1) = croppedRect(1) - 10;
+                    croppedRect(2) = croppedRect(2) - 10;
+                    croppedRect(3) = croppedRect(3) + 20;
+                    croppedRect(4) = croppedRect(4) + 20;
+                    
+                    if (croppedRect(1) <= 0)
+                        croppedRect(1) = 1;
+                    end
+                    if (croppedRect(2) <= 0)
+                        croppedRect(2) = 1;
+                    end
+                    overflowWidth = croppedRect(1) + croppedRect(3) - width;
+                    if (overflowWidth >= 0)
+                        croppedRect(3) = croppedRect(3) - overflowWidth;
+                    end
+                    overflowHeight = croppedRect(2) + croppedRect(4) - width;
+                    if (overflowHeight >= 0)
+                        croppedRect(4) = croppedRect(4) - overflowHeight;
+                    end
+                    
+                    imCrop = imcrop(img,croppedRect);
                 else
                     continue
                 end
@@ -143,9 +166,6 @@ end
 
 % Remove rows with all 0's
 rect( ~any(rect,2), : ) = [];
-
-%sort the rect on the frame number
-sort(rect,1)
 
 end
 
