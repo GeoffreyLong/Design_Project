@@ -42,8 +42,13 @@ classdef KalmanTracker<handle
          end
          % This method splits the detections into centroids and bboxes
         function [centroids, bboxes] = formatInputs(detections)
-           centroids = detections(:,1:2);
-           bboxes = detections;         
+            if ~isempty(detections)
+                centroids = detections(:,1:2);
+                bboxes = detections; 
+            else
+                centroids = [];
+                bboxes = [];
+            end
         end
     end
     methods
@@ -215,6 +220,7 @@ classdef KalmanTracker<handle
                 end
                 
             end 
+            r = [];
         end
         
         
