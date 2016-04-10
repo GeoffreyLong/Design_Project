@@ -1,6 +1,14 @@
+%TODO figure out how to handle scramble vs optimized rectangles
+
 % This script runs the tests for a given testing instance or instances
 % Want to pass a folder to the test evaluator function
-folderName = '20160406T203250';
+%folderName = '20160406T203250';
+folderName = '20160410T042911';
+
+% Set the detection file to test against
+%truthy_file = 'scrambled_';
+truthy_file = 'optimized_';
+
 
 % Set the name of the specific directory and get the directories from it
 testFileBase = strcat('../Testing/Test_Instances/',folderName,'/')
@@ -11,15 +19,6 @@ videoDirectories(ismember(videoDirectories,{'.','..'})) = [];
 
 % Loop over the video directories in the super directory
 for i=1:numel(videoDirectories)
-    opt_truth = [];
-    scramble_truth = [];
-    host = [];
-    target = [];
-
-    nFrames = 0;
-    height = 0;
-    width = 0;
-
     detections = [];
     timing = [];
 
@@ -27,8 +26,7 @@ for i=1:numel(videoDirectories)
 
     newFileBase = strcat(testFileBase, video, '/')
 
-    opt_truth = readrectxml(strcat(video,'.avi'),'optimized_');
-    scramble_truth = readrectxml(strcat(video,'.avi'),'scramble_'); 
+    truths = readrectxml(strcat(video,'.avi'),truthy_file);
 
     % Might be a bad idea to require reading in the video
     % Might be better just to store this information somewhere
@@ -60,22 +58,18 @@ for i=1:numel(videoDirectories)
     mkdir(strcat('../Testing/Test_Instances/', folderName, '/', video, '/'), 'Results');
     resultFileBase = strcat('../Testing/Test_Instances/', folderName, '/', video, '/', '/Results/');
 
-    % These next if statements test the detection results against the truth files
-    if (~isempty(detections) && ~isempty(opt_truth))
-        test_DetectionVSRects(strcat(resultFileBase,'optimized_'), nFrames, detections, opt_truth);
-    end
-    if (~isempty(detections) && ~isempty(scramble_truth))
-        %TODO some false positives in this case might not actually be an issue
-        test_DetectionVSRects(strcat(resultFileBase,'scrambled_'), nFrames, detections, scramble_truth);    
+    % These next if statements test the detection results against the
+    % chosen truth file
+    if (~isempty(detections) && ~isempty(truths))
+        test_DetectionVSRects(resultFileBase, nFrames, detections, truths);
     end
 
-    %NOTE not sure if this file is even necessary...
     % This will gather metrics such as 
     %   first sightings
     %       estimated time to collision of first sighting
     %       distance of first sighting
     %   timing metrics
-    if (~isempty(detections) && ~isempty(opt_truth) && ~isempty(target) && ~isempty(timing))
-        test_DetectionMetrics(resultFileBase, nFrames, detections, opt_truth, target, timing);
+    if (~isempty(detections) && ~isempty(truths) && ~isempty(target) && ~isempty(timing))
+        test_DetectionMetrics(resultFileBase, nFrames, detections, truths, target, timing);
     end
 end

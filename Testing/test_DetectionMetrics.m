@@ -64,17 +64,17 @@ function test_DetectionMetrics( resultFileBase, nFrames, rect, truth, target, ti
     firstDetectionString
 
     
-    fileID = fopen(strcat(resultFileBase, 'detectionMetrics.txt'), 'w');
+    fileID = fopen(strcat(resultFileBase, 'DetectionMetrics.txt'), 'w');
 
     fprintf(fileID, 'Number of frames between \n');
-    fprintf(fileID, '\t First truth detection and detection: \t %s \n', firstRectDetection - firstTruthDetection);
-    fprintf(fileID, '\t First truth detection and 4+ detection string: \t %s \n', firstDetectionString - firstTruthDetection);
-    fprintf(fileID, '\t First detection and 4+ detection string: \t %s \n\n', firstDetectionString - firstRectDetection);
+    fprintf(fileID, '\t First truth detection and detection: \t\t %d \n', (firstRectDetection(1) - firstTruthDetection(1)));
+    fprintf(fileID, '\t First truth detection and 4+ detection string: %d \n', (firstDetectionString(1) - firstTruthDetection(1)));
+    fprintf(fileID, '\t First detection and 4+ detection string: \t %d \n\n', (firstDetectionString(1) - firstRectDetection(1)));
 
     fprintf(fileID, 'Distance of plane at \n');
-    fprintf(fileID, '\t First truth detection: \t %s (ft) \n', target(firstTruthDetection(1)));
-    fprintf(fileID, '\t First detection: \t %s (ft) \n', target(firstRectDetection(1)));
-    fprintf(fileID, '\t First 4+ detection string: \t %s (ft) \n', target(firstDetectionString(1)));
+    fprintf(fileID, '\t First truth detection: \t\t\t %d (ft) \n', target(firstTruthDetection(1)));
+    fprintf(fileID, '\t First detection: \t\t\t\t %d (ft) \n', target(firstRectDetection(1)));
+    fprintf(fileID, '\t First 4+ detection string: \t\t\t %d (ft) \n', target(firstDetectionString(1)));
         
     fclose(fileID);
 end

@@ -1,4 +1,4 @@
-function test_DetectionVSRects( resultFile, nFrames, rect, truth )
+function test_DetectionVSRects( resultFileBase, nFrames, rect, truth )
 %TEST_DETECTIONVSRECTSmary of this function goes here
 %   Detailed explanation goes here
 
@@ -10,6 +10,10 @@ function test_DetectionVSRects( resultFile, nFrames, rect, truth )
     foundPlanes = 0;
     totalDetections = 0;
     bboxratios = [];
+    
+    % count indexed on frame number
+    falseNegativesOverTime = zeros(nFrames,1);
+    
     
     for i = 1:nFrames
         curTruth = truth(truth(:,1)==i,:);    
@@ -73,6 +77,8 @@ function test_DetectionVSRects( resultFile, nFrames, rect, truth )
             for j = 1:numel(truthCounts)
                 if truthCounts(j) == 0
                     falseNegatives = falseNegatives + 1;
+                    
+                    falseNegativesOverTime(i) = falseNegativesOverTime(i) + 1;
                 else
                     foundPlanes = foundPlanes + 1;
                 end
@@ -88,7 +94,7 @@ function test_DetectionVSRects( resultFile, nFrames, rect, truth )
     % https://himmelfarb.gwu.edu/tutorials/studydesign101/formulas.html
     % http://www.hpl.hp.com/techreports/2003/HPL-2003-4.pdf
     
-    fileID = fopen(strcat(resultFile, 'vsRect.txt'), 'w');
+    fileID = fopen(strcat(resultFileBase, 'DetectvsRect.txt'), 'w');
     
     truePositives
     fprintf(fileID, 'True Positives: \t\t %d \n', truePositives);
@@ -123,12 +129,12 @@ function test_DetectionVSRects( resultFile, nFrames, rect, truth )
     % Positive predictive value = The number of positive test results for the presence of an outcome
     %                             divided by the total number of positive test results
     posPredictVal = truePositives / (truePositives + falsePositives);
-    fprintf(fileID, 'Pos Predictive Value (Precision): \t %f \n', posPredictVal);
+    fprintf(fileID, 'Pos Predictive Value (Precision):%f \n', posPredictVal);
     
     % Negative Predictive Value = The number of negative test results for the absence of an outcome 
     %                             divided by the total number of negative test results
     negPredictVal = trueNegatives / (trueNegatives + falseNegatives);
-    fprintf(fileID, 'Neg Predictive Value: \t %f \n', negPredictVal);
+    fprintf(fileID, 'Neg Predictive Value: \t\t %f \n', negPredictVal);
 
     
     accuracy = (truePositives + trueNegatives) / (truePositives + falsePositives + trueNegatives + falseNegatives);
@@ -160,8 +166,10 @@ function test_DetectionVSRects( resultFile, nFrames, rect, truth )
     points = pdf(boundQuality,boundValues);
     boundPlot = plot(boundValues,points,'LineWidth',2);
     title('Gaussian Fit of Bounding Box Overlap Ratio');
-    fprintf(fileID, 'Detection Quality: \t\t Mu=%f, \n\t\t\t\t sigma=%f \n', boundQuality.mu, boundQuality.sigma);
-    saveas(boundPlot, strcat(resultFile, 'vsRect_Quality.png'));
+    fprintf(fileID, 'Detection Quality (Mu): \t %f \nDetection Quality (Sigma): \t %f \n', boundQuality.mu, boundQuality.sigma);
+    saveas(boundPlot, strcat(resultFileBase, 'DetectvsRect_Quality.png'));
+
+    falseNegativesOverTime
     
     fclose(fileID);
 end
