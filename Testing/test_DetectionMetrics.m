@@ -1,6 +1,7 @@
 function test_DetectionMetrics( resultFileBase, nFrames, rect, truth, target, timing )
 %TEST_DETECTIONMETRICS Summary of this function goes here
-%   
+%   TODO 
+%       Avg distance of false negatives?
 
 
     

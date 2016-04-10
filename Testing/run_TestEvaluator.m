@@ -45,7 +45,7 @@ for i=1:numel(videoDirectories)
         % Read in the data corresponding to the file
         if strcmp(fileName,'detection.dat')
             detections = csvread(strcat(newFileBase,fileName));
-        elseif strcmp(fileName,'tracking.dat')
+        elseif strcmp(fileName,'tracks.dat')
 
         elseif strcmp(fileName,'ttc.dat')
 
@@ -72,4 +72,6 @@ for i=1:numel(videoDirectories)
     if (~isempty(detections) && ~isempty(truths) && ~isempty(target) && ~isempty(timing))
         test_DetectionMetrics(resultFileBase, nFrames, detections, truths, target, timing);
     end
+    
+    
 end

@@ -24,8 +24,13 @@ function testgenerator( filePath, anon_detect, testFileBase )
 
     % Create the files
     detection_file = strcat(testFileBase,'detection.dat');
-    detectionFilter_file = strcat(testFileBase,'detectionFilter.dat');
-    tracking_file = strcat(testFileBase,'tracking.dat');
+    detectionFilter_file = strcat(testFileBase,'detection_filter.dat');
+    
+    %TODO decide if we want these separate or together
+    %   Could just iterate over in the tracks file to get the same info
+    %   about the detections
+    trackingDetection_file = strcat(testFileBase,'tracking_detections.dat');
+    trackingTracks_file = strcat(testFileBase,'tracking_tracks.dat');
     ttc_file = strcat(testFileBase,'ttc.dat');
 
     % Timing in the form nFrames x 5 matrix
@@ -44,6 +49,7 @@ function testgenerator( filePath, anon_detect, testFileBase )
 
 
     for i = 1:nFrames
+        i
         detections = [];
         timing = zeros(5);
         timing(1) = i;
@@ -59,9 +65,8 @@ function testgenerator( filePath, anon_detect, testFileBase )
         detections = anon_detect(origImg, curHost, height, width);
         % End detection timing
         timing(2) = toc(time_detect);
-
         % Add the frame number to the detections
-        detectionsWrite = [i*ones(size(detections,1),1),detections]
+        detectionsWrite = [i*ones(size(detections,1),1),detections];
         % Write the detections
         dlmwrite(detection_file,detectionsWrite,'-append');
 
@@ -69,8 +74,19 @@ function testgenerator( filePath, anon_detect, testFileBase )
 
         %TODO add in tracking and TTC 
         %%%%% TRACKING %%%%%
-        kalman.track(detections)
-
+        % Start tracking timing
+        time_track = tic;
+        % Get tracks
+        trackDetections = kalman.track(detections)
+        % End tracking timing
+        timing(3) = toc(time_track);
+        %
+        trackDetectionsWrite = [i*ones(size(detections,1),1),trackDetections];
+        % Write tracking to file
+        dlmwrite(trackingDetection_file,trackDetectionsWrite,'-append');
+        
+        % TODO append specific tracks to tracks object
+        %   Write these to file
 
         %%%%% TTC %%%%%
 
