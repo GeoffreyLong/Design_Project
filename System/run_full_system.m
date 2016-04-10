@@ -1,7 +1,7 @@
 % This will be for running the entire system... This is what's up
 
 % If you want to view the image, set to 1, else 0
-DISPLAY = 1;
+DISPLAY = 0;
 
 % All the files for the videos... We actually only want the SRT ones,
 %   so pare this down
@@ -61,12 +61,12 @@ for i = 1800:nFrames
     % Not running the modulus full screen yet
     i
     detections = initial_detections(origImg, curHost, height, width)
-    tracks = kalman.track(detections)
     
+    
+    tracks = kalman.track(i,detections)
     if (~isempty(tracks))
         tracks.bbox
     end
-    
     realTTC = tracker.ttc(target(i,4));
     % So we will want to do a full screen detection sparingly as these are expensive.
     % It should definitely be done every X frames, but also if there are no planes detected.
