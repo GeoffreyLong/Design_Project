@@ -56,8 +56,10 @@ for i = 1800:nFrames
 
     % Grab the initial detections
     % Not running the modulus full screen yet
+    i
     detections = initial_detections(origImg, curHost, height, width)
     tracks = kalman.track(detections)
+    bboxes = trac
     realTTC = tracker.ttc(target(i,4));
     % So we will want to do a full screen detection sparingly as these are expensive.
     % It should definitely be done every X frames, but also if there are no planes detected.

@@ -1,5 +1,5 @@
 % Instantiate the video reader
-v = VideoReader('/Users/Xavier/Documents/workspace/Design_Project/Algorithm_Two/cam1_01.avi');
+v = VideoReader('/Users/Xavier/Documents/workspace/Design_Project/Test_Data/July_6_cam1_01.avi');
 
 % Get the number of frames, frame width, and frame height from the video data
 nFrames = v.NumberOfFrames;
@@ -35,9 +35,9 @@ rectIndx = 1;
 kalman = KalmanTracker;
 tracker = Tracker;
 realTracker = Tracker;
-rectIndx = 2000-firstDetection;
+rectIndx = 1;
 tempCount = 1;
-for i = 2000:nFrames
+for i = firstDetection:nFrames
     
 %   host: All of the own-ship information
 %       [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
@@ -51,7 +51,7 @@ for i = 2000:nFrames
     if i >= firstDetection
         
         
-        
+        i
         centroid = getMidPoint(rect(rectIndx,:));
         bbox = [rect(rectIndx,4) rect(rectIndx,5)];
         
@@ -60,8 +60,10 @@ for i = 2000:nFrames
         height = rect(rectIndx,5);
         box2 = [2000 200 50 60];
         bboxes = [box1;box2];
-        tracks = kalman.track(bboxes);
-        
+        tracks = kalman.track(bboxes)
+        if ~isempty(tracks)
+            output = cat(1, tracks.bbox)
+        end
         dist = target(i,4);
         estDist = tracker.estimateDistance(height);
         realTTC = tracker.ttc(dist);
@@ -69,7 +71,7 @@ for i = 2000:nFrames
         
 %         fprintf('tracks: %f\n', tracks);
 %          if mod(tempCount,15) == 0
-         fprintf('distance: %f, estDist: %f, realTTC: %f, estTTC: %f\n', dist, estDist, realTTC, estTTC);
+%          fprintf('distance: %f, estDist: %f, realTTC: %f, estTTC: %f\n', dist, estDist, realTTC, estTTC);
 %              tempCount = 0;
 %          end
         tempCount = tempCount + 1;

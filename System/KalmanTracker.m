@@ -218,9 +218,10 @@ classdef KalmanTracker<handle
                 else  
                     r = [];
                 end
-                
+            else
+                r = [];
             end 
-            r = [];
+            
         end
         
         
