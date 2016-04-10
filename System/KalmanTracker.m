@@ -15,6 +15,7 @@ classdef KalmanTracker<handle
         unassignedTracks;
         unassignedDetections;
         
+        oldTracks;
     end
      
     methods (Static)
@@ -36,7 +37,8 @@ classdef KalmanTracker<handle
                 'kalmanFilter', {}, ...
                 'age', {}, ...
                 'totalVisibleCount', {}, ...
-                'consecutiveInvisibleCount', {});
+                'consecutiveInvisibleCount', {}, ...
+                'deathFrame', {});
             
             obj.nextId = 1; % ID of the next track
            
@@ -100,7 +102,7 @@ classdef KalmanTracker<handle
         % the new bounding box, and increases the age of the track and the total
         % visible count by 1. Finally, the function sets the invisible count to 0. 
 
-        function updateAssignedTracks(this)
+        function updateAssignedTracks(this, frameNum)
             numAssignedTracks = size(this.assignments, 1);
             for i = 1:numAssignedTracks
                 trackIdx = this.assignments(i, 1);
@@ -119,7 +121,7 @@ classdef KalmanTracker<handle
 
                 % Update track's age.
                 this.tracks(trackIdx).age = this.tracks(trackIdx).age + 1;
-
+                this.tracks(trackIdx).deathFrame = frameNum;
                 % Update visibility.
                 this.tracks(trackIdx).totalVisibleCount = ...
                     this.tracks(trackIdx).totalVisibleCount + 1;
@@ -130,10 +132,11 @@ classdef KalmanTracker<handle
         % Update Unassigned Tracks
         % Mark each unassigned track as invisible, and increase its age by 1.
 
-        function updateUnassignedTracks(this)
+        function updateUnassignedTracks(this, frameNum)
             for i = 1:length(this.unassignedTracks)
                 ind = this.unassignedTracks(i);
                 this.tracks(ind).age = this.tracks(ind).age + 1;
+                this.tracks(ind).deathFrame = frameNum;
                 this.tracks(ind).consecutiveInvisibleCount = ...
                     this.tracks(ind).consecutiveInvisibleCount + 1;
             end
@@ -162,7 +165,9 @@ classdef KalmanTracker<handle
                 [this.tracks(:).consecutiveInvisibleCount] >= invisibleForTooLong;
 
             % Delete lost tracks.
+            this.oldTracks = [this.oldTracks; this.tracks(lostInds)];
             this.tracks = this.tracks(~lostInds);
+            
         end
     
         % Create New Tracks
@@ -191,7 +196,8 @@ classdef KalmanTracker<handle
                     'kalmanFilter', kalmanFilter, ...
                     'age', 1, ...
                     'totalVisibleCount', 1, ...
-                    'consecutiveInvisibleCount', 0);
+                    'consecutiveInvisibleCount', 0,...
+                    'deathFrame', -1);
 
                 % Add it to the array of tracks.
                 this.tracks(end + 1) = newTrack;
@@ -232,7 +238,7 @@ classdef KalmanTracker<handle
         % This is the main function which calls all the 
         % Kalman filter helper methods and returns the detection tracks
         
-        function r = track(this, detections)
+        function r = track(this, frameNum, detections)
             
             [this.centroids, this.bboxes] = this.formatInputs(detections);
          
@@ -240,8 +246,8 @@ classdef KalmanTracker<handle
             
             [this.assignments, this.unassignedTracks, this.unassignedDetections] = this.detectionToTrackAssignment();
 
-            this.updateAssignedTracks();
-            this.updateUnassignedTracks();
+            this.updateAssignedTracks(frameNum);
+            this.updateUnassignedTracks(frameNum);
             this.deleteLostTracks();
             this.createNewTracks();
     

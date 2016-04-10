@@ -38,7 +38,7 @@ realTracker = Tracker;
 rectIndx = 1;
 tempCount = 1;
 allTracks = [];
-for i = firstDetection:firstDetection+10%nFrames
+for i = firstDetection:firstDetection+100%nFrames
     
 %   host: All of the own-ship information
 %       [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
@@ -61,13 +61,16 @@ for i = firstDetection:firstDetection+10%nFrames
         height = rect(rectIndx,5);
         box2 = [2000 200 50 60];
         bboxes = [box1;box2];
-        tracks = kalman.track(box1);
-        if isempty(tracks)
-            x = [];
-        else 
-            x = tracks.bbox;
+        if i >= firstDetection + 15
+             bboxes = [box1];
         end
-        allTracks = [allTracks;x];
+        tracks = kalman.track(i, bboxes);
+%         if isempty(tracks)
+%             x = [];
+%         else 
+%             x = tracks.bbox;
+%         end
+%         allTracks = [allTracks;x];
 %         if ~isempty(tracks)
 %             output = cat(1, tracks.bbox)
 %         end
