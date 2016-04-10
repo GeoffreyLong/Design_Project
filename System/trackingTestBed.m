@@ -35,9 +35,9 @@ rectIndx = 1;
 kalman = KalmanTracker;
 tracker = Tracker;
 realTracker = Tracker;
-rectIndx = 1800-firstDetection;
+rectIndx = 2000-firstDetection;
 tempCount = 1;
-for i = 1800:nFrames
+for i = 2000:nFrames
     
 %   host: All of the own-ship information
 %       [Frame Number, Altitude (feet), Pitch (degrees), Roll (degrees), Heading]
@@ -69,7 +69,7 @@ for i = 1800:nFrames
         
 %         fprintf('tracks: %f\n', tracks);
 %          if mod(tempCount,15) == 0
-%         fprintf('distance: %f, estDist: %f, realTTC: %f, estTTC: %f\n', dist, estDist, realTTC, estTTC);
+         fprintf('distance: %f, estDist: %f, realTTC: %f, estTTC: %f\n', dist, estDist, realTTC, estTTC);
 %              tempCount = 0;
 %          end
         tempCount = tempCount + 1;
