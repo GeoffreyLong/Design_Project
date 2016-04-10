@@ -17,7 +17,7 @@ filePaths = {
 };
 
 % Select one of the videos for testing
-filePath = char(filePaths{4})
+filePath = char(filePaths{2})
 
 % Instantiate the video reader
 v = VideoReader(filePath);
@@ -48,7 +48,11 @@ width = v.Width;
 % detections = [];
 % tracks = {};
 
-for i = 1:nFrames
+kalman = KalmanTracker;
+tracker = Tracker;
+tracks = [];
+
+for i = 1800:nFrames
     % Read in necessary data
     origImg = read(v, i);
     curHost = host(i,:);
@@ -56,8 +60,8 @@ for i = 1:nFrames
     % Grab the initial detections
     % Not running the modulus full screen yet
     detections = initial_detections(origImg, curHost, height, width)
-    
-    
+    tracks = kalman.track(detections)
+    realTTC = tracker.ttc(target(i,4));
     % So we will want to do a full screen detection sparingly as these are expensive.
     % It should definitely be done every X frames, but also if there are no planes detected.
     % This will focus mostly on getting the initial detections (those far

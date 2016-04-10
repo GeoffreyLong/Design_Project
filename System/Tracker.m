@@ -24,13 +24,13 @@ classdef Tracker<handle
          %                            ---------------------------------------------------------------------------
          %                                      object height (pixels) * sensor height (mm) 
             imgHeight = 2050;
-            realHeight = 1.8; % height in meters
+            realHeight = 0.5; % height in meters
             focalLength = 12e-3; %focal length of camera in meters, 12mm
-            objHeight = height;%/10;
+            objHeight = height/3;%/10;
 %             if objHeight < 5
 %                 objHeight = 2;
 %             end
-            sensorHeight = 3.45e-6 * 2050; % 2/3 inch
+            sensorHeight = 3.45e-6 *2050; % 2/3 inch
             distance = (focalLength * realHeight * imgHeight)/(objHeight*sensorHeight)*3.28084; %return distance in feet
             
         end 
