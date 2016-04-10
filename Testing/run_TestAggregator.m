@@ -23,8 +23,9 @@ masterFolders = {'20160406T203250'};
 
 testData = struct('folderName', {}, 'videoName', {}, 'fileName', {}, 'attribute', {}, 'value', {});
 % if collapsed then this becomes
-collapseData = struct('folderName', {}, 'collapseType', {}, 'attribute', {}, 'value', {});
-% Where collapseType is avg or sum
+%collapseDataAvg = struct('folderName', {}, 'attribute', {}, 'value', {}, 'numAvg', {});
+%collapseDataSum = struct('folderName', {}, 'attribute', {}, 'value', {});
+
 
 % When sanitizing for outputs this becomes
 % outputData = struct('attribute', {}, 'value', {});
@@ -52,6 +53,7 @@ for i = 1:numel(masterFolders)
                 fileID = fopen(resultDir(k).name);
                 line = fgetl(fileID);
                 while(ischar(line))
+                    
                     try
                         tokens = strsplit(line, ':');
                         newStruct = struct('folderName', masterFolderName, ...
@@ -70,23 +72,40 @@ for i = 1:numel(masterFolders)
 end
 
 % Collapsing the video data (collapse by both average and sum)
-testCells = struct2cell(testData);
-%sum(cat(1,testData.attribute))
+collapseDataSum = struct('folderName', {}, 'attribute', {}, 'value', {});
+collapseDataAvg = struct('folderName', {}, 'attribute', {}, 'value', {});
+
+attrValues = unique(extractfield(testData, 'attribute'));
+folderValues = unique(extractfield(testData, 'folderName'));
 
 %testData(folderName)
 if (collapse)
-    for i = 1:numel(testData)
-        %testData.attribute
-        %testData(testData.attribute == 'Detection Quality')
-        %find(testData.attribute == 'Detection Quality')
-        find(cellfun(@(x)isequal(x,'Detection Quality'),{testData.attribute}))
+    for i = 1:numel(folderValues)
+        for j = 1:numel(attrValues)
+            folderKeys = find(cellfun(@(x)strcmp(x,folderValues(i)),{testData.folderName}));
+            attrKeys = find(cellfun(@(x)strcmp(x,attrValues(j)),{testData.attribute}));
+            
+            keys = intersect(folderKeys, attrKeys);
+            
+            sum = 0;
+            for k = 1:numel(keys)
+                sum = sum + str2num(testData(keys(k)).value);
+            end
+            
+            collapseDataSum(end+1) = struct('folderName', folderValues(i), 'attribute', attrValues(j), 'value', sum);
+            collapseDataAvg(end+1) = struct('folderName', folderValues(i), 'attribute', attrValues(j), 'value', sum/numel(keys));
+        end
     end
-    % cat(1,testData.fileName)
 end
+% cat(1,testData.fileName)
+struct2table(collapseDataAvg)
+struct2table(collapseDataSum)
 
-% struct2table(testData)
-
-% Simple bar chart generation
+% Converting to human friendly format
+% Possibilities
+%   Simple bar chart generation
+%   Simple line graph generation
+%   Simple table generation
 % NOTE: there is probably a one line solution to this... would be cool to have
 %   Would also be cool to derive, but time constraints won't permit that
 for i = 1:numel(tests)
@@ -94,8 +113,10 @@ for i = 1:numel(tests)
     for j = 1:numel(test)
         attr = test{j};
         
+        
+        
         % Select the appropriate attributes
-        for j = 1:numel(testData)
+        for k = 1:numel(testData)
             % testData = struct('folderName', {}, 'videoName', {}, 'fileName', {}, 'attribute', {}, 'value', {});
             testData(i).folderName;
 
