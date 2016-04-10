@@ -9,12 +9,27 @@
 % folders = {'folder1', 'folder2', ...}
 % separateVideos = boolean
 %   If true then do not average / sum values across videos
-tests = {{'attr1','attr2','attr3'},{'attr1','attr3'}}
+tests = {{'attr1','attr2','attr3'},{'attr1','attr3'}};
+% Alternatively could make this a struct 
+%   Could have title, type (plot, bar, etc)
+%   Maybe even renaming strategies for the attributes?
+
+% Collapse = 1 if you would like to collapse the values over videos and files
+% This occurs for both average and sum
+collapse = 1;
 
 
 masterFolders = {'20160406T203250'};
 
 testData = struct('folderName', {}, 'videoName', {}, 'fileName', {}, 'attribute', {}, 'value', {});
+% if collapsed then this becomes
+collapseData = struct('folderName', {}, 'collapseType', {}, 'attribute', {}, 'value', {});
+% Where collapseType is avg or sum
+
+% When sanitizing for outputs this becomes
+% outputData = struct('attribute', {}, 'value', {});
+% And attribute is essentially a concatenated list of the earlier fields
+% So it would be like folderName_videoName_fileName_attribute 
 
 % Aggregation phase... get all the data into the testData structure
 for i = 1:numel(masterFolders)
@@ -53,4 +68,39 @@ for i = 1:numel(masterFolders)
         end
     end
 end
+
+% Collapsing the video data (collapse by both average and sum)
+testCells = struct2cell(testData);
+%sum(cat(1,testData.attribute))
+
+%testData(folderName)
+if (collapse)
+    for i = 1:numel(testData)
+        %testData.attribute
+        %testData(testData.attribute == 'Detection Quality')
+        %find(testData.attribute == 'Detection Quality')
+        find(cellfun(@(x)isequal(x,'Detection Quality'),{testData.attribute}))
+    end
+    % cat(1,testData.fileName)
+end
+
+% struct2table(testData)
+
+% Simple bar chart generation
+% NOTE: there is probably a one line solution to this... would be cool to have
+%   Would also be cool to derive, but time constraints won't permit that
+for i = 1:numel(tests)
+    test = tests{i};
+    for j = 1:numel(test)
+        attr = test{j};
+        
+        % Select the appropriate attributes
+        for j = 1:numel(testData)
+            % testData = struct('folderName', {}, 'videoName', {}, 'fileName', {}, 'attribute', {}, 'value', {});
+            testData(i).folderName;
+
+        end
+    end
+end
+
 
