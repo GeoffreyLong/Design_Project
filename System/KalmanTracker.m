@@ -108,7 +108,7 @@ classdef KalmanTracker<handle
                 trackIdx = this.assignments(i, 1);
                 detectionIdx = this.assignments(i, 2);
                 centroid = this.centroids(detectionIdx, :);
-                bbox = [frameNum this.bboxes(detectionIdx, :)];
+                bbox = this.bboxes(detectionIdx, :);
 
                 % Correct the estimate of the object's location
                 % using the new detection.
@@ -117,7 +117,7 @@ classdef KalmanTracker<handle
                 % Replace predicted bounding box with detected
                 % bounding box.
                 this.tracks(trackIdx).bbox = bbox;
-                this.tracks(trackIdx).track = [this.tracks(trackIdx).track; bbox];
+                this.tracks(trackIdx).track = [this.tracks(trackIdx).track; [frameNum, bbox]];
 
                 % Update track's age.
                 this.tracks(trackIdx).age = this.tracks(trackIdx).age + 1;
@@ -164,9 +164,17 @@ classdef KalmanTracker<handle
             lostInds = (ages < ageThreshold & visibility < 0.6) | ...
                 [this.tracks(:).consecutiveInvisibleCount] >= invisibleForTooLong;
 
-            % Delete lost tracks.
-            this.oldTracks = [this.oldTracks this.tracks(lostInds)];
             
+            % Delete lost tracks.
+%             for i = 1:size(lostInds)
+%                 this.oldTracks = [this.oldTracks ,this.tracks(lostInds(i))];
+%             end
+             try
+                 this.oldTracks = [this.oldTracks ;this.tracks(lostInds)];
+             catch
+                 fprintf('error\n');
+                 this.tracks(lostInds)
+             end
             this.tracks = this.tracks(~lostInds);
             
         end
@@ -176,14 +184,14 @@ classdef KalmanTracker<handle
         % detection is a start of a new track. In practice, you can use other cues
         % to eliminate noisy detections, such as size, location, or appearance.
 
-        function createNewTracks(this, frameNum)
+        function createNewTracks(this)
             this.centroids = this.centroids(this.unassignedDetections, :);
             this.bboxes = this.bboxes(this.unassignedDetections, :);
 
             for i = 1:size(this.centroids, 1)
 
                 centroid = this.centroids(i,:);
-                bbox = [frameNum this.bboxes(i, :)];
+                bbox = this.bboxes(i, :);
 
                 % Create a Kalman filter object.
                 kalmanFilter = configureKalmanFilter('ConstantVelocity', ...
@@ -193,7 +201,7 @@ classdef KalmanTracker<handle
                 newTrack = struct(...
                     'id', this.nextId, ...
                     'bbox', bbox, ...
-                    'track', bbox, ...
+                    'track', [], ...
                     'kalmanFilter', kalmanFilter, ...
                     'age', 1, ...
                     'totalVisibleCount', 1, ...
@@ -250,7 +258,7 @@ classdef KalmanTracker<handle
             this.updateAssignedTracks(frameNum);
             this.updateUnassignedTracks(frameNum);
             this.deleteLostTracks();
-            this.createNewTracks(frameNum);
+            this.createNewTracks();
     
             r = this.getTracks();
         end
