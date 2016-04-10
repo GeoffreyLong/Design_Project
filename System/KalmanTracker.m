@@ -15,7 +15,7 @@ classdef KalmanTracker<handle
         unassignedTracks;
         unassignedDetections;
         
-        oldTracks;
+        oldTracks = [];
     end
      
     methods (Static)
@@ -165,7 +165,8 @@ classdef KalmanTracker<handle
                 [this.tracks(:).consecutiveInvisibleCount] >= invisibleForTooLong;
 
             % Delete lost tracks.
-            this.oldTracks = [this.oldTracks; this.tracks(lostInds)];
+            this.oldTracks = [this.oldTracks this.tracks(lostInds)];
+            
             this.tracks = this.tracks(~lostInds);
             
         end

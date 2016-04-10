@@ -60,7 +60,8 @@ for i = firstDetection:firstDetection+100%nFrames
         box1 = [rect(rectIndx,2) rect(rectIndx,3) rect(rectIndx,4) rect(rectIndx,5)];
         height = rect(rectIndx,5);
         box2 = [2000 200 50 60];
-        bboxes = [box1;box2];
+        box3 = [100 10 10 10];
+        bboxes = [box1;box2;box3];
         if i >= firstDetection + 15
              bboxes = [box1];
         end
