@@ -1,5 +1,8 @@
 % This will be for running the entire system... This is what's up
 
+% If you want to view the image, set to 1, else 0
+DISPLAY = 1;
+
 % All the files for the videos... We actually only want the SRT ones,
 %   so pare this down
 filePaths = {
@@ -103,4 +106,13 @@ for i = 1800:nFrames
     % Time to collision estimation
     % Might be a part of tracking
 %   detections = timeToCollision(detections)
+
+
+    if (DISPLAY)
+        showImage = imrotate(origImg, -curHost(4), 'crop');
+        for j = 1:size(detections,1)
+            showImage = insertShape(showImage, 'Rectangle', detections(j,:));
+        end
+        imshow(showImage);
+    end
 end

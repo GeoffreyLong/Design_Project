@@ -1,0 +1,21 @@
+True Positives: 		 553 
+True Negatives: 		 1705 
+False Positives: 		 290 
+False Negatives: 		 85 
+
+True Positive Rate: 		 0.866771 
+False Positive Rate: 		 0.145363 
+False Negative Rate: 		 0.133229 
+
+Sensitivity: 			 0.866771 
+Specificity: 			 0.854637 
+
+Pos Predictive Value (Precision): 	 0.655991 
+Neg Predictive Value: 	 0.952514 
+Accuracy: 			 0.857577 
+F-Score: 			 0.568594 
+
+Detection To Plane Ratio: 	 1.918495 
+Detections Per Plane: 		 1.837209 
+Detection Quality: 		 Mu=0.036150, 
+				 sigma=0.044122 
