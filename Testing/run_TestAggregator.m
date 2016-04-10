@@ -9,7 +9,8 @@
 % folders = {'folder1', 'folder2', ...}
 % separateVideos = boolean
 %   If true then do not average / sum values across videos
-tests = {{'attr1','attr2','attr3'},{'attr1','attr3'}};
+%tests = {{'attr1','attr2','attr3'},{'attr1','attr3'}};
+tests = {{'False Positives','False Negatives','True Positives', 'True Negatives'}}
 % Alternatively could make this a struct 
 %   Could have title, type (plot, bar, etc)
 %   Maybe even renaming strategies for the attributes?
@@ -19,7 +20,7 @@ tests = {{'attr1','attr2','attr3'},{'attr1','attr3'}};
 collapse = 1;
 
 
-masterFolders = {'20160406T203250'};
+masterFolders = {'20160406T203250', };
 
 testData = struct('folderName', {}, 'videoName', {}, 'fileName', {}, 'attribute', {}, 'value', {});
 % if collapsed then this becomes
@@ -102,6 +103,7 @@ struct2table(collapseDataAvg)
 struct2table(collapseDataSum)
 
 % Converting to human friendly format
+% Only really interesting if across several folders I think
 % Possibilities
 %   Simple bar chart generation
 %   Simple line graph generation
@@ -110,18 +112,41 @@ struct2table(collapseDataSum)
 %   Would also be cool to derive, but time constraints won't permit that
 for i = 1:numel(tests)
     test = tests{i};
+    
+    % For plotting or bar charts
+    % If we want to group by test, grouping by folder is the opposite
+    % zeros(numel(test), numel(folders))
+    vals = [];
+    
     for j = 1:numel(test)
         attr = test{j};
         
-        
-        
-        % Select the appropriate attributes
-        for k = 1:numel(testData)
-            % testData = struct('folderName', {}, 'videoName', {}, 'fileName', {}, 'attribute', {}, 'value', {});
-            testData(i).folderName;
+        % Currently only doing avg keys
+        % Could add an aggregation type to the specific test though
+        %   Some fields don't do well with sum though (like false positive rate)
+        %   Avg is a safe bet
+        %fullKeys = find(cellfun(@(x)strcmp(x,attrValues(j)),{testData.attribute}));
+        %sumKeys = find(cellfun(@(x)strcmp(x,attrValues(j)),{collapseDataSum.attribute}));
+        avgKeys = find(cellfun(@(x)strcmp(x,attrValues(j)),{collapseDataAvg.attribute}));
+        %yVals = zeros(numel(avgKeys));
 
+        tempVals = [];
+        for k = 1:numel(avgKeys)
+            value = collapseDataAvg(avgKeys(k)).value
+            if (isempty(value))
+                value = 0
+            end
+            tempVals = [tempVals value];
         end
+        vals = [vals; tempVals]
     end
+    % Will group them by folder (I guess) with a legend of tests
+    % Apparently we cannot give nonumeric labels to the xAxis
+    h = bar(vals)
+    legend(h, test)
+    % Rename the x axis labels
+    % set(gca,'XTickLabel',folderValues)
+    % set(gca,'XTickLabel',{'apples', 'oranges', 'strawberries', 'pears'})
 end
 
 
