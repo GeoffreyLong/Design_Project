@@ -51,6 +51,7 @@ function testgenerator( filePath, anon_detect, testFileBase )
     for i = 1:nFrames
         i
         detections = [];
+        trackDetections = [];
         timing = zeros(5);
         timing(1) = i;
 
@@ -77,22 +78,30 @@ function testgenerator( filePath, anon_detect, testFileBase )
         % Start tracking timing
         time_track = tic;
         % Get tracks
-        trackDetections = kalman.track(detections)
+        tracks = kalman.track(detections);
         % End tracking timing
         timing(3) = toc(time_track);
-        %
-        trackDetectionsWrite = [i*ones(size(detections,1),1),trackDetections];
-        % Write tracking to file
+        
+        % Gather the detections after tracking for the frame
+        
+        for j = 1:numel(tracks)
+            trackDetections = [trackDetections; tracks.bbox];
+        end
+        % Add the frame number for the detections
+        trackDetectionsWrite = [i*ones(size(trackDetections,1),1),trackDetections];
+        % Write the detections from tracking to file
         dlmwrite(trackingDetection_file,trackDetectionsWrite,'-append');
         
-        % TODO append specific tracks to tracks object
-        %   Write these to file
 
         %%%%% TTC %%%%%
 
 
         % Write timing file
         dlmwrite(timing_file,timing,'-append');
+        
+        
+        disp(['Number of initial detections: ' size(detections,1)]);
+        disp(['Number of final detections: ' size(tracks,1)]);
     end
 end
 

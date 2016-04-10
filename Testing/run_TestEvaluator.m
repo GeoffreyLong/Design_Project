@@ -63,7 +63,10 @@ for i=1:numel(videoDirectories)
     if (~isempty(detections) && ~isempty(truths))
         test_DetectionVSRects(resultFileBase, nFrames, detections, truths);
     end
-
+    if (~isempty(trackDetections) && ~isempty(truths))
+        test_DetectionVSRects(strcat(resultFileBase,'track_'), nFrames, trackDetections, truths);
+    end
+    
     % This will gather metrics such as 
     %   first sightings
     %       estimated time to collision of first sighting
@@ -72,6 +75,12 @@ for i=1:numel(videoDirectories)
     if (~isempty(detections) && ~isempty(truths) && ~isempty(target) && ~isempty(timing))
         test_DetectionMetrics(resultFileBase, nFrames, detections, truths, target, timing);
     end
+    if (~isempty(trackDetections) && ~isempty(truths) && ~isempty(target) && ~isempty(timing))
+        test_DetectionMetrics(strcat(resultFileBase,'track_'), nFrames, detections, truths, target, timing);
+    end
+    
+    
+    
     
     
 end
