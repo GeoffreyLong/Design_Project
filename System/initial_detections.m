@@ -44,7 +44,7 @@ function [ detections ] = initial_detections( origImg, host, height, width )
     upper = midpoint - 3*sigma;
     %lower = midpoint + 3*sigma;
     
-    image = imcrop(rotatedImage, [0 upper width 1.25*abs(upper-horizonY)]);
+    image = imcrop(rotatedImage, [0 upper width abs(upper-horizonY)]);
     
     % Perform a CMO
     open = imopen(image,nHood);
