@@ -19,8 +19,9 @@ tests = {{'False Positives','False Negatives','True Positives', 'True Negatives'
 % This occurs for both average and sum
 collapse = 1;
 
-
-masterFolders = {'20160406T203250', };
+% The folders to draw from
+% It would be beneficial to rename them 
+masterFolders = {'20160406T203250', '20160410T042911'};
 
 testData = struct('folderName', {}, 'videoName', {}, 'fileName', {}, 'attribute', {}, 'value', {});
 % if collapsed then this becomes
@@ -37,16 +38,19 @@ testData = struct('folderName', {}, 'videoName', {}, 'fileName', {}, 'attribute'
 for i = 1:numel(masterFolders)
     masterFolderName = masterFolders{i};
     
-    testFileBase = strcat('../Testing/Test_Instances/',masterFolderName,'/')
+    % Get all of the video directories from the test folder
+    testFileBase = strcat('../Testing/Test_Instances/',masterFolderName,'/');
     d = dir(testFileBase);
     isub = [d(:).isdir];
     videoDirectories = {d(isub).name}';
     videoDirectories(ismember(videoDirectories,{'.','..'})) = [];
     
     for j = 1:numel(videoDirectories)
+        % Get the results folder from the video folder
         videoName = videoDirectories{j};
         resultBase = strcat(testFileBase, videoName, '/Results/')
         resultDir = dir(resultBase);
+        
         
         for k = 1:numel(resultDir)
             extension = strsplit(resultDir(k).name,'.');
@@ -127,25 +131,24 @@ for i = 1:numel(tests)
         %   Avg is a safe bet
         %fullKeys = find(cellfun(@(x)strcmp(x,attrValues(j)),{testData.attribute}));
         %sumKeys = find(cellfun(@(x)strcmp(x,attrValues(j)),{collapseDataSum.attribute}));
-        avgKeys = find(cellfun(@(x)strcmp(x,attrValues(j)),{collapseDataAvg.attribute}));
-        %yVals = zeros(numel(avgKeys));
+        avgKeys = find(cellfun(@(x)strcmp(x,attr),{collapseDataAvg.attribute}));
 
         tempVals = [];
         for k = 1:numel(avgKeys)
-            value = collapseDataAvg(avgKeys(k)).value
+            value = collapseDataAvg(avgKeys(k)).value;
             if (isempty(value))
                 value = 0
             end
-            tempVals = [tempVals value];
+            tempVals = [tempVals; value];
         end
-        vals = [vals; tempVals]
+        vals = [vals tempVals];
     end
     % Will group them by folder (I guess) with a legend of tests
     % Apparently we cannot give nonumeric labels to the xAxis
     h = bar(vals)
     legend(h, test)
     % Rename the x axis labels
-    % set(gca,'XTickLabel',folderValues)
+    set(gca,'XTickLabel',folderValues)
     % set(gca,'XTickLabel',{'apples', 'oranges', 'strawberries', 'pears'})
 end
 
