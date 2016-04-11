@@ -26,12 +26,12 @@ videos = {
 %    'disk30','diamond30','rect[4,10]'};
 %thresholds = [0.05 0.7 0.9 0.10 0.11 0.13 0.15];
 
-nHoods = [strel('disk', 4), strel('disk', 7), strel('disk', 15)];
-nHoodNames = {'disk4','disk7','disk15'};
-thresholds = [0.8 0.10 0.12];
+nHoods = [strel('disk', 7), strel('disk', 15)];
+nHoodNames = {'disk7','disk15'};
+thresholds = [0.08 0.10 0.12];
 
 
-for i = 1:size(nHoods,2)
+parfor i = 1:size(nHoods,2)
     nHood = nHoods(i);
     nHoodName = nHoodNames{i};
 
@@ -39,7 +39,7 @@ for i = 1:size(nHoods,2)
         thresh = thresholds(j);
 
         % NOTE: Fill this in to save a description of the tests run
-        testDescription = sprintf('All videos, strel: %s, thresh: %f', nHoodName, thresh);
+        testDescription = sprintf('All videos, strel: %s, thresh: %0.2f', nHoodName, thresh);
 
         % Declare a detection function
         % nHood and thresh are optional parameters
