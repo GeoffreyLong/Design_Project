@@ -82,10 +82,6 @@ function testgenerator( filePath, anon_detect, testFileBase )
         % End tracking timing
         timing(3) = toc(time_track);
         
-        % Gather the detections after tracking for the frame
-%         if (~isempty(tracks))
-%             extractfield(tracks,'bbox')
-%         end
         for j = 1:numel(tracks)
             trackDetections = [trackDetections; tracks(j).bbox];
         end

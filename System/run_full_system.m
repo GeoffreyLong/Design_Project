@@ -60,12 +60,15 @@ for i = 1800:nFrames
     % Grab the initial detections
     % Not running the modulus full screen yet
     i
-    detections = initial_detections(origImg, curHost, height, width)
+    detections = initial_detections(origImg, curHost, height, width);
     
     
-    tracks = kalman.track(i,detections)
-    if (~isempty(tracks))
-        tracks.bbox
+    tracks = kalman.track(i,detections);
+    
+    % Clear the detections and add in the new detections from tracking
+    detections = [];
+    for j = 1:numel(tracks)
+        detections = [detections; tracks(j).bbox];
     end
     realTTC = tracker.ttc(target(i,4));
     % So we will want to do a full screen detection sparingly as these are expensive.
