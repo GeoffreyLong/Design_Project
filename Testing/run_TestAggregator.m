@@ -6,9 +6,6 @@
 %   possibly the videos (probs not though), (could have an agg all flag)
 %   Then the attrs I want aggregated over
 
-% folders = {'folder1', 'folder2', ...}
-% separateVideos = boolean
-%   If true then do not average / sum values across videos
 %tests = {{'attr1','attr2','attr3'},{'attr1','attr3'}};
 tests = {{'False Positives','False Negatives','True Positives', 'True Negatives'}}
 % Alternatively could make this a struct 
@@ -21,7 +18,7 @@ collapse = 1;
 
 % The folders to draw from
 % It would be beneficial to rename them 
-masterFolders = {'20160406T203250', '20160410T042911'};
+masterFolders = {'20160410T205255'};
 
 testData = struct('folderName', {}, 'videoName', {}, 'fileName', {}, 'attribute', {}, 'value', {});
 % if collapsed then this becomes
@@ -55,7 +52,8 @@ for i = 1:numel(masterFolders)
         for k = 1:numel(resultDir)
             extension = strsplit(resultDir(k).name,'.');
             if strcmp(extension(2), 'txt')
-                fileID = fopen(resultDir(k).name);
+                strcat(resultBase,resultDir(k).name)
+                fileID = fopen(strcat(resultBase,resultDir(k).name));
                 line = fgetl(fileID);
                 while(ischar(line))
                     
@@ -71,6 +69,7 @@ for i = 1:numel(masterFolders)
                     end
                     line = fgetl(fileID);
                 end
+                fclose(fileID);
             end
         end
     end
