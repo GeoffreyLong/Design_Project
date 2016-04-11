@@ -3,7 +3,7 @@
 % This script runs the tests for a given testing instance or instances
 % Want to pass a folder to the test evaluator function
 %folderName = '20160406T203250';
-folderName = '20160410T042911';
+folderName = '20160410T205255';
 
 % Set the detection file to test against
 %truthy_file = 'scrambled_';
@@ -45,8 +45,8 @@ for i=1:numel(videoDirectories)
         % Read in the data corresponding to the file
         if strcmp(fileName,'detection.dat')
             detections = csvread(strcat(newFileBase,fileName));
-        elseif strcmp(fileName,'tracks.dat')
-
+        elseif strcmp(fileName,'tracking_detections.dat')
+            trackDetections = csvread(strcat(newFileBase,fileName));
         elseif strcmp(fileName,'ttc.dat')
 
         elseif strcmp(fileName,'timing.dat')

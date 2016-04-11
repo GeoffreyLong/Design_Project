@@ -169,7 +169,7 @@ function test_DetectionVSRects( resultFileBase, nFrames, rect, truth )
     fprintf(fileID, 'Detection Quality (Mu): \t %f \nDetection Quality (Sigma): \t %f \n', boundQuality.mu, boundQuality.sigma);
     saveas(boundPlot, strcat(resultFileBase, 'DetectvsRect_Quality.png'));
 
-    falseNegativesOverTime
+    falseNegativesOverTime;
     
     fclose(fileID);
 end

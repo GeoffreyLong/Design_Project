@@ -1,3 +1,0 @@
-These tests were run with July 6th cam1 01. 
-Initial_Detections had 1.25 times on the horizon y component 
-2nd version of erroneous side detections
