@@ -52,16 +52,23 @@ for i = 1:numel(masterFolders)
         for k = 1:numel(resultDir)
             extension = strsplit(resultDir(k).name,'.');
             if strcmp(extension(2), 'txt')
+                % Hacky workaround to change the attr names of trackdetects
+                trackCheck = strsplit(resultDir(k).name, '_');
+                if strcmp('track', trackCheck(1))
+                    trackCheck = ' (post)';
+                else
+                    trackCheck = '';
+                end
+                
                 strcat(resultBase,resultDir(k).name)
                 fileID = fopen(strcat(resultBase,resultDir(k).name));
                 line = fgetl(fileID);
                 while(ischar(line))
-                    
                     try
                         tokens = strsplit(line, ':');
                         newStruct = struct('folderName', masterFolderName, ...
                             'videoName', videoName, 'fileName', extension(1), ...
-                            'attribute', strtrim(tokens(1)), 'value', strtrim(tokens(2)));
+                            'attribute', strcat(strtrim(tokens(1)), trackCheck), 'value', strtrim(tokens(2)));
                         testData(end+1) = newStruct;
                     catch
                         % Just go to the next attr
