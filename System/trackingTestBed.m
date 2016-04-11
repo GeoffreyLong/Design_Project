@@ -79,7 +79,8 @@ for i = firstDetection:firstDetection+100%nFrames
         estDist = tracker.estimateDistance(height);
         realTTC = tracker.ttc(dist);
         estTTC = realTracker.ttc(estDist);
-        
+        test2 = insertShape(img, 'Rectangle', [-100 -100 100 100] , 'LineWidth', 5, 'Color', 'green');
+        are imshow(test2);
 %         fprintf('tracks: %f\n', tracks);
 %          if mod(tempCount,15) == 0
 %          fprintf('distance: %f, estDist: %f, realTTC: %f, estTTC: %f\n', dist, estDist, realTTC, estTTC);

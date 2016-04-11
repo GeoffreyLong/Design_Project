@@ -45,7 +45,7 @@ classdef KalmanTracker<handle
          end
          % This method splits the detections into centroids and bboxes
         function [centroids, bboxes] = formatInputs(detections)
-            if ~isempty(detections)
+            if ~isempty(detections)               
                 centroids = detections(:,1:2);
                 bboxes = detections; 
             else
@@ -224,14 +224,22 @@ classdef KalmanTracker<handle
                 % Noisy detections tend to result in short-lived tracks.
                 % Only display tracks that have been visible for more than 
                 % a minimum number of frames.
+                reliableTracks=[];
                 reliableTrackInds = ...
-                    [this.tracks(:).totalVisibleCount] > minVisibleCount;
+                    ([this.tracks(:).totalVisibleCount] > minVisibleCount);
                 reliableTracks = this.tracks(reliableTrackInds);
-
+                for i=1:size(this.tracks)
+                    if (this.tracks(i).totalVisibleCount > minVisibleCount && this.tracks(i).bbox(1)>=0 && this.tracks(i).bbox(2)>=0)
+                         reliableTracks = [reliableTracks this.tracks(i)];
+                    end
+                end
+                
+                   
+                                 
                 % Display the objects. If an object has not been detected
                 % in this frame, display its predicted bounding box.
                 if ~isempty(reliableTracks)
-                
+                    
                     r = reliableTracks;
                 else  
                     r = [];
