@@ -30,7 +30,9 @@ for i = lastFrame:-1:1
     try
         % Show the image with the frame number as title
         img = read(v,i);
-        if (~isempty(host))
+        if (isempty(host))
+            display('No SRT found!')
+        else
             curHost = host(host(:,1)==i,:);
             img = imrotate(img, -curHost(4), 'crop');
         end
