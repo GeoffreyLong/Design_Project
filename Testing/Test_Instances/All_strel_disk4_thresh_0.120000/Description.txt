@@ -1,0 +1,1 @@
+All videos, strel: disk4, thresh: 0.120000
