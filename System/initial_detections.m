@@ -1,4 +1,4 @@
-function [ detections ] = initial_detections( origImg, host, height, width )
+function [ detections ] = initial_detections( origImg, host, height, width, nHood, thresh )
 %INITIAL_DETECTIONS Summary of this function goes here
 %   This function will pull out the detections apart from the tracking info.
 %   This will be a quick way of getting detections. We only want to return
@@ -22,12 +22,20 @@ function [ detections ] = initial_detections( origImg, host, height, width )
     %TODO get the optimal for these
     % nHood can be found through the exp_cmos
     % high/low thresh from the static CMO response model
-    nHood = strel('disk', 7);
-    highThreshMU = 0.163;
-    highThreshSigma = 0.112;
+    %nHood = strel('disk', 7);
+    %highThreshMU = 0.163;
+    %highThreshSigma = 0.112;
     lowThreshMU = 0.116;
-    lowThreshSigma = 0.111;
+    %lowThreshSigma = 0.111;
 
+    if nargin < 6
+        thresh = lowThreshMU;
+    end
+    if nargin < 5
+        nHood = strel('disk',7);
+    end
+    
+    
     % PDF_Y from Static_Plane_Location_Model
     % TODO recheck on rotated image
     mu = 68.0164;
@@ -53,7 +61,7 @@ function [ detections ] = initial_detections( origImg, host, height, width )
     
     % binarize the image 
     % TODO recheck the thresholds on this image subset
-    bw = im2bw(im, lowThreshMU);
+    bw = im2bw(im, thresh);
     bw = imdilate(bw, ones(3,3));
     L = bwlabel(bw);
     
