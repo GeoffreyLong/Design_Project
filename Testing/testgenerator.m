@@ -86,12 +86,13 @@ function testgenerator( filePath, anon_detect, testFileBase )
         
         for j = 1:numel(tracks)
             trackDetections = [trackDetections; tracks(j).bbox];
+            trackDetections = unique(trackDetections);
         end
         % This form is necessary to save the tracks to a file
         % Structures don't lend themselves well to reading and writing
         % So far as I can tell
         for j = 1:numel(tracks)
-            trackingTracks = [trackingTracks; tracks(j).id i tracks(j).bbox]
+            trackingTracks = [trackingTracks; tracks(j).id i tracks(j).bbox];
         end
         
         timingVector = [timingVector size(trackDetections,1)];
@@ -116,5 +117,7 @@ function testgenerator( filePath, anon_detect, testFileBase )
     end
     
     trackingTracks = sortrows(trackingTracks);
+    % Sometimes there are duplicates
+    trackingTracks = unique(trackingTracks);
     csvwrite(trackingTracks_file, trackingTracks);
 end

@@ -62,10 +62,13 @@ for folderIdx = 1:numel(folderNames)
             % Read in the data corresponding to the file
             if strcmp(fileName,'detection.dat')
                 detections = csvread(strcat(newFileBase,fileName));
+                detections = unique(detections);
             elseif strcmp(fileName,'tracking_detections.dat')
                 trackDetections = csvread(strcat(newFileBase,fileName));
+                trackDetections = unique(trackDetections);
             elseif strcmp(fileName,'tracking_detections.dat')
                 trackTracks = csvread(strcat(newFileBase,fileName));
+                trackTracks = unique(trackTracks);
             elseif strcmp(fileName,'ttc.dat')
 
             elseif strcmp(fileName,'timing.dat')
