@@ -2,8 +2,8 @@
 
 % This script runs the tests for a given testing instance or instances
 % Want to pass a folder to the test evaluator function
-%folderNames = {'strel-disk7 thresh-0.08', 'strel-disk7 thresh-0.10', 'strel-disk7 thresh-0.12'};
-folderNames = {'July 6 cam1 01 Test #1', 'July 8 cam1 02 Test #1', 'July 8 cam1 03 Test #1'};
+folderNames = {'strel-disk7 thresh-0.08', 'strel-disk7 thresh-0.10', 'strel-disk7 thresh-0.12'};
+%folderNames = {'July 6 cam1 01 Test #1', 'July 8 cam1 02 Test #1', 'July 8 cam1 03 Test #1'};
 %folderNames = {'Expanded Crop (1.33)'};
 
 if isempty(folderNames)
@@ -13,6 +13,8 @@ if isempty(folderNames)
     folderNames(ismember(folderNames,{'.','..'})) = [];
 end
     
+total_tracks = struct('folderName', {}, 'totalTracks', {});
+
 % TODO add a loop over all folders
 for folderIdx = 1:numel(folderNames)
     folderName = folderNames{folderIdx}
@@ -28,6 +30,8 @@ for folderIdx = 1:numel(folderNames)
     isub = [d(:).isdir];
     videoDirectories = {d(isub).name}';
     videoDirectories(ismember(videoDirectories,{'.','..'})) = [];
+    
+    tempTracks = [];
 
     % Loop over the video directories in the super directory
     for i=1:numel(videoDirectories)
@@ -84,16 +88,47 @@ for folderIdx = 1:numel(folderNames)
         %       estimated time to collision of first sighting
         %       distance of first sighting
         %   timing metrics
-        if (~isempty(detections) && ~isempty(truths) && ~isempty(target))
-            test_DetectionMetrics(resultFileBase, nFrames, detections, truths, target);
+        try
+            if (~isempty(detections) && ~isempty(truths) && ~isempty(target))
+                test_DetectionMetrics(resultFileBase, nFrames, detections, truths, target);
+            end
+        catch
+        end  
+        try
+            if (~isempty(trackDetections) && ~isempty(truths) && ~isempty(target))
+                test_DetectionMetrics(strcat(resultFileBase,'track_'), nFrames, trackDetections, truths, target);
+            end
+        catch
         end
-        if (~isempty(trackDetections) && ~isempty(truths) && ~isempty(target))
-            test_DetectionMetrics(strcat(resultFileBase,'track_'), nFrames, trackDetections, truths, target);
-        end
-        
-        
-        if (~isempty(trackDetections) && ~isempty(truths))
-            test_TrackingMetrics(resultFileBase, nFrames, trackDetections, truths)
+        try
+            if (~isempty(trackDetections) && ~isempty(truths))
+                totalTrackTemp = test_TrackCounts(resultFileBase, nFrames, trackDetections, truths);
+                tempTracks = [tempTracks; totalTrackTemp];
+            end
+        catch
         end
     end
+ 
+    tempTracks = sortrows(tempTracks);
+    endIdx = tempTracks(end,1);
+    newTrackObj = zeros(endIdx, 2);
+    for j = 1:endIdx
+        tempSum = sum(tempTracks(tempTracks(:,1)==j,2));
+        newTrackObj(j,1) = j;
+        newTrackObj(j,2) = tempSum;
+    end
+    total_tracks(end+1) = struct('folderName', folderName, 'totalTracks', newTrackObj);
 end
+
+hold off
+for i = 1:numel(total_tracks)
+    curTrack = total_tracks(i);
+    plot(curTrack.totalTracks(:,1), curTrack.totalTracks(:,2), 'LineWidth', 2)
+    hold on
+end
+title('Total Tracks vs Different Thresholds');
+legend(total_tracks.folderName);
+xlabel('Frame Number');
+ylabel('Number of Tracks')
+saveas(gcf, 'PlotTracks.png')
+hold off
