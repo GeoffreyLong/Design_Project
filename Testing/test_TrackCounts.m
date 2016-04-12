@@ -1,10 +1,13 @@
-function test_TrackingMetrics( resultFileBase, nFrames, rect, truth )
-%TEST_TRACKINGMETRICS Summary of this function goes here
-%   Detailed explanation goes here
+function numberOfTracks = test_TrackCounts( resultFileBase, nFrames, rect, truth )
+%TEST_TRACKCOUNTS 
+%   Plot the true positive and false positive counts for a given track
+%   Return a matrix of the total tracks per frame
+
+    % Will be form [frameNumber #tracks]
+    numberOfTracks = [];
 
     % Will be [#tracks]
     % frame number doesn't have to be in, can be added at plot time
-    numberOfTracks = [];
     numberOfFalseTracks = [];
     numberOfTrueTracks = [];
     truthTrack = [];
@@ -31,15 +34,13 @@ function test_TrackingMetrics( resultFileBase, nFrames, rect, truth )
         end
         
         truthTrack = [truthTrack; size(curTruth,1)];
-        numberOfTracks = [numberOfTracks; size(curRect,1)];
+        numberOfTracks = [numberOfTracks; i size(curRect,1)];
         numberOfFalseTracks = [numberOfFalseTracks; falses];
         numberOfTrueTracks = [numberOfTrueTracks; truths];    
     end
 
-    %falseTrackPlot = plot(1:nFrames, truthTrack, 1:nFrames, numberOfTracks, 1:nFrames, numberOfFalseTracks, 1:nFrames, numberOfTrueTracks)
-    %legend({'True Track', 'Total Tracks', 'False Tracks', 'True Tracks'})
     falseTrackPlot = plot(1:nFrames, truthTrack, 1:nFrames, numberOfTrueTracks, 1:nFrames, numberOfFalseTracks, 'LineWidth', 2)
-    legend({'True Track', 'Total Tracks', 'False Tracks', 'True Tracks'})
+    legend({'Truth Track', 'True Positive Tracks', 'False Tracks'})
     title('Number of Tracks Through Video')
     ylabel('Number of Tracks')
     xlabel('Frame Number')
