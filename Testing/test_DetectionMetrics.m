@@ -1,4 +1,4 @@
-function test_DetectionMetrics( resultFileBase, nFrames, rect, truth, target, timing )
+function test_DetectionMetrics( resultFileBase, nFrames, rect, truth, target )
 %TEST_DETECTIONMETRICS Summary of this function goes here
 %   TODO 
 %       Avg distance of false negatives?
@@ -34,10 +34,9 @@ function test_DetectionMetrics( resultFileBase, nFrames, rect, truth, target, ti
             for k = 1:size(curTruth,1)
                 tempTruth = curTruth(k,:);
 
-                % If the ratio of the minimum is 1, 
-                % then one rect is completely within another rect.
-                % This is a valid detection
-                if (bboxOverlapRatio(tempRect(2:5), tempTruth(2:5), 'ratioType', 'min') == 1)
+                % If the ratio of the minimum is 0.5, 
+                % then there is good overlap; this is a valid detection
+                if (bboxOverlapRatio(tempRect(2:5), tempTruth(2:5), 'ratioType', 'min') >= 0.5)
                     foundPlane = 1;
                     if (isempty(firstRectDetection))
                         firstRectDetection = tempRect
