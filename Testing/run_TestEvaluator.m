@@ -2,9 +2,10 @@
 
 % This script runs the tests for a given testing instance or instances
 % Want to pass a folder to the test evaluator function
-folderNames = {'strel-disk7 thresh-0.08', 'strel-disk7 thresh-0.10', 'strel-disk7 thresh-0.12'};
+%folderNames = {'strel-disk7 thresh-0.08', 'strel-disk7 thresh-0.10', 'strel-disk7 thresh-0.12'};
 %folderNames = {'July 6 cam1 01 Test #1', 'July 8 cam1 02 Test #1', 'July 8 cam1 03 Test #1'};
 %folderNames = {'Expanded Crop (1.33)'};
+folderNames = {'Pre-Track #1', 'Post-Track #1'};
 
 if isempty(folderNames)
     baseDir = dir('../Testing/Test_Instances/');
@@ -76,11 +77,17 @@ for folderIdx = 1:numel(folderNames)
 
         % These next if statements test the detection results against the
         % chosen truth file
-        if (~isempty(detections) && ~isempty(truths))
-            test_DetectionVSRects(resultFileBase, nFrames, detections, truths);
+        try
+            if (~isempty(detections) && ~isempty(truths))
+                test_DetectionVSRects(resultFileBase, nFrames, detections, truths);
+            end
+        catch
         end
-        if (~isempty(trackDetections) && ~isempty(truths))
-            test_DetectionVSRects(strcat(resultFileBase,'track_'), nFrames, trackDetections, truths);
+        try
+            if (~isempty(trackDetections) && ~isempty(truths))
+                test_DetectionVSRects(strcat(resultFileBase,'track_'), nFrames, trackDetections, truths);
+            end
+        catch 
         end
 
         % This will gather metrics such as 
@@ -109,15 +116,18 @@ for folderIdx = 1:numel(folderNames)
         end
     end
  
-    tempTracks = sortrows(tempTracks);
-    endIdx = tempTracks(end,1);
-    newTrackObj = zeros(endIdx, 2);
-    for j = 1:endIdx
-        tempSum = sum(tempTracks(tempTracks(:,1)==j,2));
-        newTrackObj(j,1) = j;
-        newTrackObj(j,2) = tempSum;
+    try
+        tempTracks = sortrows(tempTracks);
+        endIdx = tempTracks(end,1);
+        newTrackObj = zeros(endIdx, 2);
+        for j = 1:endIdx
+            tempSum = sum(tempTracks(tempTracks(:,1)==j,2));
+            newTrackObj(j,1) = j;
+            newTrackObj(j,2) = tempSum;
+        end
+        total_tracks(end+1) = struct('folderName', folderName, 'totalTracks', newTrackObj);
+    catch 
     end
-    total_tracks(end+1) = struct('folderName', folderName, 'totalTracks', newTrackObj);
 end
 
 hold off
