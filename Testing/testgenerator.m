@@ -44,9 +44,10 @@ function testgenerator( filePath, anon_detect, testFileBase )
 
     timing_file = strcat(testFileBase, 'timing.dat');
 
+    
 
     kalman = KalmanTracker;
-
+    trackingTracks = [];
 
     for i = 1:nFrames
         i
@@ -86,6 +87,12 @@ function testgenerator( filePath, anon_detect, testFileBase )
         for j = 1:numel(tracks)
             trackDetections = [trackDetections; tracks(j).bbox];
         end
+        % This form is necessary to save the tracks to a file
+        % Structures don't lend themselves well to reading and writing
+        % So far as I can tell
+        for j = 1:numel(tracks)
+            trackingTracks = [trackingTracks; tracks(j).id i tracks(j).bbox]
+        end
         
         timingVector = [timingVector size(trackDetections,1)];
         % Add the frame number to the detections
@@ -93,8 +100,10 @@ function testgenerator( filePath, anon_detect, testFileBase )
         % Write the detections from tracking to file
         dlmwrite(trackingDetection_file,trackDetectionsWrite,'-append');
         
-
+        
+        
         %%%%% TTC %%%%%
+        % Not completed for testing
 
 
         % Write timing file
@@ -105,4 +114,7 @@ function testgenerator( filePath, anon_detect, testFileBase )
         disp(s1);
         disp(s2);
     end
+    
+    trackingTracks = sortrows(trackingTracks);
+    csvwrite(trackingTracks_file, trackingTracks);
 end

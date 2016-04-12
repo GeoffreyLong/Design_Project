@@ -64,6 +64,8 @@ for folderIdx = 1:numel(folderNames)
                 detections = csvread(strcat(newFileBase,fileName));
             elseif strcmp(fileName,'tracking_detections.dat')
                 trackDetections = csvread(strcat(newFileBase,fileName));
+            elseif strcmp(fileName,'tracking_detections.dat')
+                trackTracks = csvread(strcat(newFileBase,fileName));
             elseif strcmp(fileName,'ttc.dat')
 
             elseif strcmp(fileName,'timing.dat')
@@ -111,6 +113,12 @@ for folderIdx = 1:numel(folderNames)
             if (~isempty(trackDetections) && ~isempty(truths))
                 totalTrackTemp = test_TrackCounts(resultFileBase, nFrames, trackDetections, truths);
                 tempTracks = [tempTracks; totalTrackTemp];
+            end
+        catch
+        end
+        try
+            if (~isempty(trackTracks) && ~isempty(truths))
+                totalTrackTemp = test_Tracks(resultFileBase, nFrames, trackTracks, truths);
             end
         catch
         end
