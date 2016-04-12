@@ -5,7 +5,8 @@
 %folderNames = {'strel-disk7 thresh-0.08', 'strel-disk7 thresh-0.10', 'strel-disk7 thresh-0.12'};
 %folderNames = {'July 6 cam1 01 Test #1', 'July 8 cam1 02 Test #1', 'July 8 cam1 03 Test #1'};
 %folderNames = {'Expanded Crop (1.33)'};
-folderNames = {'Pre-Track #1', 'Post-Track #1'};
+%folderNames = {'Pre-Track #1', 'Post-Track #1'};
+folderNames = {'New With Tracks'};
 
 if isempty(folderNames)
     baseDir = dir('../Testing/Test_Instances/');
@@ -38,6 +39,8 @@ for folderIdx = 1:numel(folderNames)
     for i=1:numel(videoDirectories)
         detections = [];
         timing = [];
+        trackDetections = [];
+        trackTracks = [];
 
         video = videoDirectories{i}
 
@@ -62,13 +65,13 @@ for folderIdx = 1:numel(folderNames)
             % Read in the data corresponding to the file
             if strcmp(fileName,'detection.dat')
                 detections = csvread(strcat(newFileBase,fileName));
-                detections = unique(detections);
+                detections = unique(detections, 'rows');
             elseif strcmp(fileName,'tracking_detections.dat')
                 trackDetections = csvread(strcat(newFileBase,fileName));
-                trackDetections = unique(trackDetections);
-            elseif strcmp(fileName,'tracking_detections.dat')
+                trackDetections = unique(trackDetections, 'rows');
+            elseif strcmp(fileName,'tracking_tracks.dat')
                 trackTracks = csvread(strcat(newFileBase,fileName));
-                trackTracks = unique(trackTracks);
+                trackTracks = unique(trackTracks, 'rows');
             elseif strcmp(fileName,'ttc.dat')
 
             elseif strcmp(fileName,'timing.dat')
@@ -105,7 +108,7 @@ for folderIdx = 1:numel(folderNames)
                 test_DetectionMetrics(resultFileBase, nFrames, detections, truths, target);
             end
         catch
-        end  
+        end
         try
             if (~isempty(trackDetections) && ~isempty(truths) && ~isempty(target))
                 test_DetectionMetrics(strcat(resultFileBase,'track_'), nFrames, trackDetections, truths, target);
@@ -114,14 +117,14 @@ for folderIdx = 1:numel(folderNames)
         end
         try
             if (~isempty(trackDetections) && ~isempty(truths))
-                totalTrackTemp = test_TrackCounts(resultFileBase, nFrames, trackDetections, truths);
+                totalTrackTemp = test_TrackCounts(strcat(resultFileBase,'track_'), nFrames, trackDetections, truths);
                 tempTracks = [tempTracks; totalTrackTemp];
             end
         catch
         end
         try
             if (~isempty(trackTracks) && ~isempty(truths))
-                totalTrackTemp = test_Tracks(resultFileBase, nFrames, trackTracks, truths);
+                test_Tracks(strcat(resultFileBase,'track_'), nFrames, trackTracks, truths);
             end
         catch
         end

@@ -86,7 +86,7 @@ function testgenerator( filePath, anon_detect, testFileBase )
         
         for j = 1:numel(tracks)
             trackDetections = [trackDetections; tracks(j).bbox];
-            trackDetections = unique(trackDetections);
+            trackDetections = unique(trackDetections, 'rows');
         end
         % This form is necessary to save the tracks to a file
         % Structures don't lend themselves well to reading and writing
@@ -118,6 +118,6 @@ function testgenerator( filePath, anon_detect, testFileBase )
     
     trackingTracks = sortrows(trackingTracks);
     % Sometimes there are duplicates
-    trackingTracks = unique(trackingTracks);
+    trackingTracks = unique(trackingTracks, 'rows');
     csvwrite(trackingTracks_file, trackingTracks);
 end
