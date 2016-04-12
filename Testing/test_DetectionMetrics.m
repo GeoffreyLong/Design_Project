@@ -40,7 +40,7 @@ function test_DetectionMetrics( resultFileBase, nFrames, rect, truth, target, ti
                 if (bboxOverlapRatio(tempRect(2:5), tempTruth(2:5), 'ratioType', 'min') == 1)
                     foundPlane = 1;
                     if (isempty(firstRectDetection))
-                        firstRectDetection = tempRect;
+                        firstRectDetection = tempRect
                     end
                 end
             end 
@@ -72,10 +72,11 @@ function test_DetectionMetrics( resultFileBase, nFrames, rect, truth, target, ti
     fprintf(fileID, '\t First truth detection and 4+ detection string: %d \n', (firstDetectionString(1) - firstTruthDetection(1)));
     fprintf(fileID, '\t First detection and 4+ detection string: \t %d \n\n', (firstDetectionString(1) - firstRectDetection(1)));
 
+
     fprintf(fileID, 'Distance of plane at \n');
-    fprintf(fileID, '\t First truth detection: \t\t\t %d (ft) \n', target(firstTruthDetection(1)));
-    fprintf(fileID, '\t First detection: \t\t\t\t %d (ft) \n', target(firstRectDetection(1)));
-    fprintf(fileID, '\t First 4+ detection string: \t\t\t %d (ft) \n', target(firstDetectionString(1)));
+    fprintf(fileID, '\t First truth detection (ft): \t\t\t %d \n', target(firstTruthDetection(1), 4));
+    fprintf(fileID, '\t First detection (ft): \t\t\t\t %d \n', target(firstRectDetection(1), 4));
+    fprintf(fileID, '\t First 4+ detection string (ft): \t\t\t %d \n', target(firstDetectionString(1), 4));
         
     fclose(fileID);
 end
