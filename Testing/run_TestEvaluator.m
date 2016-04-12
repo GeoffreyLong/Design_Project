@@ -4,8 +4,15 @@
 % Want to pass a folder to the test evaluator function
 %folderNames = {'strel-disk7 thresh-0.08', 'strel-disk7 thresh-0.10', 'strel-disk7 thresh-0.12'};
 folderNames = {'July 6 cam1 01 Test #1', 'July 8 cam1 02 Test #1', 'July 8 cam1 03 Test #1'};
+%folderNames = {'Expanded Crop (1.33)'};
 
-
+if isempty(folderNames)
+    baseDir = dir('../Testing/Test_Instances/');
+    isub = [baseDir(:).isdir];
+    folderNames = {baseDir(isub).name}';
+    folderNames(ismember(folderNames,{'.','..'})) = [];
+end
+    
 % TODO add a loop over all folders
 for folderIdx = 1:numel(folderNames)
     folderName = folderNames{folderIdx}
@@ -77,11 +84,16 @@ for folderIdx = 1:numel(folderNames)
         %       estimated time to collision of first sighting
         %       distance of first sighting
         %   timing metrics
-        if (~isempty(detections) && ~isempty(truths) && ~isempty(target) && ~isempty(timing))
-            test_DetectionMetrics(resultFileBase, nFrames, detections, truths, target, timing);
+        if (~isempty(detections) && ~isempty(truths) && ~isempty(target))
+            test_DetectionMetrics(resultFileBase, nFrames, detections, truths, target);
         end
-        if (~isempty(trackDetections) && ~isempty(truths) && ~isempty(target) && ~isempty(timing))
-            test_DetectionMetrics(strcat(resultFileBase,'track_'), nFrames, detections, truths, target, timing);
+        if (~isempty(trackDetections) && ~isempty(truths) && ~isempty(target))
+            test_DetectionMetrics(strcat(resultFileBase,'track_'), nFrames, trackDetections, truths, target);
+        end
+        
+        
+        if (~isempty(trackDetections) && ~isempty(truths))
+            test_TrackingMetrics(resultFileBase, nFrames, trackDetections, truths)
         end
     end
 end
