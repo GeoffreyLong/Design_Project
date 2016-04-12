@@ -1,4 +1,4 @@
-function testaggregator( tests, masterFolders, folderNames, titleString, yAxisLabel, collapse, saveLocation, attrRename, byAttr, stage )
+function bargrapher( tests, masterFolders, folderNames, titleString, yAxisLabel, collapse, saveLocation, attrRename, byAttr, stage )
 %TESTAGGREGATOR Will create bar charts
 %   Might want to just pass in the structure
 %   that might be easier at this point
