@@ -52,8 +52,8 @@ function testgenerator( filePath, anon_detect, testFileBase )
         i
         detections = [];
         trackDetections = [];
-        timing = zeros(5);
-        timing(1) = i;
+        timingVector = [];
+        timingVector = [timingVector i];
 
         % Read in necessary data
         origImg = read(v, i);
@@ -65,7 +65,8 @@ function testgenerator( filePath, anon_detect, testFileBase )
         % Get detections
         detections = anon_detect(origImg, curHost, height, width);
         % End detection timing
-        timing(2) = toc(time_detect);
+        timingVector = [timingVector toc(time_detect)];
+        timingVector = [timingVector size(detections,1)];
         % Add the frame number to the detections
         detectionsWrite = [i*ones(size(detections,1),1),detections];
         % Write the detections
@@ -80,11 +81,13 @@ function testgenerator( filePath, anon_detect, testFileBase )
         % Get tracks
         tracks = kalman.track(i,detections);
         % End tracking timing
-        timing(3) = toc(time_track);
+        timingVector = [timingVector toc(time_track)];
         
         for j = 1:numel(tracks)
             trackDetections = [trackDetections; tracks(j).bbox];
         end
+        
+        timingVector = [timingVector size(trackDetections,1)];
         % Add the frame number to the detections
         trackDetectionsWrite = [i*ones(size(trackDetections,1),1),trackDetections];
         % Write the detections from tracking to file
@@ -95,7 +98,7 @@ function testgenerator( filePath, anon_detect, testFileBase )
 
 
         % Write timing file
-        dlmwrite(timing_file,timing,'-append');
+        dlmwrite(timing_file,timingVector,'-append');
         
         s1 = sprintf('Number of initial detections: \t %d', size(detections,1));
         s2 = sprintf('Number of final detections: \t %d \n', size(tracks,1));
