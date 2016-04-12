@@ -1,12 +1,11 @@
-function testaggregator( tests, masterFolders, folderNames, titleString, yAxisLabel, collapse, saveLocation )
-%TESTAGGREGATOR Summary of this function goes here
-%   Detailed explanation goes here
+function testaggregator( tests, masterFolders, folderNames, titleString, yAxisLabel, collapse, saveLocation, attrRename, byAttr )
+%TESTAGGREGATOR Will create bar charts
+%   Might want to just pass in the structure
+%   that might be easier at this point
 
 
     testData = struct('folderName', {}, 'videoName', {}, 'fileName', {}, 'attribute', {}, 'value', {});
-    % if collapsed then this becomes
-    %collapseDataAvg = struct('folderName', {}, 'attribute', {}, 'value', {}, 'numAvg', {});
-    %collapseDataSum = struct('folderName', {}, 'attribute', {}, 'value', {});
+    % if collapsed then this becomes struct('folderName', {}, 'attribute', {}, 'value', {});
 
 
     % When sanitizing for outputs this becomes
@@ -105,6 +104,7 @@ function testaggregator( tests, masterFolders, folderNames, titleString, yAxisLa
     %   Would also be cool to derive, but time constraints won't permit that
     for i = 1:numel(tests)
         test = tests{i};
+        attrNames = attrRename{i};
 
         % For plotting or bar charts
         % If we want to group by test, grouping by folder is the opposite
@@ -134,10 +134,19 @@ function testaggregator( tests, masterFolders, folderNames, titleString, yAxisLa
         end
         % Will group them by folder (I guess) with a legend of tests
         % Apparently we cannot give nonumeric labels to the xAxis
-        h = bar(vals)
-        legend(h, test)
-        % Rename the x axis labels
-        set(gca,'XTickLabel',folderNames)
+        
+        if (byAttr)
+            h = bar(vals')
+            legend(h, folderNames)
+            % Rename the x axis labels
+            set(gca,'XTickLabel',attrNames)
+        else
+            h = bar(vals)
+            legend(h, attrNames)
+            % Rename the x axis labels
+            set(gca,'XTickLabel',folderNames)
+        end
+        
         ylabel(yAxisLabel)
         title(titleString)
         % set(gca,'XTickLabel',{'apples', 'oranges', 'strawberries', 'pears'})
