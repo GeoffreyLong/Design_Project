@@ -1,0 +1,9 @@
+Number of frames between 
+	 First truth detection and detection: 		 3 
+	 First truth detection and 4+ detection string: 8 
+	 First detection and 4+ detection string: 	 5 
+
+Distance of plane at 
+	 First truth detection (ft): 			 13936 
+	 First detection (ft): 				 13871 
+	 First 4+ detection string (ft): 			 13761 
