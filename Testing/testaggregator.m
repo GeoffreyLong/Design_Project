@@ -1,4 +1,4 @@
-function testaggregator( tests, masterFolders, folderNames, titleString, yAxisLabel, collapse, saveLocation, attrRename, byAttr )
+function testaggregator( tests, masterFolders, folderNames, titleString, yAxisLabel, collapse, saveLocation, attrRename, byAttr, stage )
 %TESTAGGREGATOR Will create bar charts
 %   Might want to just pass in the structure
 %   that might be easier at this point
@@ -34,31 +34,29 @@ function testaggregator( tests, masterFolders, folderNames, titleString, yAxisLa
             for k = 1:numel(resultDir)
                 extension = strsplit(resultDir(k).name,'.');
                 if strcmp(extension(2), 'txt')
-                    % Hacky workaround to change the attr names of trackdetects
                     trackCheck = strsplit(resultDir(k).name, '_');
-                    if strcmp('track', trackCheck(1))
-                        trackCheck = ' (post)';
-                    else
-                        trackCheck = '';
-                    end
-
-                    strcat(resultBase,resultDir(k).name)
-                    fileID = fopen(strcat(resultBase,resultDir(k).name));
-                    line = fgetl(fileID);
-                    while(ischar(line))
-                        try
-                            tokens = strsplit(line, ':');
-                            newStruct = struct('folderName', masterFolderName, ...
-                                'videoName', videoName, 'fileName', extension(1), ...
-                                'attribute', strcat(strtrim(tokens(1)), trackCheck), 'value', strtrim(tokens(2)));
-                            testData(end+1) = newStruct;
-                        catch
-                            % Just go to the next attr
-                            % Possibly a formatting issue
-                        end
+                    if (strcmp('track', trackCheck(1)) && strcmp('postTrack', stage)) ...
+                            || (~strcmp('track', trackCheck(1)) && strcmp('preTrack', stage)) ...
+                            || strcmp('all', stage) || strcmp('compare', stage)
+                        strcat(resultBase,resultDir(k).name)
+                        fileID = fopen(strcat(resultBase,resultDir(k).name));
                         line = fgetl(fileID);
-                    end
-                    fclose(fileID);
+                        while(ischar(line))
+                            try
+                                tokens = strsplit(line, ':');
+                                newStruct = struct('folderName', masterFolderName, ...
+                                    'videoName', videoName, 'fileName', extension(1), ...
+                                    'attribute', strtrim(tokens(1)), 'value', strtrim(tokens(2)));
+                                testData(end+1) = newStruct;
+                            catch
+                                % Just go to the next attr
+                                % Possibly a formatting issue
+                            end
+                            line = fgetl(fileID);
+                        end
+                        fclose(fileID);
+ 
+                    end                    
                 end
             end
         end
