@@ -7,6 +7,7 @@
 %folderNames = {'Expanded Crop (1.33)'};
 %folderNames = {'Pre-Track #1', 'Post-Track #1'};
 folderNames = {'New With Tracks'};
+%folderNames = {};
 
 if isempty(folderNames)
     baseDir = dir('../Testing/Test_Instances/');
@@ -58,73 +59,67 @@ for folderIdx = 1:numel(folderNames)
 
         [host, target] = getdetailedsrt(videoFile, nFrames);
 
+        % Make a results folder
+        mkdir(strcat('../Testing/Test_Instances/', folderName, '/', video, '/'), 'Results');
+        resultFileBase = strcat('../Testing/Test_Instances/', folderName, '/', video, '/', '/Results/');
+
+        
         files = dir(newFileBase);
         for j=1:numel(files)
             fileName = files(j).name
 
             % Read in the data corresponding to the file
             if strcmp(fileName,'detection.dat')
-                detections = csvread(strcat(newFileBase,fileName));
-                detections = unique(detections, 'rows');
+                try 
+                    detections = csvread(strcat(newFileBase,fileName));
+                    detections = unique(detections, 'rows');
+                    test_DetectionVSRects(resultFileBase, nFrames, detections, truths);                
+                    test_DetectionMetrics(resultFileBase, nFrames, detections, truths, target);
+                catch
+                end
             elseif strcmp(fileName,'tracking_detections.dat')
-                trackDetections = csvread(strcat(newFileBase,fileName));
-                trackDetections = unique(trackDetections, 'rows');
+                try
+                    trackDetections = csvread(strcat(newFileBase,fileName));
+                    trackDetections = unique(trackDetections, 'rows');
+                    test_DetectionVSRects(strcat(resultFileBase,'track_'), nFrames, trackDetections, truths);
+                    test_DetectionMetrics(strcat(resultFileBase,'track_'), nFrames, trackDetections, truths, target);
+                    totalTrackTemp = test_TrackCounts(strcat(resultFileBase,'track_'), nFrames, trackDetections, truths);
+                    tempTracks = [tempTracks; totalTrackTemp];
+                catch
+                end
             elseif strcmp(fileName,'tracking_tracks.dat')
-                trackTracks = csvread(strcat(newFileBase,fileName));
-                trackTracks = unique(trackTracks, 'rows');
+                try
+                    trackTracks = csvread(strcat(newFileBase,fileName));
+                    trackTracks = unique(trackTracks, 'rows');
+                    test_Tracks(strcat(resultFileBase,'track_'), nFrames, trackTracks, truths);
+                catch 
+                end
             elseif strcmp(fileName,'ttc.dat')
 
             elseif strcmp(fileName,'timing.dat')
-                timing = csvread(strcat(newFileBase,fileName));
+                    timing = csvread(strcat(newFileBase,fileName));
+                    test_Timing(resultFileBase, timing);
+
             end     
         end
-
-        % Make a results folder
-        mkdir(strcat('../Testing/Test_Instances/', folderName, '/', video, '/'), 'Results');
-        resultFileBase = strcat('../Testing/Test_Instances/', folderName, '/', video, '/', '/Results/');
-
-        % These next if statements test the detection results against the
-        % chosen truth file
+        
         try
-            if (~isempty(detections) && ~isempty(truths))
-                test_DetectionVSRects(resultFileBase, nFrames, detections, truths);
-            end
-        catch
-        end
-        try
-            if (~isempty(trackDetections) && ~isempty(truths))
-                test_DetectionVSRects(strcat(resultFileBase,'track_'), nFrames, trackDetections, truths);
-            end
-        catch 
-        end
-
-        % This will gather metrics such as 
-        %   first sightings
-        %       estimated time to collision of first sighting
-        %       distance of first sighting
-        %   timing metrics
-        try
-            if (~isempty(detections) && ~isempty(truths) && ~isempty(target))
-                test_DetectionMetrics(resultFileBase, nFrames, detections, truths, target);
-            end
-        catch
-        end
-        try
-            if (~isempty(trackDetections) && ~isempty(truths) && ~isempty(target))
-                test_DetectionMetrics(strcat(resultFileBase,'track_'), nFrames, trackDetections, truths, target);
-            end
-        catch
-        end
-        try
-            if (~isempty(trackDetections) && ~isempty(truths))
-                totalTrackTemp = test_TrackCounts(strcat(resultFileBase,'track_'), nFrames, trackDetections, truths);
-                tempTracks = [tempTracks; totalTrackTemp];
-            end
-        catch
-        end
-        try
-            if (~isempty(trackTracks) && ~isempty(truths))
-                test_Tracks(strcat(resultFileBase,'track_'), nFrames, trackTracks, truths);
+            if (~isempty(trackDetections) && ~isempty(detections))
+                % TODO implement testing that performs the following
+                % NOTE some of this can be found in test_Timing
+                %   Probability of tracking ~output given input
+                %       When input true
+                %       When input false
+                %   Probability of tracking output given no input
+                %       Probability of true output
+                %       Probability of false output      
+                %   Probability of tracking output with true input
+                %       Probability of true output
+                %       Probability of false output
+                %   Probability of tracking output with false input
+                %       Probability of true output
+                %       Probability of false output
+                
             end
         catch
         end
