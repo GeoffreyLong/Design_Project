@@ -4,10 +4,10 @@
 % Add all videos for testing
 videos = {
     '../Test_Data/July_6_cam1_01.avi', ...
-    '../Test_Data/July_6_cam1_02.avi', ...
     '../Test_Data/July_8_cam1_02.avi', ... 
     '../Test_Data/July_8_cam1_03.avi', ...
     %'Test_Data/Feb_13_cam1_5.avi', ...
+    %'../Test_Data/July_6_cam1_02.avi', ...
     %'Test_Data/July_8_cam1_01.avi', ...
     %'Test_Data/July_8_cam1_04.avi', ...
     %'Test_Data/July_8_cam1_08.avi', ... 
@@ -26,16 +26,14 @@ videos = {
 %    'disk30','diamond30','rect[4,10]'};
 %thresholds = [0.05 0.7 0.9 0.10 0.11 0.13 0.15];
 
-nHoods = [strel('disk', 7), strel('disk', 15)];
-nHoodNames = {'disk7','disk15'};
+nHoods = [strel('disk', 1), strel('disk', 15)];
+nHoodNames = {'disk1','disk15'};
 thresholds = [0.08 0.10 0.12];
 
-
-parfor i = 1:size(nHoods,2)
-    nHood = nHoods(i);
-    nHoodName = nHoodNames{i};
-
-    for j = 1:numel(thresholds)
+for j = 1:numel(thresholds)
+    for i = 1:size(nHoods,2)
+        nHood = nHoods(i);
+        nHoodName = nHoodNames{i};
         thresh = thresholds(j);
 
         % NOTE: Fill this in to save a description of the tests run
@@ -75,6 +73,5 @@ parfor i = 1:size(nHoods,2)
             %TODO Consider name-value pair arguments
             testgenerator(filePath, anon_detect, newFileBase);
         end
-
     end
 end

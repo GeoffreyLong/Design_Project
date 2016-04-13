@@ -108,6 +108,7 @@ function testgenerator( filePath, anon_detect, testFileBase )
 
 
         % Write timing file
+        % timingVector = [frameNo detectionTime #detections trackingTime #tracks]
         dlmwrite(timing_file,timingVector,'-append');
         
         s1 = sprintf('Number of initial detections: \t %d', size(detections,1));

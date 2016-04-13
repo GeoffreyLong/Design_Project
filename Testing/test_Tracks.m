@@ -65,7 +65,7 @@ function test_Tracks( resultFileBase, nFrames, rect, truth )
     fprintf(fileID, 'Avg Size of True Tracks: \t %0.3f \n', truthSize/numTruth);
     fprintf(fileID, 'Avg Size of False Tracks: \t %0.3f \n', falseSize/numFalse);
     fprintf(fileID, 'Percent Truth in True Tracks: \t %0.1f \n', 100*truthAvg/numTruth);
-    fprintf(fileID, 'Percent False of False Tracks: \t %0.1f \n', 100*falseAvg/numFalse);
+    fprintf(fileID, 'Percent Truth of False Tracks: \t %0.1f \n', 100*falseAvg/numFalse);
     fprintf(fileID, 'Avg Age of True Tracks: \t %0.3f \n', truthAge/numTruth);
     fprintf(fileID, 'Avg Age of False Tracks: \t %0.3f \n', falseAge/numFalse);
     fprintf(fileID, 'Avg Age of All Tracks: \t\t %0.3f \n', (truthAge+falseAge)/numTracks);

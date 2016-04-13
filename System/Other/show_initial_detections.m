@@ -26,6 +26,7 @@ height = v.Height;
 
 % Read in the SRT data
 [host, target] = getdetailedsrt(filePath, nFrames);
+truth = readrectxml(filePath, 'optimized_');
 
 % PDF_Y
 mu = 68.0164;
@@ -45,7 +46,8 @@ for i = 2300:nFrames
     % Read in necessary data
     img = read(v, i);
     curHost = host(i,:);
-
+    curTruth = truth(truth(:,1) == i, 2:5)
+    
     % Rotate the image
     image = imrotate(img, -curHost(4), 'crop');
 
