@@ -1,6 +1,6 @@
-function bargrapher( tests, masterFolders, folderNames, titleString, yAxisLabel, collapse, saveLocation, attrRename, byAttr, stage )
+function bargrapher( tests, masterFolders, folderNames, titleString, yAxisLabel, collapse, saveLocation, attrRename, byAttr, stage, legendLoc )
 %TESTAGGREGATOR Will create bar charts
-%   Might want to just pass in the structure
+%   TODO Might want to just pass in the structure
 %   that might be easier at this point
 
 
@@ -135,12 +135,12 @@ function bargrapher( tests, masterFolders, folderNames, titleString, yAxisLabel,
         
         if (byAttr)
             h = bar(vals')
-            legend(h, folderNames)
+            legend(h, folderNames,'Location',legendLoc)
             % Rename the x axis labels
             set(gca,'XTickLabel',attrNames)
         else
             h = bar(vals)
-            legend(h, attrNames)
+            legend(h, attrNames,'Location',legendLoc)
             % Rename the x axis labels
             set(gca,'XTickLabel',folderNames)
         end
