@@ -3,8 +3,8 @@ True Negatives: 		 1517
 False Positives: 		 183 
 False Negatives: 		 249 
 
-True Positives (per frame): 		 0.240 
-True Negatives (per frame): 		 0.695 
+True Positives (per frame): 		 0.871 
+True Negatives (per frame): 		 0.960 
 False Positives (per frame): 		 0.084 
 False Negatives (per frame): 		 0.114 
 
