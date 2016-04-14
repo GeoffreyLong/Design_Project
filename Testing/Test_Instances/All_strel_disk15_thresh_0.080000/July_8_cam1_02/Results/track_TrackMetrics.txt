@@ -1,0 +1,10 @@
+Number of True Tracks: 		 1 
+Number of False Tracks: 	 619 
+Percent True Tracks: 		 0.2 
+Avg Size of True Tracks: 	 1.000 
+Avg Size of False Tracks: 	 1.000 
+Percent Truth in True Tracks: 	 63.0 
+Percent Truth of False Tracks: 	 0.3 
+Avg Age of True Tracks: 	 81.000 
+Avg Age of False Tracks: 	 300.223 
+Avg Age of All Tracks: 		 299.869 

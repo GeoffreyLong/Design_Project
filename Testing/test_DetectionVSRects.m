@@ -96,33 +96,35 @@ function test_DetectionVSRects( resultFileBase, nFrames, rect, truth )
     
     fileID = fopen(strcat(resultFileBase, 'DetectvsRect.txt'), 'w');
     
-    truePositives
     fprintf(fileID, 'True Positives: \t\t %d \n', truePositives);
-    trueNegatives
     fprintf(fileID, 'True Negatives: \t\t %d \n', trueNegatives);
-    falsePositives
     fprintf(fileID, 'False Positives: \t\t %d \n', falsePositives);
-    falseNegatives
     fprintf(fileID, 'False Negatives: \t\t %d \n\n', falseNegatives);
 
-    truePosRate = truePositives / (truePositives + falseNegatives)
+    fprintf(fileID, 'True Positives (per frame): \t\t %0.3f \n', truePositives/nFrames);
+    fprintf(fileID, 'True Negatives (per frame): \t\t %0.3f \n', trueNegatives/nFrames);
+    fprintf(fileID, 'False Positives (per frame): \t\t %0.3f \n', falsePositives/nFrames);
+    fprintf(fileID, 'False Negatives (per frame): \t\t %0.3f \n\n', falseNegatives/nFrames);
+
+    
+    truePosRate = truePositives / (truePositives + falseNegatives);
     fprintf(fileID, 'True Positive Rate: \t\t %f \n', truePosRate);
 
-    falsePosRate = falsePositives / (trueNegatives + falsePositives)
+    falsePosRate = falsePositives / (trueNegatives + falsePositives);
     fprintf(fileID, 'False Positive Rate: \t\t %f \n', falsePosRate);
     
-    falseNegRate = falseNegatives / (truePositives + falseNegatives)
+    falseNegRate = falseNegatives / (truePositives + falseNegatives);
     fprintf(fileID, 'False Negative Rate: \t\t %f \n\n', falseNegRate);
     
     
     % Sensitivity = The number of positive test results for the presence of an outcome
     %               divided by the total presence of an outcome
-    sensitivity = truePositives / (truePositives + falseNegatives)
+    sensitivity = truePositives / (truePositives + falseNegatives);
     fprintf(fileID, 'Sensitivity: \t\t\t %f \n', sensitivity);
 
     % Specificity = Number of negative test results for the absence of an outcome 
     %               divided by the total absences of an outcome
-    specificity = trueNegatives / (trueNegatives + falsePositives)
+    specificity = trueNegatives / (trueNegatives + falsePositives);
     fprintf(fileID, 'Specificity: \t\t\t %f \n\n', specificity);
 
     
@@ -148,20 +150,20 @@ function test_DetectionVSRects( resultFileBase, nFrames, rect, truth )
     
     % Loosely, the number of erroneous detections 
     % (extra detections, false positives, etc)
-    detectionToPlaneRatio = totalDetections / totalPlanes
+    detectionToPlaneRatio = totalDetections / totalPlanes;
     fprintf(fileID, 'Detection To Plane Ratio: \t %f \n', detectionToPlaneRatio);
 
     
     % The number of detections on each plane
     % Sometimes there may be several bounding boxes on a single plane
     % that grab wings, decals, etc
-    detectionsPerPlane = truePositives / foundPlanes
+    detectionsPerPlane = truePositives / foundPlanes;
     fprintf(fileID, 'Detections Per Plane: \t\t %f \n', detectionsPerPlane);
     
     % boundQuality: the quality of the bounding (how much the rects overlap)
     %   Make a histogram
     %   Fit a gaussian
-    boundQuality = fitdist(bboxratios, 'Normal')
+    boundQuality = fitdist(bboxratios, 'Normal');
     boundValues = 0:0.01:1;
     points = pdf(boundQuality,boundValues);
     boundPlot = plot(boundValues,points,'LineWidth',2);

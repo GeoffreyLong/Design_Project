@@ -6,8 +6,8 @@
 %folderNames = {'July 6 cam1 01 Test #1', 'July 8 cam1 02 Test #1', 'July 8 cam1 03 Test #1'};
 %folderNames = {'Expanded Crop (1.33)'};
 %folderNames = {'Pre-Track #1', 'Post-Track #1'};
-folderNames = {'New With Tracks'};
-%folderNames = {};
+%folderNames = {'New With Tracks'};
+folderNames = {};
 
 if isempty(folderNames)
     baseDir = dir('../Testing/Test_Instances/');

@@ -1,0 +1,19 @@
+Number of Frames: 				 2845 
+
+Overall Time: 					 78.0 
+Overall Detection Time: 			 76.0 
+Overall Tracking Time: 				 1.9 
+
+Avg Time (per frame): 				 0.027405 
+Avg Time for Detection (per frame): 		 0.026731 
+Avg Time for Tracking (per frame): 		 0.000674 
+
+Detection Overhead (per frame): 		 0.026647 
+Tracking Overhead (per frame): 			 0.000337 
+Time per Additional Detection: 			 0.000209 
+
+
+Probability of Tracking Output when Input: 	 0.813025 
+Probability of Tracking Output w/o Input: 	 0.105108 
+Probability of Tracking Input w/o Output: 	 0.186975 
+Probability of No Tracking Output w/o Input: 	 0.894892 

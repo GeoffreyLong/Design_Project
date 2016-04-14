@@ -11,7 +11,6 @@ Avg Time for Tracking (per frame): 		 0.000578
 Detection Overhead (per frame): 		 0.050960 
 Tracking Overhead (per frame): 			 0.000307 
 Time per Additional Detection: 			 0.001273 
-Time per Additional Track Detection: 		 0.000390 
 
 
 Probability of Tracking Output when Input: 	 0.883117 
