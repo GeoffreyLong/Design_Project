@@ -101,8 +101,11 @@ function test_DetectionVSRects( resultFileBase, nFrames, rect, truth )
     fprintf(fileID, 'False Positives: \t\t %d \n', falsePositives);
     fprintf(fileID, 'False Negatives: \t\t %d \n\n', falseNegatives);
 
-    fprintf(fileID, 'True Positives (per frame): \t\t %0.3f \n', truePositives/nFrames);
-    fprintf(fileID, 'True Negatives (per frame): \t\t %0.3f \n', trueNegatives/nFrames);
+    % The per frame rate is when there is one to detect
+    % There will only be true positives in frames where there are planes
+    % There will only be true negatives in frames where planes are not
+    fprintf(fileID, 'True Positives (per frame): \t\t %0.3f \n', truePositives/(size(truth,1)));
+    fprintf(fileID, 'True Negatives (per frame): \t\t %0.3f \n', trueNegatives/(nFrames-size(truth,1)));
     fprintf(fileID, 'False Positives (per frame): \t\t %0.3f \n', falsePositives/nFrames);
     fprintf(fileID, 'False Negatives (per frame): \t\t %0.3f \n\n', falseNegatives/nFrames);
 
